@@ -39,49 +39,52 @@ class DeepSeekService:
         :param model: 模型名称
         :return: 生成的内容
         """
+        text, _ = self.generate_with_usage(prompt, model)
+        return text
+
+    def generate_with_usage(self, prompt: str, model: str = None) -> tuple:
+        """
+        生成内容并返回 token 用量
+        :return: (text, tokens_used)
+        """
         if not model:
             model = self.default_model
-            
+
         try:
             headers = self._get_headers()
             logger.info(f"开始生成内容，使用模型: {model}")
-            logger.debug(f"提示词长度: {len(prompt)} 字符")
-            
+
             payload = {
                 "model": model,
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
+                "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 4000,
                 "temperature": 0.7
             }
-            
+
             response = requests.post(
                 f"{self.api_base_url}/chat/completions",
                 headers=headers,
                 json=payload,
                 timeout=AppConfig.API_TIMEOUT
             )
-            
+
             if response.status_code == 200:
                 result = response.json()
+                tokens_used = result.get('usage', {}).get('total_tokens', 0) or 0
                 if result.get('choices') and len(result['choices']) > 0:
                     content = result['choices'][0]['message']['content'].strip()
-                    logger.info(f"内容生成成功，长度: {len(content)} 字符")
-                    return content
+                    logger.info(f"内容生成成功，长度: {len(content)} 字符，token: {tokens_used}")
+                    return content, tokens_used
                 else:
                     logger.error("内容生成失败，响应格式异常")
-                    return None
+                    return None, 0
             else:
                 logger.error(f"API请求失败，状态码: {response.status_code}, 响应: {response.text}")
-                return None
-                
+                return None, 0
+
         except Exception as e:
             logger.error(f"生成内容时发生错误: {str(e)}")
-            return None
+            return None, 0
     
     def generate_article_content(self, title: str, model: str = None, word_count: int = None, format_template: str = '') -> Optional[str]:
         """
@@ -93,13 +96,8 @@ class DeepSeekService:
         :return: 文章内容
         """
         char_limit = 20000
-        if format_template:
-            prompt = f"{PromptManager.ROLE_PROMPT}\n请根据以下HTML格式模板，生成一篇关于‘{title}’的公众号文章，排版核心风格要与模板一致，字数约{word_count}字，且最终输出的HTML内容总字符数必须小于等于{char_limit}字符。模板如下：\n{format_template}"
-        else:
-            prompt = PromptManager.article_prompt(title, word_count, char_limit)
-        
+        prompt = PromptManager.article_prompt(title, word_count, char_limit, format_template=format_template)
         content = self.generate_content(prompt, model)
-        
         if content:
             logger.info("文章内容生成成功")
             return content

@@ -1,3 +1,4 @@
+
 """
 主应用文件
 基于Flask的微信公众号AI发布系统
@@ -21,6 +22,13 @@ app = Flask(__name__)
 app.secret_key = AppConfig.SECRET_KEY
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
+
 # 创建必要的目录
 AppConfig.create_directories()
 
@@ -31,14 +39,21 @@ article_controller = ArticleController()
 # 启动时恢复定时任务
 recover_jobs_from_history()
 
-# 设置Gemini API密钥
-os.environ['GEMINI_API_KEY'] = 'AIzaSyDBbZXB_JnMyTM9QrgOVKpQXgWnjWuvPCA'
+# 从 config.json 加载 API 密钥到环境变量中（如有）
+try:
+    from services.config_service import ConfigService
+    gemini_key = ConfigService().get_gemini_config().get('api_key', '')
+    if gemini_key:
+        os.environ['GEMINI_API_KEY'] = gemini_key
+        logger.info("启动时成功加载 Gemini API 密钥")
+except Exception as e:
+    logger.error(f"启动时加载 Gemini API 密钥失败: {e}")
 
 @app.route('/')
 def index():
     """主页面"""
     logger.info("访问主页面")
-    return render_template('index.html')
+    return render_template('base.html')
 
 @app.route('/api/config', methods=['GET', 'POST'])
 def handle_config():
@@ -117,6 +132,20 @@ def test_pexels():
     result = config_controller.test_pexels_connection()
     return jsonify(result)
 
+@app.route('/api/test-firecrawl', methods=['POST'])
+def test_firecrawl():
+    """测试Firecrawl连接"""
+    logger.info("测试Firecrawl连接")
+    result = config_controller.test_firecrawl_connection()
+    return jsonify(result)
+
+@app.route('/api/test-inodetree', methods=['POST'])
+def test_inodetree():
+    """测试 InodeTree 连接"""
+    logger.info("测试 InodeTree 连接")
+    result = config_controller.test_inodetree_connection()
+    return jsonify(result)
+
 @app.route('/api/generate-article', methods=['POST'])
 def generate_article():
     """生成文章"""
@@ -144,6 +173,78 @@ def get_generation_history():
     logger.info("获取生成历史请求")
     result = article_controller.get_generation_history()
     return jsonify(result)
+
+@app.route('/api/video-status', methods=['GET'])
+def get_video_status():
+    """查询视频生成状态（前端轮询用）"""
+    logger.info(f"查询视频状态: {request.args.get('video_id')}")
+    result = article_controller.get_video_status()
+    return jsonify(result)
+
+@app.route('/api/stats', methods=['GET'])
+def get_stats():
+    """按天/周/月统计文章、token、图片、视频数据"""
+    from datetime import datetime, timedelta
+    import json, os
+
+    period = request.args.get('period', 'week')  # day / week / month
+
+    history_file = 'data/history.json'
+    try:
+        if os.path.exists(history_file):
+            with open(history_file, 'r', encoding='utf-8') as f:
+                items = json.load(f)
+        else:
+            items = []
+    except Exception:
+        items = []
+
+    now = datetime.now()
+    if period == 'day':
+        cutoff = now - timedelta(days=1)
+    elif period == 'month':
+        cutoff = now - timedelta(days=30)
+    else:  # week default
+        cutoff = now - timedelta(days=7)
+
+    def parse_dt(s):
+        try:
+            return datetime.strptime(s, '%Y-%m-%d %H:%M:%S')
+        except Exception:
+            return None
+
+    filtered = [i for i in items if parse_dt(i.get('generated_at', '')) and parse_dt(i.get('generated_at', '')) >= cutoff]
+
+    total       = len(filtered)
+    published   = sum(1 for i in filtered if i.get('status') == 'published')
+    draft       = sum(1 for i in filtered if i.get('status') in ('saved', 'generated') or not i.get('status'))
+    images      = sum(int(i.get('image_count', 0) or 0) for i in filtered)
+    videos      = sum(int(i.get('video_count', 0) or 0) for i in filtered)
+    # 优先取模型返回的真实 token 用量，无记录时降级为 0
+    tokens      = sum(int(i.get('tokens_used', 0) or 0) for i in filtered)
+
+    # 全量总计（不受时间筛选）
+    all_total     = len(items)
+    all_published = sum(1 for i in items if i.get('status') == 'published')
+    all_draft     = all_total - all_published
+
+    return jsonify({
+        'success': True,
+        'period': period,
+        'range': {
+            'total': total,
+            'published': published,
+            'draft': draft,
+            'images': images,
+            'videos': videos,
+            'tokens': tokens,
+        },
+        'all': {
+            'total': all_total,
+            'published': all_published,
+            'draft': all_draft,
+        }
+    })
 
 @app.route('/api/publish-history', methods=['GET'])
 def get_publish_history():
@@ -334,6 +435,12 @@ def favicon():
     from flask import send_from_directory
     return send_from_directory('static', 'favicon.ico')
 
+@app.route('/apply')
+def apply_page():
+    """inodetree Key 申请页"""
+    from flask import send_from_directory
+    return send_from_directory('static', 'apply.html')
+
 @app.errorhandler(404)
 def not_found(error):
     """404错误处理"""
@@ -434,6 +541,94 @@ def mass_send():
     except Exception as e:
         logger.error(f"群发异常: {str(e)}")
         return jsonify({'success': False, 'msg': f'群发异常: {str(e)}'}), 500
+
+@app.route('/api/github-stars', methods=['GET'])
+def get_github_stars():
+    """获取 GitHub 星星数，带本地缓存与多渠道备用抓取"""
+    import json
+    import os
+    import time
+    import re
+    import requests
+    
+    cache_file = os.path.join(AppConfig.CACHE_FOLDER, 'github_stars.json')
+    now = time.time()
+    
+    # 1. 尝试读取本地缓存
+    cached_data = None
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'r', encoding='utf-8') as f:
+                cached_data = json.load(f)
+        except Exception:
+            pass
+            
+    # 如果缓存存在且未过期（如2小时内），直接返回
+    if cached_data and (now - cached_data.get('updated_at', 0) < 7200):
+        return jsonify({'success': True, 'stars': cached_data.get('stars', '--')})
+        
+    # 2. 尝试从各个渠道获取最新星星数
+    repo = 'wojiadexiaoming-copy/AIWeChatauto'
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
+    
+    stars = '--'
+    success = False
+    
+    # 渠道一：GitHub API 直连
+    try:
+        url = f"https://api.github.com/repos/{repo}"
+        resp = requests.get(url, headers=headers, timeout=4)
+        if resp.status_code == 200:
+            d = resp.json()
+            if d and isinstance(d.get('stargazers_count'), (int, float)):
+                stars = str(d['stargazers_count'])
+                success = True
+    except Exception:
+        pass
+        
+    # 渠道二：Shields.io API
+    if not success:
+        try:
+            url = f"https://img.shields.io/github/stars/{repo}.json"
+            resp = requests.get(url, headers=headers, timeout=4)
+            if resp.status_code == 200:
+                d = resp.json()
+                msg = d.get('message')
+                if msg and msg not in ('invalid', 'repo not found') and not msg.startswith('Unable to select'):
+                    stars = str(msg)
+                    success = True
+        except Exception:
+            pass
+            
+    # 渠道三：Badgen.net SVG 备用解析
+    if not success:
+        try:
+            url = f"https://badgen.net/github/stars/{repo}"
+            resp = requests.get(url, headers=headers, timeout=4)
+            if resp.status_code == 200:
+                m = re.search(r'aria-label="stars:\s*(\d+)"', resp.text)
+                if m:
+                    stars = m.group(1)
+                    success = True
+        except Exception:
+            pass
+            
+    if success:
+        # 保存到缓存文件
+        try:
+            os.makedirs(os.path.dirname(cache_file), exist_ok=True)
+            with open(cache_file, 'w', encoding='utf-8') as f:
+                json.dump({'stars': stars, 'updated_at': now}, f)
+        except Exception:
+            pass
+        return jsonify({'success': True, 'stars': stars})
+    else:
+        # 如果获取失败，降级使用已过期的缓存值，避免直接返回 '--'
+        if cached_data:
+            return jsonify({'success': True, 'stars': cached_data.get('stars', '--')})
+        return jsonify({'success': False, 'stars': '--'})
 
 @app.route('/api/local_version', methods=['GET'])
 def get_local_version():

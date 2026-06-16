@@ -1,3 +1,4 @@
+
 """
 历史记录服务模块
 处理文章生成历史和发布历史的管理
@@ -43,6 +44,8 @@ class HistoryService:
                 'title': article_data.get('title', ''),
                 'content_length': article_data.get('content_length', 0),
                 'image_count': article_data.get('image_count', 0),
+                'video_count': article_data.get('video_count', 0),
+                'tokens_used': article_data.get('tokens_used', 0),
                 'generated_at': article_data.get('generated_at', datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
                 'author': article_data.get('author', 'AI笔记'),
                 'digest': article_data.get('digest', ''),

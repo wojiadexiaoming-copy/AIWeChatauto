@@ -126,6 +126,7 @@ class DraftService:
                 "content_source_url": content_source_url,
                 "thumb_media_id": thumb_media_id,
                 "show_cover_pic": 1 if thumb_media_id else 0,
+                "article_type": "news",
                 "need_open_comment": 0,
                 "only_fans_can_comment": 0
             }]
@@ -162,9 +163,13 @@ class DraftService:
                         logger.error(f"文章{i+1}缺少必填字段: {field}")
                         return False
                 
-                # 检查内容长度
+                # 检查内容字符数（官方限制 2万字符）
                 if len(article['content']) > 20000:
                     logger.error(f"文章{i+1}内容过长，超过20000字符")
+                    return False
+                # 检查内容字节大小（官方限制 1MB）
+                if len(article['content'].encode('utf-8')) > 1024 * 1024:
+                    logger.error(f"文章{i+1}内容超过1MB字节限制")
                     return False
                 
                 # 检查标题长度

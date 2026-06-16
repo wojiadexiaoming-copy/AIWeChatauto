@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>引载树 - 环境检测与依赖安装</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              sidebar: '#18181a',
+              main: '#222226',
+              card: '#2c2d33',
+              cardHover: '#33343b',
+              border: '#3f4048',
+              text: '#f3f4f6',
+              textMuted: '#9ca3af',
+              primary: '#3b82f6',
+              activeBg: '#2a3143'
+            }
+          },
+          fontFamily: {
+            sans: ['"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style data-purpose="custom-scrollbars">
+    /* Custom Scrollbar for Webkit */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #222226;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6b7280;
+    }
+  </style>
+</head>
+<body class="bg-app-main text-app-text font-sans h-screen flex overflow-hidden selection:bg-app-primary selection:text-white">
+
+  <!-- BEGIN: Sidebar -->
+  <aside class="w-20 bg-app-sidebar flex flex-col h-full border-r border-app-border z-10 flex-shrink-0">
+    <div class="flex-1 overflow-y-auto py-4 flex flex-col items-center gap-4 scrollbar-hide">
+      <!-- Icon Item: 一键启动 -->
+      <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+        <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l-3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <span class="text-[11px]">一键启动</span>
+      </button>
+      <!-- Icon Item: 高级选项 (Active) -->
+      <button class="flex flex-col items-center justify-center w-full py-2 text-app-primary bg-app-activeBg border-l-2 border-app-primary relative group cursor-pointer">
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <span class="text-[11px] font-medium">高级选项</span>
+      </button>
+      <!-- Icon Item: 疑难解答 -->
+      <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+        <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <span class="text-[11px]">疑难解答</span>
+      </button>
+      <!-- Icon Item: 版本管理 -->
+      <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+        <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <span class="text-[11px]">版本管理</span>
+      </button>
+      <!-- Icon Item: 模型管理 -->
+      <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+        <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <span class="text-[11px]">模型管理</span>
+      </button>
+      <!-- Icon Item: 小工具 -->
+      <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+        <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <span class="text-[11px]">小工具</span>
+      </button>
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+      <!-- Bottom Icons Area -->
+      <!-- Icon Item: 交流群 -->
+      <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+        <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <span class="text-[11px]">交流群</span>
+      </button>
+      <!-- Icon Item: 灯泡 -->
+      <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+        <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <span class="text-[11px]">灯泡</span>
+      </button>
+      <!-- Icon Item: 控制台 -->
+      <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+        <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <span class="text-[11px]">控制台</span>
+      </button>
+      <!-- Icon Item: 设置 -->
+      <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+        <span class="text-[11px]">设置</span>
+      </button>
+    </div>
+  </aside>
+  <!-- END: Sidebar -->
+
+  <!-- BEGIN: Main Content Area -->
+  <main class="flex-1 flex flex-col min-w-0 bg-app-main text-app-text font-sans">
+    
+    <!-- BEGIN: Top Bar Navigation -->
+    <header class="h-14 border-b border-app-border flex items-center px-6 justify-between flex-shrink-0 font-sans">
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-app-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span class="text-sm font-semibold text-app-text">环境检测与依赖管理</span>
+      </div>
+      <div class="flex gap-3">
+        <button id="check-env-btn" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-xs font-medium transition-colors shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-arrows-rotate"></i> 重新检测
+        </button>
+        <button id="install-dep-btn" class="bg-app-primary hover:bg-blue-600 text-white px-4 py-2 rounded text-xs font-medium transition-colors shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-download"></i> 一键安装/更新依赖
+        </button>
+      </div>
+    </header>
+    <!-- END: Top Bar Navigation -->
+
+    <!-- BEGIN: Main Content Scroll -->
+    <div class="flex-1 overflow-y-auto p-6 scroll-smooth">
+      <div class="max-w-[1600px] mx-auto space-y-6 pb-10">
+
+        <!-- Grid for Environment Overview and Status -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Python Environment Info Card -->
+          <div class="bg-app-card rounded-lg p-5 border border-transparent shadow-sm flex flex-col justify-between lg:col-span-2">
+            <div>
+              <h3 class="text-sm font-semibold text-app-text mb-4 flex items-center gap-2">
+                <i class="fa-brands fa-python text-lg text-app-textMuted"></i> Python 运行环境
+              </h3>
+              <div class="space-y-3">
+                <div class="flex items-center text-xs">
+                  <span class="w-24 text-app-textMuted">解释器路径:</span>
+                  <span id="python-path" class="font-mono text-gray-300 break-all select-all bg-[#1e1e24] px-2 py-1 rounded">正在获取...</span>
+                </div>
+                <div class="flex items-center text-xs">
+                  <span class="w-24 text-app-textMuted">Python 版本:</span>
+                  <span id="python-version" class="font-mono text-gray-300 bg-[#1e1e24] px-2 py-1 rounded">正在获取...</span>
+                </div>
+                <div class="flex items-center text-xs">
+                  <span class="w-24 text-app-textMuted">依赖需求表:</span>
+                  <span class="font-mono text-gray-300 bg-[#1e1e24] px-2 py-1 rounded">requirements.txt</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-4 pt-4 border-t border-app-border/40 flex items-center justify-between">
+              <span class="text-xs text-app-textMuted text-[11px]">如果检测到运行库缺失，请点击右上角一键安装依赖。</span>
+              <div id="status-badge" class="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5">
+                <i class="fa-solid fa-spinner fa-spin"></i> 检测中
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions / Tips -->
+          <div class="bg-app-card rounded-lg p-5 border border-transparent shadow-sm flex flex-col justify-between">
+            <div>
+              <h3 class="text-sm font-semibold text-app-text mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-circle-info text-lg text-app-textMuted"></i> 环境检测指引
+              </h3>
+              <ul class="text-xs text-app-textMuted space-y-2 list-disc pl-4 leading-relaxed">
+                <li>本程序将在当前 Python 虚拟环境或系统环境中检测运行依赖。</li>
+                <li>检测依据为项目根目录下的 <code class="font-mono text-gray-300 bg-[#1e1e24] px-1 rounded">requirements.txt</code> 描述文件。</li>
+                <li>一键安装会默认指向国内清华大学镜像源以加快下载速度。</li>
+              </ul>
+            </div>
+            <div class="mt-4">
+              <button onclick="if(window.pywebview && window.pywebview.api) window.pywebview.api.open_folder('.')" class="text-xs text-app-primary hover:underline flex items-center gap-1">
+                <i class="fa-regular fa-folder-open"></i> 打开项目根目录
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Dependencies Table Card -->
+        <div class="bg-app-card rounded-lg border border-transparent shadow-sm overflow-hidden">
+          <div class="px-5 py-4 border-b border-app-border flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-app-text">依赖检测详情</h3>
+            <span id="dep-count-badge" class="text-xs bg-[#1e1e24] text-app-textMuted px-2.5 py-0.5 rounded-full">0 个依赖</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-app-border/55 bg-[#25252b] text-app-textMuted">
+                  <th class="py-3 px-5 font-semibold">依赖包名称</th>
+                  <th class="py-3 px-5 font-semibold">要求版本</th>
+                  <th class="py-3 px-5 font-semibold">已安装版本</th>
+                  <th class="py-3 px-5 font-semibold text-center">当前状态</th>
+                </tr>
+              </thead>
+              <tbody id="dependencies-table-body" class="divide-y divide-app-border/20">
+                <tr>
+                  <td colspan="4" class="py-6 text-center text-app-textMuted">
+                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> 正在加载依赖包状态...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Installation Log Console (Terminal) -->
+        <div id="log-console-container" class="bg-app-card rounded-lg border border-transparent shadow-sm overflow-hidden hidden flex flex-col h-[350px]">
+          <div class="px-5 py-3 border-b border-app-border flex items-center justify-between bg-[#25252b] flex-shrink-0">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-terminal text-app-primary"></i>
+              <span class="text-xs font-semibold text-app-text">依赖包下载安装控制台</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span id="install-spinner" class="text-xs text-app-textMuted flex items-center gap-1.5">
+                <i class="fa-solid fa-spinner fa-spin"></i> 正在安装中...
+              </span>
+              <button id="clear-log-btn" class="text-xs text-app-textMuted hover:text-white transition-colors">
+                清空日志
+              </button>
+            </div>
+          </div>
+          <div class="flex-1 p-4 bg-[#1a1a1f] font-mono text-xs text-gray-300 overflow-y-auto selection:bg-app-primary selection:text-white" id="install-log-terminal">
+            <pre class="whitespace-pre-wrap word-break" id="install-log-pre">=== 准备就绪 ===</pre>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- END: Main Content Scroll -->
+
+  </main>
+  <!-- END: Main Content Area -->
+
+  <script>
+    let isChecking = false;
+
+    window.addInstallLogLine = function(line) {
+        const consolePre = document.getElementById('install-log-pre');
+        const terminalDiv = document.getElementById('install-log-terminal');
+        if (consolePre) {
+            consolePre.textContent += line + '\n';
+            if (terminalDiv) {
+                terminalDiv.scrollTop = terminalDiv.scrollHeight;
+            }
+        }
+    };
+
+    window.onInstallComplete = function(success) {
+        const installSpinner = document.getElementById('install-spinner');
+        const installBtn = document.getElementById('install-dep-btn');
+        if (installSpinner) {
+            installSpinner.innerHTML = success ? '<span class="text-green-500 font-bold"><i class="fa-solid fa-check"></i> 安装完成</span>' : '<span class="text-red-500 font-bold"><i class="fa-solid fa-xmark"></i> 安装失败</span>';
+        }
+        if (installBtn) {
+            installBtn.disabled = false;
+            installBtn.innerHTML = '<i class="fa-solid fa-download"></i> 一键安装/更新依赖';
+        }
+        // Refresh environment check
+        runCheck();
+    };
+
+    window.initPage2 = function() {
+        console.log("Initializing page_2.html environment page...");
+        
+        // Wire up buttons
+        const checkBtn = document.getElementById('check-env-btn');
+        if (checkBtn) {
+            checkBtn.addEventListener('click', runCheck);
+        }
+
+        const installBtn = document.getElementById('install-dep-btn');
+        if (installBtn) {
+            installBtn.addEventListener('click', startInstall);
+        }
+
+        const clearBtn = document.getElementById('clear-log-btn');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                const consolePre = document.getElementById('install-log-pre');
+                if (consolePre) consolePre.textContent = '';
+            });
+        }
+
+        // Check if installing is already in progress
+        if (window.pywebview && window.pywebview.api) {
+            window.pywebview.api.is_installing().then(isInstalling => {
+                if (isInstalling) {
+                    showConsole();
+                    installBtn.disabled = true;
+                    installBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在后台安装...';
+                    window.pywebview.api.get_install_logs().then(logs => {
+                        const consolePre = document.getElementById('install-log-pre');
+                        if (consolePre) consolePre.textContent = logs;
+                    });
+                }
+            });
+        }
+
+        // Run initial check
+        runCheck();
+    };
+
+    function showConsole() {
+        const consoleContainer = document.getElementById('log-console-container');
+        if (consoleContainer) {
+            consoleContainer.classList.remove('hidden');
+        }
+    }
+
+    function startInstall() {
+        if (!window.pywebview || !window.pywebview.api) return;
+        
+        const installBtn = document.getElementById('install-dep-btn');
+        const consolePre = document.getElementById('install-log-pre');
+        const installSpinner = document.getElementById('install-spinner');
+        
+        if (installBtn) {
+            installBtn.disabled = true;
+            installBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在拉取安装...';
+        }
+        
+        if (consolePre) {
+            consolePre.textContent = '=== 开始安装，请耐心等待 ===\n';
+        }
+        
+        if (installSpinner) {
+            installSpinner.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在安装中...';
+        }
+        
+        showConsole();
+
+        window.pywebview.api.install_dependencies().then(success => {
+            if (!success) {
+                alert('启动依赖安装进程失败。');
+                if (installBtn) {
+                    installBtn.disabled = false;
+                    installBtn.innerHTML = '<i class="fa-solid fa-download"></i> 一键安装/更新依赖';
+                }
+            }
+        });
+    }
+
+    function runCheck() {
+        if (isChecking) return;
+        isChecking = true;
+
+        const tableBody = document.getElementById('dependencies-table-body');
+        const statusBadge = document.getElementById('status-badge');
+        const checkBtn = document.getElementById('check-env-btn');
+        
+        if (checkBtn) {
+            checkBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 检测中...';
+            checkBtn.disabled = true;
+        }
+
+        if (statusBadge) {
+            statusBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-[#2b2d36] text-app-textMuted flex items-center gap-1.5";
+            statusBadge.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 检测中';
+        }
+
+        if (window.pywebview && window.pywebview.api) {
+            window.pywebview.api.check_environment().then(res => {
+                isChecking = false;
+                if (checkBtn) {
+                    checkBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> 重新检测';
+                    checkBtn.disabled = false;
+                }
+
+                // Render Python path and version
+                document.getElementById('python-path').textContent = res.python_path || '未知';
+                document.getElementById('python-version').textContent = res.python_version || '未知';
+
+                // Render badge
+                if (statusBadge) {
+                    if (res.all_ok) {
+                        statusBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-green-500/10 text-green-500 border border-green-500/30 flex items-center gap-1.5";
+                        statusBadge.innerHTML = '<i class="fa-solid fa-check"></i> 依赖项已完整';
+                    } else {
+                        statusBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 flex items-center gap-1.5";
+                        statusBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> 存在缺失依赖';
+                    }
+                }
+
+                // Render table
+                if (tableBody) {
+                    tableBody.innerHTML = '';
+                    if (!res.dependencies || res.dependencies.length === 0) {
+                        tableBody.innerHTML = `
+                            <tr>
+                              <td colspan="4" class="py-6 text-center text-app-textMuted">未能在 requirements.txt 中检索到依赖配置</td>
+                            </tr>
+                        `;
+                        return;
+                    }
+                    
+                    document.getElementById('dep-count-badge').textContent = res.dependencies.length + ' 个依赖';
+
+                    res.dependencies.forEach(dep => {
+                        let statusHtml = '';
+                        let textClass = 'text-gray-300';
+                        
+                        if (dep.status === 'ok') {
+                            statusHtml = '<span class="inline-flex items-center gap-1 text-green-500"><i class="fa-solid fa-circle-check"></i> 已就绪</span>';
+                        } else if (dep.status === 'mismatch') {
+                            statusHtml = '<span class="inline-flex items-center gap-1 text-yellow-500"><i class="fa-solid fa-circle-exclamation"></i> 版本不匹配</span>';
+                            textClass = 'text-yellow-500';
+                        } else {
+                            statusHtml = '<span class="inline-flex items-center gap-1 text-red-500"><i class="fa-solid fa-circle-xmark"></i> 未安装</span>';
+                            textClass = 'text-red-500';
+                        }
+
+                        tableBody.innerHTML += `
+                            <tr class="hover:bg-app-cardHover transition-colors border-b border-app-border/10">
+                              <td class="py-3 px-5 font-mono ${textClass}">${dep.name}</td>
+                              <td class="py-3 px-5 text-app-textMuted font-mono">${dep.required}</td>
+                              <td class="py-3 px-5 text-gray-300 font-mono">${dep.installed}</td>
+                              <td class="py-3 px-5 text-center">${statusHtml}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            }).catch(err => {
+                isChecking = false;
+                if (checkBtn) {
+                    checkBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> 重新检测';
+                    checkBtn.disabled = false;
+                }
+                console.error("Failed to run check_environment: ", err);
+            });
+        } else {
+            isChecking = false;
+        }
+    }
+  </script>
+</body>
+</html>

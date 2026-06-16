@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>引载树 v1.0.0 - 扩展管理</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<style data-purpose="custom-colors">
+    :root {
+      --bg-dark: #1e1e24;
+      --bg-panel: #2b2b36;
+      --bg-input: #1e1e24;
+      --text-main: #d1d5db;
+      --text-muted: #9ca3af;
+      --accent: #3b82f6;
+      --border-color: #3f3f46;
+      --row-hover: #3f3f46;
+      --text-pink: #f472b6;
+      --btn-bg: #3f3f46;
+      --btn-hover: #52525b;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+  </style>
+<style data-purpose="custom-scrollbars">
+    /* Custom Scrollbar for webkit */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+  </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-sm">
+<!-- BEGIN: Topbar -->
+<header class="flex items-center justify-between px-4 py-2 bg-[#1e1e24] border-b border-[#3f3f46] select-none h-10 shrink-0">
+<div class="flex items-center gap-2">
+<i class="fa-solid fa-tree text-green-400 text-xs"></i>
+<span class="font-medium">引载树 v1.0.0</span>
+</div>
+<div class="flex items-center gap-4 text-[#9ca3af]">
+<button class="hover:text-white transition-colors"><i class="fa-solid fa-question"></i></button>
+<button class="hover:text-white transition-colors"><i class="fa-solid fa-minus"></i></button>
+<button class="hover:text-white transition-colors"><i class="fa-regular fa-square"></i></button>
+<button class="hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+</div>
+</header>
+<!-- END: Topbar -->
+<div class="flex flex-1 overflow-hidden">
+<!-- BEGIN: Sidebar -->
+<aside class="w-20 flex flex-col justify-between bg-[#1e1e24] border-r border-[#3f3f46] py-4 shrink-0 overflow-y-auto">
+<div class="flex flex-col gap-2">
+<button class="flex flex-col items-center gap-1 py-2 text-[#9ca3af] hover:text-white hover:bg-[#2b2b36] transition-colors rounded-lg mx-2">
+<i class="fa-solid fa-play text-lg"></i>
+<span class="text-[10px]">一键启动</span>
+</button>
+<button class="flex flex-col items-center gap-1 py-2 text-[#9ca3af] hover:text-white hover:bg-[#2b2b36] transition-colors rounded-lg mx-2">
+<i class="fa-solid fa-list text-lg"></i>
+<span class="text-[10px]">高级选项</span>
+</button>
+<button class="flex flex-col items-center gap-1 py-2 text-[#9ca3af] hover:text-white hover:bg-[#2b2b36] transition-colors rounded-lg mx-2">
+<i class="fa-solid fa-wrench text-lg"></i>
+<span class="text-[10px]">疑难解答</span>
+</button>
+<button class="flex flex-col items-center gap-1 py-2 text-[#3b82f6] bg-[#2b2b36] transition-colors rounded-lg mx-2">
+<i class="fa-solid fa-clock-rotate-left text-lg"></i>
+<span class="text-[10px]">版本管理</span>
+</button>
+<button class="flex flex-col items-center gap-1 py-2 text-[#9ca3af] hover:text-white hover:bg-[#2b2b36] transition-colors rounded-lg mx-2">
+<i class="fa-solid fa-cube text-lg"></i>
+<span class="text-[10px]">模型管理</span>
+</button>
+<button class="flex flex-col items-center gap-1 py-2 text-[#9ca3af] hover:text-white hover:bg-[#2b2b36] transition-colors rounded-lg mx-2">
+<i class="fa-solid fa-toolbox text-lg"></i>
+<span class="text-[10px]">小工具</span>
+</button>
+</div>
+<div class="flex flex-col gap-2 mt-auto pt-4">
+<button class="flex flex-col items-center gap-1 py-2 text-[#9ca3af] hover:text-white hover:bg-[#2b2b36] transition-colors rounded-lg mx-2">
+<i class="fa-solid fa-comment-dots text-lg"></i>
+<span class="text-[10px]">交流群</span>
+</button>
+<button class="flex flex-col items-center gap-1 py-2 text-[#9ca3af] hover:text-white hover:bg-[#2b2b36] transition-colors rounded-lg mx-2">
+<i class="fa-solid fa-lightbulb text-lg"></i>
+<span class="text-[10px]">灯泡</span>
+</button>
+<button class="flex flex-col items-center gap-1 py-2 text-[#9ca3af] hover:text-white hover:bg-[#2b2b36] transition-colors rounded-lg mx-2">
+<i class="fa-solid fa-terminal text-lg text-[#f472b6]"></i>
+<span class="text-[10px]">控制台</span>
+</button>
+<button class="flex flex-col items-center gap-1 py-2 text-[#9ca3af] hover:text-white hover:bg-[#2b2b36] transition-colors rounded-lg mx-2">
+<i class="fa-solid fa-gear text-lg"></i>
+<span class="text-[10px]">设置</span>
+</button>
+</div>
+</aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: Main Content Area -->
+<main class="flex-1 flex flex-col bg-[#2b2b36] overflow-hidden">
+<!-- BEGIN: Tab Navigation -->
+<nav class="flex items-center justify-between px-6 border-b border-[#3f3f46] bg-[#1e1e24] shrink-0 h-[42px]">
+<div class="flex items-center h-full">
+<button class="px-4 h-full text-[#9ca3af] hover:text-white transition-colors flex items-center gap-2">
+<i class="fa-solid fa-microchip"></i> 内核
+          </button>
+<button class="px-4 h-full text-white bg-[#2b2b36] border-t-2 border-[#3b82f6] flex items-center gap-2">
+<i class="fa-solid fa-puzzle-piece"></i> 扩展
+          </button>
+<button class="px-4 h-full text-[#9ca3af] hover:text-white transition-colors flex items-center gap-2">
+<i class="fa-solid fa-cart-arrow-down"></i> 安装新扩展
+          </button>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-[#9ca3af] hover:text-white transition-colors flex items-center gap-1 text-xs">
+<i class="fa-solid fa-rotate-right"></i> 刷新列表
+          </button>
+<button class="text-[#9ca3af] hover:text-white transition-colors flex items-center gap-1 text-xs">
+<i class="fa-solid fa-download"></i> 一键更新
+          </button>
+</div>
+</nav>
+<!-- END: Tab Navigation -->
+<!-- BEGIN: Content Body -->
+<div class="flex-1 flex flex-col p-6 overflow-hidden">
+<!-- Search Bar -->
+<div class="mb-4 shrink-0">
+<input class="w-full bg-[#1e1e24] border border-[#3f3f46] rounded-md px-3 py-1.5 text-[#d1d5db] placeholder-[#9ca3af] focus:outline-none focus:border-[#3b82f6] text-sm" placeholder="搜索已安装插件..." type="text"/>
+</div>
+<!-- Table Container -->
+<div class="flex-1 overflow-auto border border-[#3f3f46] rounded-md bg-[#2b2b36]">
+<table class="w-full text-left border-collapse text-xs">
+<thead class="sticky top-0 bg-[#1e1e24] text-[#9ca3af] z-10 border-b border-[#3f3f46]">
+<tr>
+<th class="py-2 px-3 font-normal w-12 text-center">启用</th>
+<th class="py-2 px-3 font-normal">插件名</th>
+<th class="py-2 px-3 font-normal">远端地址</th>
+<th class="py-2 px-3 font-normal">当前分支</th>
+<th class="py-2 px-3 font-normal">版本 ID</th>
+<th class="py-2 px-3 font-normal">更新日期</th>
+<th class="py-2 px-3 font-normal text-right w-48">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#3f3f46]">
+<!-- Row 1 -->
+<tr class="hover:bg-[#3f3f46] transition-colors group">
+<td class="py-2 px-3 text-center">
+<input checked="" class="form-checkbox h-3.5 w-3.5 text-[#3b82f6] bg-[#1e1e24] border-[#3f3f46] rounded rounded-sm focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[200px]">sd-webui-model-converter</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[300px]">https://github.com/Akegarasu/sd-webui-model-converter</td>
+<td class="py-2 px-3 text-[#d1d5db]">main</td>
+<td class="py-2 px-3 text-[#f472b6] font-mono">d19e281</td>
+<td class="py-2 px-3 text-[#f472b6]">2023-03-26 14:36:49</td>
+<td class="py-2 px-3 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">更新</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">切换版本</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">卸载</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-[#3f3f46] transition-colors group">
+<td class="py-2 px-3 text-center">
+<input checked="" class="form-checkbox h-3.5 w-3.5 text-[#3b82f6] bg-[#1e1e24] border-[#3f3f46] rounded rounded-sm focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[200px]">a1111-sd-webui-tagcomplete</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[300px]">https://github.com/DominikK/a1111-sd-webui-tagcomplete</td>
+<td class="py-2 px-3 text-[#d1d5db]">main</td>
+<td class="py-2 px-3 text-[#f472b6] font-mono">5640a43</td>
+<td class="py-2 px-3 text-[#f472b6]">2023-05-11 21:18:09</td>
+<td class="py-2 px-3 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">更新</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">切换版本</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">卸载</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-[#3f3f46] transition-colors group">
+<td class="py-2 px-3 text-center">
+<input checked="" class="form-checkbox h-3.5 w-3.5 text-[#3b82f6] bg-[#1e1e24] border-[#3f3f46] rounded rounded-sm focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[200px]">stable-diffusion-webui-wd14-tagger</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[300px]">https://github.com/toriato/stable-diffusion-webui-wd14-tagger</td>
+<td class="py-2 px-3 text-[#d1d5db]">master</td>
+<td class="py-2 px-3 text-[#f472b6] font-mono">3ba3a73</td>
+<td class="py-2 px-3 text-[#f472b6]">2023-03-25 20:32:37</td>
+<td class="py-2 px-3 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">更新</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">切换版本</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">卸载</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-[#3f3f46] transition-colors group">
+<td class="py-2 px-3 text-center">
+<input checked="" class="form-checkbox h-3.5 w-3.5 text-[#3b82f6] bg-[#1e1e24] border-[#3f3f46] rounded rounded-sm focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[200px]">sd-webui-controlnet</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[300px]">https://github.com/Mikubill/sd-webui-controlnet</td>
+<td class="py-2 px-3 text-[#d1d5db]">main</td>
+<td class="py-2 px-3 text-[#f472b6] font-mono">d831043</td>
+<td class="py-2 px-3 text-[#f472b6]">2023-05-15 00:18:51</td>
+<td class="py-2 px-3 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">更新</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">切换版本</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">卸载</button>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-[#3f3f46] transition-colors group">
+<td class="py-2 px-3 text-center">
+<input checked="" class="form-checkbox h-3.5 w-3.5 text-[#3b82f6] bg-[#1e1e24] border-[#3f3f46] rounded rounded-sm focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[200px]">sd-webui-additional-networks</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[300px]">https://github.com/kohya-ss/sd-webui-additional-networks</td>
+<td class="py-2 px-3 text-[#d1d5db]">main</td>
+<td class="py-2 px-3 text-[#f472b6] font-mono">2da4647</td>
+<td class="py-2 px-3 text-[#f472b6]">2023-05-12 21:28:25</td>
+<td class="py-2 px-3 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">更新</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">切换版本</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">卸载</button>
+</div>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-[#3f3f46] transition-colors group">
+<td class="py-2 px-3 text-center">
+<input checked="" class="form-checkbox h-3.5 w-3.5 text-[#3b82f6] bg-[#1e1e24] border-[#3f3f46] rounded rounded-sm focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[200px]">sd-webui-infinite-image-browsing</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[300px]">https://github.com/zanllp/sd-webui-infinite-image-browsing</td>
+<td class="py-2 px-3 text-[#d1d5db]">main</td>
+<td class="py-2 px-3 text-[#f472b6] font-mono">28de188</td>
+<td class="py-2 px-3 text-[#f472b6]">2023-05-14 16:28:07</td>
+<td class="py-2 px-3 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">更新</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">切换版本</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">卸载</button>
+</div>
+</td>
+</tr>
+<!-- Row 7 -->
+<tr class="hover:bg-[#3f3f46] transition-colors group">
+<td class="py-2 px-3 text-center">
+<input checked="" class="form-checkbox h-3.5 w-3.5 text-[#3b82f6] bg-[#1e1e24] border-[#3f3f46] rounded rounded-sm focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[200px]">stable-diffusion-webui-localization-zh_CN</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[300px]">https://github.com/dtlnor/stable-diffusion-webui-localization-zh_CN</td>
+<td class="py-2 px-3 text-[#d1d5db]">main</td>
+<td class="py-2 px-3 text-[#f472b6] font-mono">582ca24</td>
+<td class="py-2 px-3 text-[#f472b6]">2023-03-30 15:06:14</td>
+<td class="py-2 px-3 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">更新</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">切换版本</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">卸载</button>
+</div>
+</td>
+</tr>
+<!-- Row 8 -->
+<tr class="hover:bg-[#3f3f46] transition-colors group">
+<td class="py-2 px-3 text-center">
+<input checked="" class="form-checkbox h-3.5 w-3.5 text-[#3b82f6] bg-[#1e1e24] border-[#3f3f46] rounded rounded-sm focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[200px]">stable-diffusion-webui-localization-zh_Hans</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[300px]">https://github.com/hanamizuki/stable-diffusion-webui-localization-zh_Hans</td>
+<td class="py-2 px-3 text-[#d1d5db]">master</td>
+<td class="py-2 px-3 text-[#f472b6] font-mono">c8bb5ba</td>
+<td class="py-2 px-3 text-[#f472b6]">2023-05-15 10:00:02</td>
+<td class="py-2 px-3 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">更新</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">切换版本</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">卸载</button>
+</div>
+</td>
+</tr>
+<!-- Row 9 -->
+<tr class="hover:bg-[#3f3f46] transition-colors group">
+<td class="py-2 px-3 text-center">
+<input checked="" class="form-checkbox h-3.5 w-3.5 text-[#3b82f6] bg-[#1e1e24] border-[#3f3f46] rounded rounded-sm focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[200px]">multidiffusion-upscaler-for-automatic1111</td>
+<td class="py-2 px-3 text-[#d1d5db] truncate max-w-[300px]">https://github.com/pkuliyi2015/multidiffusion-upscaler-for-automatic1111</td>
+<td class="py-2 px-3 text-[#d1d5db]">main</td>
+<td class="py-2 px-3 text-[#f472b6] font-mono">23f3a14</td>
+<td class="py-2 px-3 text-[#f472b6]">2023-05-09 13:29:40</td>
+<td class="py-2 px-3 text-right">
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">更新</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">切换版本</button>
+<button class="px-2 py-0.5 bg-[#3f3f46] hover:bg-[#52525b] rounded text-white text-xs">卸载</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- END: Content Body -->
+</main>
+<!-- END: Main Content Area -->
+</div>
+</body></html>

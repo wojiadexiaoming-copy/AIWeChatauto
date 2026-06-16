@@ -1,15 +1,20 @@
 
-# AIWeChatauto - 微信公众号AI内容创作与自动发布平台-已修复bug【9.06】
-
-在线体验：https://free.yydsoi.cn/AI_wxchat_auto/index.html
-
-# 另外一个项目：.edu邮箱：https://github.com/wojiadexiaoming-copy/eduEmail-cloudflare
+# AIWeChatauto - 微信公众号AI内容创作与自动发布平台
 
 > 🚀 一站式AI写作、智能配图、极致排版、自动发布，助力新媒体人高效运营公众号！
 
 ---
-<img width="1115" height="628" alt="图片" src="https://github.com/user-attachments/assets/f8474d29-af77-4f24-8b8f-fee88abe30b8" />
 
+## 📈 更新进度
+
+### [v1.0.0] - 2026-06-16
+- **✨ WorksSpec 多人设支持**：新增创作人设 Tab 页，支持预设人设加载、自定义人设添加、编辑与一键切换。
+- **⭐ GitHub 星标多路缓存代理**：优化顶部 GitHub Stars 数量获取，通过多源 API 轮询与本地高可靠缓存，彻底解决网络环境导致的加载失败。
+- **💬 个人交流群二维码**：支持在界面展示作者个人二维码，增加用户互动与商业咨询渠道。
+- **💻 控制台终端日志增强**：日志终端支持全选、复制、剪切、清空等快捷编辑功能，方便排查和记录运行问题。
+- **🧹 项目一键剥离工具**：新增 `export_clean_project.py`，支持自动剥离 `config.json` 密钥、日志及缓存数据，生成纯净的开源工程。
+
+---
 
 ## ✨ 项目亮点
 
@@ -22,55 +27,6 @@
 
 ---
 
-## 🚀 功能总览
-
-### 🌟 一站式AI内容创作与自动发布
-
-- **多平台热点采集与智能选题**
-  - 支持抖音、快手、B站、微博、X（推特）、TikTok、YouTube、知乎等主流平台，一键抓取行业最新热点。
-  - 自动分析平台热榜，结合行业趋势，AI智能生成爆款标题，助力内容精准选题。
-    
-<img width="621" height="652" alt="wechat_2025-07-25_092906_078" src="https://github.com/user-attachments/assets/ba407b20-4eac-4174-9e32-21c13e1194cf" />
-
-- **多模型AI写作引擎**
-  - 集成 Gemini、DeepSeek、阿里云百炼等顶级大模型，随心切换，满足不同风格与场景需求。
-  - 高级 Prompt 工程，深度定制公众号内容生成，支持自定义模板、字数、风格等参数。
-
-- **智能配图与极致排版**
-  - 支持 Pexels 图库、AI生图，自动适配微信防盗链，图片风格可选，视觉效果专业。
-  - 内置多套精美排版模板，自动内联样式，完美适配微信 Webview，提升阅读体验。
-    
-<img width="605" height="539" alt="wechat_2025-07-25_092841_758" src="https://github.com/user-attachments/assets/a8cac394-9fd9-4ff7-861d-285196e0a1e4" />
-
-- **全流程自动化：草稿、历史、定时、一键发布**
-  - 草稿管理、历史追溯、定时发布、自动推送，极致提升内容生产与运营效率。
-  - 支持一键发布到微信公众号，自动处理图片上传、封面生成、摘要提取等繁琐环节。
-
-- **可视化配置与前端交互**
-  - 前端支持多平台、多行业选择，支持自定义行业输入，所见即所得。
-  - 配置管理、模型测试、历史记录、内容预览等一应俱全，操作简单易用。
-
-- **开放API与二次开发友好**
-  - 完善的接口设计，支持对接 uniapp、小程序、第三方平台，灵活扩展。
-  - 代码结构清晰，便于二次开发和个性化定制。
-
-- **安全合规与多端部署**
-  - 支持本地、云端、Docker一键部署，兼容 Windows/Mac/Linux。
-  - 重要信息本地存储，支持多平台API Key灵活配置，保障数据安全。
-
----
-
-## 🏆 为什么选择 AIWeChatauto？
-
-- **极致自动化**：从选题、写作、配图到发布，全流程一键完成，释放你的内容生产力。
-- **智能选题引擎**：行业+平台热榜智能分析，AI生成爆款标题，内容更有传播力。
-- **多模型加持**：主流大模型随心切换，写作风格百变，满足不同内容需求。
-- **专业排版与配图**：自动适配微信生态，图片、样式、模板一站式搞定。
-- **开源免费，持续更新**：完全开源，永久免费，社区活跃，功能持续进化。
-- **开发者友好**：接口开放，易于集成和二次开发，助力你的内容生态升级。
-
----
-
 ## 🛠️ 适用场景
 
 - 自媒体人/内容创业者/企业新媒体团队
@@ -79,41 +35,43 @@
 
 ---
 
-## 🖥️ Windows 一键安装体验
+## ⚡ 快速体验 (Windows 运行与部署方案)
 
-无需 Python 环境，零配置一键安装！
-已提供 Windows 平台专用的 exe 安装包，下载后双击即可完成部署，无需手动安装 Python、依赖或命令行操作。
-安装完成后，桌面会自动生成启动快捷方式，点击即可直接打开 AIWeChatauto 系统，极致便捷。
-适合所有 Windows 用户，尤其是新媒体运营、内容创作者、企业团队等非技术人群。
-安装步骤：
-前往 Releases 页面 下载最新版安装包（.exe）。
-双击运行，按提示完成安装。
-桌面快捷方式启动，浏览器自动打开系统首页。
-按照页面提示完成公众号、AI平台等配置，即可开始智能创作！
+### 方案 A：一键双击运行 (适合非技术用户)
+1. **下载程序**：在 GitHub 的 **Releases** 页面下载最新版打包好的 Windows 执行文件 `InodeTree.exe`（内置红色主题 Logo 图标）。
+2. **配置密钥**：
+   - 首次运行前，请将根目录下的 `config.json.example` 文件重命名为 `config.json`。
+   - 使用记事本或编辑器打开 `config.json`，修改其中的配置，填入您的微信公众号 AppID、AppSecret 以及各 AI 平台的 API Key。
+3. **双击运行**：双击运行 `InodeTree.exe` 即可启动图形化客户端与后台服务。
 
+### 方案 B：本地源码部署运行 (适合开发者)
+1. **环境准备**：确保 Windows 系统上已安装 Python 3.11 或更高版本。
+2. **克隆源码**：
+   ```bash
+   git clone https://github.com/wojiadexiaoming-copy/AIWeChatauto.git
+   cd AIWeChatauto
+   ```
+3. **创建虚拟环境**：
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+4. **安装依赖**：
+   ```bash
+   pip install -r requirements.txt
+   ```
+5. **配置密钥**：
+   - 将 `config.json.example` 复制一份并命名为 `config.json`。
+   - 打开 `config.json` 并填入您的微信 AppID/Secret 和 AI API Key 等敏感信息。
+6. **启动项目**：
+   ```bash
+   python main.py
+   ```
+   启动后，项目将自动在本地拉起窗口界面，或您可通过浏览器访问 `http://127.0.0.1:5000`（需将您的公网 IP 加入微信公众号白名单中）。
 
----
-
-
-## ⚡ 快速体验
-
-### 1. 本地开发模式【适用于第一版】
-```bash
-git clone https://github.com/wojiadexiaoming/AIWeChatauto.git
-cd CodeStash
-python -m venv venv
-# Windows: venv\Scripts\activate
-# Mac/Linux: source venv/bin/activate
-pip install -r requirements.txt
-python main.py
-```
-- 访问 [http://127.0.0.1:5000][公网ip]（需要将公网ip添加到自己公众号的ip白名单才可以）
-
-
-
-### 2. 配置说明
-- 复制 `config/config_template.json` 为 `config.json`，填写公众号、AI平台等信息
-- 支持多模型API Key、作者信息、图片模型等灵活配置
+### 2. 配置文件说明
+- 敏感配置（如 API Key）均存放在 `config.json` 中，该文件已被 `.gitignore` 忽略，不会被提交到 GitHub，确保信息安全。
+- 开发者发布或部署时，只需提供 `config.json.example` 供用户参考填写。
 
 ---
 
@@ -164,13 +122,14 @@ MIT License
 ---
 
 如需更详细的功能演示、模板预览、二次开发文档等，可随时联系作者！ 
-
 ![微信图片_2025-07-13_190348_328](https://github.com/user-attachments/assets/49ec38ff-2321-4c07-953f-59d685b2f682)
 
 
-打赏支持《感谢ღ( ´･ᴗ･` )比心》：
+打赏支持：
 
-<img width="335" height="457" alt="微信图片_2025-07-13_185602_630" src="https://github.com/user-attachments/assets/8cbe8d7b-a5ba-4d3c-bc3b-dd449743e22b" /> ![微信图片_2025-07-13_185558_797](https://github.com/user-attachments/assets/fdb26494-4b49-4c01-b5cf-d415a2e5c8db)
+<img width="335" height="457" alt="微信图片_2025-07-13_185602_630" src="https://github.com/user-attachments/assets/8cbe8d7b-a5ba-4d3c-bc3b-dd449743e22b" />
+
+![微信图片_2025-07-13_185558_797](https://github.com/user-attachments/assets/fdb26494-4b49-4c01-b5cf-d415a2e5c8db)
 
 
 

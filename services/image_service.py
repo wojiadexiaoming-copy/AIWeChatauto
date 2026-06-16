@@ -1,3 +1,4 @@
+
 """
 图像服务模块
 处理图像生成和处理相关操作
@@ -79,6 +80,9 @@ class ImageService:
                                               image_index=image_index, total_images=total_images)
             elif image_model == "coze":
                 return self._generate_with_coze(final_prompt)
+            elif image_model == "inodetree":
+                # InodeTree Image 直接生图
+                return self._generate_with_inodetree_image(final_prompt)
             else:
                 logger.error(f"不支持的生图模型: {image_model}")
                 return None
@@ -450,6 +454,8 @@ class ImageService:
                 search_query = self._generate_with_deepseek_ai(prompt)
             elif ai_model == "dashscope":
                 search_query = self._generate_with_dashscope_ai(prompt)
+            elif ai_model == "inodetree":
+                search_query = self._generate_with_inodetree_ai(prompt)
             else:
                 logger.warning(f"不支持的AI模型: {ai_model}，使用Gemini作为默认")
                 search_query = self._generate_with_gemini_ai(prompt)
@@ -576,6 +582,55 @@ class ImageService:
             logger.error(f"阿里云百炼AI生成搜索提示词时发生错误: {str(e)}")
             return None
     
+    def _generate_with_inodetree_image(self, prompt: str) -> Optional[str]:
+        """使用 InodeTree Image 2.1 Flash 生成图片"""
+        try:
+            from services.inodetree_service import InodeTreeService
+            from services.config_service import ConfigService
+            config_service = ConfigService()
+            inodetree_config = config_service.get_inodetree_config()
+            if not inodetree_config.get('api_key'):
+                logger.error("InodeTree API Key 未配置，无法生图")
+                return None
+            inodetree = InodeTreeService(inodetree_config['api_key'])
+            return inodetree.generate_image(prompt, size="1024x768", save_dir=self.cache_folder)
+        except Exception as e:
+            logger.error(f"InodeTree 图片生成失败: {e}")
+            return None
+
+    def _generate_with_inodetree_ai(self, prompt: str) -> Optional[str]:
+        """使用 InodeTree AI 生成 Pexels 搜索提示词"""
+        try:
+            from services.inodetree_service import InodeTreeService
+            from services.config_service import ConfigService
+            config_service = ConfigService()
+            inodetree_config = config_service.get_inodetree_config()
+            if not inodetree_config.get('api_key'):
+                logger.error("InodeTree API Key 未配置")
+                return None
+            inodetree = InodeTreeService(inodetree_config['api_key'])
+            inodetree.model = inodetree_config.get('model', 'inodetree-2.0-flash')
+            result = inodetree.generate_content(prompt, max_tokens=100)
+            return result
+        except Exception as e:
+            logger.error(f"InodeTree AI 生成搜索提示词时发生错误: {str(e)}")
+            return None
+
+    def _generate_prompt_with_inodetree(self, prompt: str) -> Optional[str]:
+        """用 InodeTree 润色生图提示词"""
+        try:
+            from services.inodetree_service import InodeTreeService
+            from services.config_service import ConfigService
+            config_service = ConfigService()
+            inodetree_config = config_service.get_inodetree_config()
+            if not inodetree_config.get('api_key'):
+                return prompt
+            inodetree = InodeTreeService(inodetree_config['api_key'])
+            return inodetree.generate_content(prompt, max_tokens=300) or prompt
+        except Exception as e:
+            logger.error(f"InodeTree 润色 prompt 失败: {e}")
+            return prompt
+
     def _clean_search_query(self, search_query: str) -> str:
         """
         清理和验证搜索提示词
@@ -881,7 +936,8 @@ class ImageService:
                 from services.deepseek_service import DeepSeekService
                 deepseek = DeepSeekService()
                 return deepseek.generate_content(prompt)
-            # 可扩展更多模型
+            elif ai_model == 'inodetree':
+                return self._generate_prompt_with_inodetree(prompt)
             else:
                 return prompt
         except Exception as e:

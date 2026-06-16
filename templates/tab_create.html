@@ -1,0 +1,417 @@
+<!-- ═══════════════════════════════════════════════════════
+     Tab: 文章创作与预览
+     ═══════════════════════════════════════════════════════ -->
+<div class="max-w-[1600px] mx-auto px-4 md:px-6 py-lg">
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+
+    <!-- ────────── 左栏：生成设置 ────────── -->
+    <div class="lg:col-span-4 flex flex-col gap-gutter">
+
+      <!-- 标题输入 -->
+      <section class="glass-panel rounded-lg p-lg">
+        <h2 class="text-headline-sm font-bold mb-md flex items-center gap-xs">
+          <span class="material-symbols-outlined text-wechat-green">edit_note</span>创作设置
+        </h2>
+
+        <!-- 标题输入模式切换 -->
+        <div class="flex gap-xs mb-sm">
+          <button id="title-mode-manual"
+            class="flex-1 py-xs text-label rounded border border-outline-variant text-on-surface-variant bg-surface-container hover:border-wechat-green hover:text-wechat-green transition-all title-mode-btn active-mode">
+            手动输入标题
+          </button>
+          <button id="title-mode-auto"
+            class="flex-1 py-xs text-label rounded border border-outline-variant text-on-surface-variant bg-surface-container hover:border-wechat-green hover:text-wechat-green transition-all title-mode-btn">
+            抖音热点选题 <span class="text-[10px] text-yellow-500 font-medium">待优化</span>
+          </button>
+        </div>
+
+        <!-- 手动标题 -->
+        <div id="title-manual-section">
+          <input type="text" id="article-title"
+            class="form-field w-full h-11 px-md rounded text-body placeholder:text-outline-variant"
+            placeholder="输入引人注目的文章标题…">
+        </div>
+
+        <!-- 抖音热点板块 -->
+        <div id="hot-options-section" class="hidden space-y-sm">
+          <div class="text-label text-on-surface-variant mb-xs">选择行业方向</div>
+          <div class="flex flex-wrap gap-xs" id="industry-options">
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="industry" id="industry-random" value="" checked class="accent-wechat-green"> <span class="text-label">随机</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="industry" id="industry-科技" value="科技" class="accent-wechat-green"> <span class="text-label">科技</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="industry" id="industry-娱乐" value="娱乐" class="accent-wechat-green"> <span class="text-label">娱乐</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="industry" id="industry-游戏" value="游戏" class="accent-wechat-green"> <span class="text-label">游戏</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="industry" id="industry-AI" value="AI" class="accent-wechat-green"> <span class="text-label">AI</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="industry" id="industry-影视" value="影视" class="accent-wechat-green"> <span class="text-label">影视</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="industry" id="industry-电影" value="电影" class="accent-wechat-green"> <span class="text-label">电影</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="industry" id="industry-农业" value="农业" class="accent-wechat-green"> <span class="text-label">农业</span>
+            </label>
+          </div>
+
+          <div class="text-label text-on-surface-variant mt-sm mb-xs">发布平台</div>
+          <div class="flex flex-wrap gap-xs" id="platform-options">
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="platform" id="platform-random" value="" checked class="accent-wechat-green"> <span class="text-label">不限</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="platform" id="platform-微信" value="微信" class="accent-wechat-green"> <span class="text-label">微信</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="platform" id="platform-抖音" value="抖音" class="accent-wechat-green"> <span class="text-label">抖音</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="platform" id="platform-B站" value="B站" class="accent-wechat-green"> <span class="text-label">B站</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="platform" id="platform-百度" value="百度" class="accent-wechat-green"> <span class="text-label">百度</span>
+            </label>
+            <label class="inline-flex items-center gap-xs cursor-pointer">
+              <input type="radio" name="platform" id="platform-MSN" value="MSN" class="accent-wechat-green"> <span class="text-label">MSN</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 模型与生图选择 -->
+      <section class="glass-panel rounded-lg p-lg space-y-md">
+        <h2 class="text-headline-sm font-bold flex items-center gap-xs">
+          <span class="material-symbols-outlined text-wechat-green">hub</span>模型配置
+        </h2>
+
+        <!-- AI 文本模型 -->
+        <div>
+          <label class="block text-label text-on-surface-variant mb-xs">AI 文章模型</label>
+          <select id="ai-model-select"
+            class="form-field w-full h-11 px-md rounded text-body">
+            <option value="gemini">Google Gemini</option>
+            <option value="deepseek">DeepSeek AI</option>
+            <option value="dashscope">阿里云百炼</option>
+            <option value="inodetree">InodeTree</option>
+          </select>
+        </div>
+
+        <!-- 创作人设 -->
+        <div>
+          <label class="block text-label text-on-surface-variant mb-xs">创作人设</label>
+          <select id="persona-select"
+            class="form-field w-full h-11 px-md rounded text-body">
+            <option value="">默认人设 (公众号爆款创作者)</option>
+          </select>
+        </div>
+
+        <!-- 生图模型 -->
+        <div>
+          <label class="block text-label text-on-surface-variant mb-xs">生图模型</label>
+          <div class="flex gap-xs">
+            <select id="image-model-select"
+              class="form-field h-11 px-md rounded text-body flex-1">
+              <option value="gemini">Gemini</option>
+              <option value="deepseek">DeepSeek</option>
+              <option value="dashscope">阿里云百炼</option>
+              <option value="inodetree">InodeTree Image</option>
+              <option value="pexels">Pexels</option>
+              <option value="coze">Coze</option>
+            </select>
+            <input type="text" id="custom-image-prompt"
+              class="form-field flex-1 h-11 px-md rounded text-body"
+              placeholder="自定义生图提示词（可选）">
+          </div>
+        </div>
+
+        <!-- 阿里云百炼特有参数 -->
+        <div id="dashscope-extra-fields" class="hidden space-y-sm p-sm bg-surface-container-low rounded-lg border border-outline-variant/30">
+          <p class="text-label font-medium text-on-surface-variant">阿里云百炼高级参数</p>
+
+          <!-- 模型下拉（自定义） -->
+          <div id="dashscope-image-model-dropdown" class="relative">
+            <button id="dashscopeImageModelBtn" type="button"
+              class="w-full h-10 px-md rounded border border-outline-variant bg-white text-body text-left flex items-center justify-between hover:border-wechat-green transition-all">
+              <span>请选择阿里云百炼生图模型</span>
+              <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px;">expand_more</span>
+            </button>
+            <div class="absolute z-20 w-full mt-xs bg-white border border-outline-variant rounded-lg shadow-lg max-h-56 overflow-y-auto hide-scrollbar hidden" id="dashscope-dropdown-menu">
+              <a class="block px-md py-xs text-body hover:bg-surface-container-low cursor-pointer" data-value="wanx2.1-t2i-turbo">通义万相 2.1 Turbo <span class="text-caption text-wechat-green ml-xs">限免</span></a>
+              <a class="block px-md py-xs text-body hover:bg-surface-container-low cursor-pointer" data-value="wanx2.1-t2i-plus">通义万相 2.1 Plus <span class="text-caption text-wechat-green ml-xs">限免</span></a>
+              <a class="block px-md py-xs text-body hover:bg-surface-container-low cursor-pointer" data-value="wanx2.0-t2i-turbo">通义万相 2.0 Turbo <span class="text-caption text-wechat-green ml-xs">限免</span></a>
+              <a class="block px-md py-xs text-body hover:bg-surface-container-low cursor-pointer" data-value="wanx-v1">通义万相 v1</a>
+              <a class="block px-md py-xs text-body hover:bg-surface-container-low cursor-pointer" data-value="stable-diffusion-3.5-large-turbo">SD 3.5 Large Turbo</a>
+              <a class="block px-md py-xs text-body hover:bg-surface-container-low cursor-pointer" data-value="stable-diffusion-3.5-large">SD 3.5 Large</a>
+              <a class="block px-md py-xs text-body hover:bg-surface-container-low cursor-pointer" data-value="flux-merged">FLUX-merged</a>
+            </div>
+            <input type="hidden" id="dashscope-image-model-value" value="">
+          </div>
+
+          <div class="grid grid-cols-2 gap-xs">
+            <div>
+              <label class="block text-caption text-on-surface-variant mb-xs">正向提示词</label>
+              <input type="text" id="dashscope-positive-prompt"
+                class="form-field w-full h-9 px-sm rounded text-body" placeholder="留空则自动生成">
+            </div>
+            <div>
+              <label class="block text-caption text-on-surface-variant mb-xs">反向提示词</label>
+              <input type="text" id="dashscope-negative-prompt"
+                class="form-field w-full h-9 px-sm rounded text-body" placeholder="留空使用默认">
+            </div>
+            <div>
+              <label class="block text-caption text-on-surface-variant mb-xs">图片比例</label>
+              <input type="text" id="dashscope-image-ratio"
+                class="form-field w-full h-9 px-sm rounded text-body" placeholder="默认 1024*768">
+            </div>
+            <div>
+              <label class="block text-caption text-on-surface-variant mb-xs">采样步数</label>
+              <input type="number" id="dashscope-steps"
+                class="form-field w-full h-9 px-sm rounded text-body" placeholder="默认 25">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 生成参数 -->
+      <section class="glass-panel rounded-lg p-lg space-y-md">
+        <h2 class="text-headline-sm font-bold flex items-center gap-xs">
+          <span class="material-symbols-outlined text-wechat-green">tune</span>生成参数
+        </h2>
+
+        <div class="grid grid-cols-2 gap-md">
+          <div>
+            <label class="block text-label text-on-surface-variant mb-xs">文章字数</label>
+            <input type="number" id="article-word-count" min="100" max="20000" value="8000"
+              class="form-field w-full h-11 px-md rounded text-body">
+          </div>
+          <div>
+            <label class="block text-label text-on-surface-variant mb-xs">配图数量</label>
+            <input type="number" id="article-image-count" min="0" max="20" value="3"
+              class="form-field w-full h-11 px-md rounded text-body">
+          </div>
+        </div>
+
+        <!-- 格式模板 -->
+        <div id="style-template-section">
+          <label class="block text-label text-on-surface-variant mb-xs">
+            <span class="material-symbols-outlined" style="font-size:14px;">style</span> 样式模板
+          </label>
+          <div id="style-template-select-wrapper"></div>
+        </div>
+
+        <div id="custom-template-section">
+          <label class="block text-label text-on-surface-variant mb-xs">
+            <span class="material-symbols-outlined" style="font-size:14px;">code</span> 自定义 HTML 模板
+          </label>
+          <p class="text-caption text-on-surface-variant mb-xs">可粘贴公众号文章的 &lt;section&gt;…&lt;/section&gt; 片段作为样式参考</p>
+          <textarea id="format-template" rows="4"
+            class="form-field w-full px-md py-sm rounded text-body"
+            placeholder="粘贴 HTML 模板片段（可选）…"></textarea>
+        </div>
+      </section>
+
+      <!-- 视频生成（可选） -->
+      <section class="glass-panel rounded-lg p-lg" id="video-config-section">
+        <div class="flex items-center justify-between mb-md">
+          <h2 class="text-headline-sm font-bold flex items-center gap-xs">
+            <span class="material-symbols-outlined text-wechat-green">videocam</span>插入视频
+            <span class="text-caption text-on-surface-variant font-normal ml-xs">InodeTree Video V2.0 · 异步生成</span>
+          </h2>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="enable-video" class="sr-only peer">
+            <div class="w-9 h-5 bg-surface-container-highest rounded-full peer peer-checked:bg-wechat-green transition-colors"></div>
+            <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4"></div>
+          </label>
+        </div>
+
+        <div id="video-params" class="hidden space-y-sm">
+          <div class="grid grid-cols-3 gap-md">
+            <div>
+              <label class="block text-label text-on-surface-variant mb-xs">视频数量</label>
+              <input type="number" id="video-count" min="1" max="5" value="1"
+                class="form-field w-full h-10 px-md rounded text-body">
+            </div>
+            <div>
+              <label class="block text-label text-on-surface-variant mb-xs">帧率 (FPS)</label>
+              <select id="video-fps" class="form-field w-full h-10 px-md rounded text-body">
+                <option value="24">24 FPS — ≤15s</option>
+                <option value="30">30 FPS — ≤10s</option>
+                <option value="60">60 FPS — ≤5s</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-label text-on-surface-variant mb-xs">预计时长</label>
+              <div id="video-duration-hint"
+                class="h-10 px-md flex items-center bg-surface-container-low rounded text-body text-on-surface-variant">≈ 15s</div>
+            </div>
+          </div>
+          <p class="text-caption text-on-surface-variant">
+            <span class="material-symbols-outlined text-yellow-500 align-middle" style="font-size:13px;">warning</span>
+            视频异步生成约需 2-5 分钟。超过限制时长失败概率明显上升。
+          </p>
+        </div>
+      </section>
+
+      <!-- 生成按钮 -->
+      <button id="generate-article"
+        class="w-full py-4 bg-wechat-green text-white font-bold text-body-lg rounded-lg
+               hover:brightness-105 active:scale-[0.99] transition-all
+               flex items-center justify-center gap-sm shadow-md shadow-wechat-green/20">
+        <span class="material-symbols-outlined">auto_awesome</span>立即生成文章
+      </button>
+
+      <!-- 生成进度 -->
+      <div id="generation-progress" class="hidden glass-panel rounded-lg p-md">
+        <div class="flex items-center justify-between mb-xs">
+          <span class="text-label text-on-surface-variant">生成进度</span>
+          <span id="progress-text" class="text-caption text-on-surface-variant">准备中…</span>
+        </div>
+        <div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-wechat-green rounded-full transition-all duration-500" style="width:0%"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ────────── 中栏：预览 + 发布 ────────── -->
+    <div class="lg:col-span-5 sticky top-16">
+      <div class="glass-panel rounded-lg overflow-hidden flex flex-col" style="height:calc(100vh - 80px)">
+
+        <!-- 预览头部 -->
+        <div class="px-lg py-sm border-b border-outline-variant/30 flex items-center justify-between bg-surface-container-lowest">
+          <div class="flex gap-lg">
+            <button class="text-wechat-green font-semibold text-label border-b-2 border-wechat-green pb-1">预览</button>
+            <button class="text-on-surface-variant text-label hover:text-on-surface transition-colors" id="refresh-preview-btn">
+              <span class="material-symbols-outlined align-middle" style="font-size:15px;">refresh</span> 刷新
+            </button>
+          </div>
+          <div class="flex gap-xs">
+            <button id="copy-html-btn"
+              class="flex items-center gap-xs px-sm py-xs rounded border border-outline-variant text-label text-on-surface-variant hover:border-wechat-green hover:text-wechat-green transition-all">
+              <span class="material-symbols-outlined" style="font-size:14px;">content_copy</span>复制 HTML
+            </button>
+          </div>
+        </div>
+
+        <!-- 文章预览内容 -->
+        <div class="flex-1 overflow-y-auto hide-scrollbar bg-surface-container-low p-lg">
+          <div class="max-w-[375px] mx-auto bg-white rounded-2xl border-[6px] border-[#1a1a1a] overflow-hidden shadow-xl min-h-[500px]">
+            <!-- 模拟状态栏 -->
+            <div class="h-6 flex items-center justify-between px-4 bg-white">
+              <span class="text-[10px] font-bold">9:41</span>
+              <div class="flex gap-0.5 items-center">
+                <span class="material-symbols-outlined" style="font-size:11px;">signal_cellular_alt</span>
+                <span class="material-symbols-outlined" style="font-size:11px;">wifi</span>
+                <span class="material-symbols-outlined" style="font-size:11px;">battery_full</span>
+              </div>
+            </div>
+            <!-- 文章内容 -->
+            <div id="article-preview" class="p-4 text-[14px] leading-relaxed text-gray-800">
+              <div class="text-center py-8 text-on-surface-variant text-caption">
+                <span class="material-symbols-outlined block mb-xs" style="font-size:32px;">article</span>
+                生成文章后将在这里预览
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 发布操作栏 -->
+        <div class="px-lg py-md border-t border-outline-variant/30 bg-surface-container-lowest">
+          <!-- 群发开关 -->
+          <div class="flex items-center gap-sm mb-md">
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="enable-mass-send" class="sr-only peer">
+              <div class="w-9 h-5 bg-surface-container-highest rounded-full peer peer-checked:bg-wechat-green transition-colors"></div>
+              <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4"></div>
+            </label>
+            <span class="text-label text-on-surface-variant">同时群发给所有粉丝</span>
+            <span class="material-symbols-outlined text-yellow-500 cursor-help"
+              style="font-size:15px;"
+              title="需要微信认证开通群发接口才可使用此功能">warning</span>
+          </div>
+
+          <!-- 发布状态 -->
+          <div id="publish-status" class="hidden mb-sm text-label rounded-lg px-md py-sm bg-surface-container-low border border-outline-variant/20">
+            <span id="publish-message"></span>
+          </div>
+
+          <div class="flex gap-sm">
+            <button id="save-draft"
+              class="flex-1 py-3 rounded-lg border border-outline-variant text-on-surface font-semibold text-body
+                     hover:bg-surface-container transition-all flex items-center justify-center gap-xs">
+              <span class="material-symbols-outlined" style="font-size:17px;">save</span>保存草稿
+            </button>
+            <button id="publish-article"
+              class="flex-1 py-3 rounded-lg bg-wechat-green text-white font-semibold text-body
+                     hover:brightness-105 active:scale-[0.99] transition-all
+                     flex items-center justify-center gap-xs shadow-sm shadow-wechat-green/20">
+              <span class="material-symbols-outlined" style="font-size:17px;">send</span>发布文章
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────── 右栏：创作历史 ────────── -->
+    <div class="lg:col-span-3 sticky top-16">
+      <div class="glass-panel rounded-lg overflow-hidden flex flex-col" style="height:calc(100vh - 80px)">
+
+        <!-- 头部 -->
+        <div class="px-md py-sm border-b border-outline-variant/30 bg-surface-container-lowest flex flex-col gap-xs">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-xs">
+              <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px;">history</span>
+              <h2 class="text-headline-sm font-bold">创作历史</h2>
+            </div>
+            <span id="history-count" class="text-caption text-on-surface-variant"></span>
+          </div>
+
+          <!-- 搜索框 -->
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-xs top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" style="font-size:15px;">search</span>
+            <input id="history-search" type="text" placeholder="搜索标题…"
+              class="form-field w-full h-8 pl-6 pr-xs rounded text-caption placeholder:text-outline-variant">
+          </div>
+
+          <!-- 筛选 + 排序 -->
+          <div class="flex gap-xs">
+            <!-- 状态筛选 -->
+            <select id="history-filter-status"
+              class="form-field flex-1 h-8 px-xs rounded text-caption">
+              <option value="">全部状态</option>
+              <option value="published">已发布</option>
+              <option value="saved">已保存</option>
+              <option value="generated">已生成</option>
+            </select>
+            <!-- 排序方式 -->
+            <select id="history-sort"
+              class="form-field flex-1 h-8 px-xs rounded text-caption">
+              <option value="time_desc">最新优先</option>
+              <option value="time_asc">最早优先</option>
+              <option value="length_desc">字数↓</option>
+              <option value="length_asc">字数↑</option>
+              <option value="images_desc">配图↓</option>
+              <option value="tokens_desc">Token↓</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 列表 -->
+        <div id="history-list" class="flex-1 overflow-y-auto hide-scrollbar p-xs space-y-xs">
+          <div data-empty class="text-caption text-on-surface-variant text-center py-md">暂无历史记录</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+</div><!-- /container -->

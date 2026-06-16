@@ -1,5 +1,7 @@
+
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 import atexit
 import logging
 from datetime import datetime
@@ -11,8 +13,11 @@ from config.app_config import AppConfig
 
 logger = logging.getLogger(__name__)
 
-# 初始化调度器，使用内存存储（不依赖数据库）
-scheduler = BackgroundScheduler()
+# 初始化调度器，使用sqlite持久化
+jobstores = {
+    'default': SQLAlchemyJobStore(url='sqlite:///data/scheduler_jobs.sqlite')
+}
+scheduler = BackgroundScheduler(jobstores=jobstores)
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
@@ -145,7 +150,10 @@ def recover_jobs_from_history():
     for item in history:
         # 只恢复未发布且有定时发布时间的任务
         if item.get('status') == 'saved' and item.get('publish_time') and item.get('media_id'):
-            publish_time = datetime.strptime(item['publish_time'], '%Y-%m-%d %H:%M:%S')
+            try:
+                publish_time = datetime.strptime(item['publish_time'], '%Y-%m-%d %H:%M:%S')
+            except ValueError:
+                publish_time = datetime.strptime(item['publish_time'], '%Y-%m-%d %H:%M')
             if publish_time > now:
                 try:
                     # 恢复时默认不群发，因为历史记录中没有群发设置

@@ -1,3 +1,4 @@
+
 """
 Gemini AI服务模块
 处理Google Gemini AI相关操作
@@ -42,30 +43,47 @@ class GeminiService:
         :param model: 模型名称
         :return: 生成的内容
         """
+        text, _ = self.generate_with_usage(prompt, model)
+        return text
+
+    def generate_with_usage(self, prompt: str, model: str = None) -> tuple:
+        """
+        生成内容并返回 token 用量
+        :return: (text, tokens_used)
+        """
         if not model:
             model = self.default_model
-            
+
         try:
             client = self._get_client()
             logger.info(f"开始生成内容，使用模型: {model}")
-            logger.debug(f"提示词长度: {len(prompt)} 字符")
-            
+
             response = client.models.generate_content(
                 model=model,
                 contents=prompt
             )
-            
+
+            tokens_used = 0
+            try:
+                meta = response.usage_metadata
+                if meta:
+                    tokens_used = (getattr(meta, 'total_token_count', 0) or
+                                   (getattr(meta, 'prompt_token_count', 0) +
+                                    getattr(meta, 'candidates_token_count', 0)))
+            except Exception:
+                pass
+
             if response and response.text:
                 content = response.text.strip()
-                logger.info(f"内容生成成功，长度: {len(content)} 字符")
-                return content
+                logger.info(f"内容生成成功，长度: {len(content)} 字符，token: {tokens_used}")
+                return content, tokens_used
             else:
                 logger.error("内容生成失败，响应为空")
-                return None
-                
+                return None, 0
+
         except Exception as e:
             logger.error(f"生成内容时发生错误: {str(e)}")
-            return None
+            return None, 0
     
     def generate_article_content(self, title: str, model: str = None, word_count: int = None, format_template: str = '') -> Optional[str]:
         """
@@ -77,10 +95,7 @@ class GeminiService:
         :return: 文章内容
         """
         char_limit = 20000
-        if format_template:
-            prompt = f"{PromptManager.ROLE_PROMPT}\n请根据以下HTML格式模板，生成一篇关于‘{title}’的公众号文章，排版核心风格要与模板一致，字数约{word_count}字，且最终输出的HTML内容总字符数必须小于等于{char_limit}字符。模板如下：\n{format_template}"
-        else:
-            prompt = PromptManager.article_prompt(title, word_count, char_limit)
+        prompt = PromptManager.article_prompt(title, word_count, char_limit, format_template=format_template)
         content = self.generate_content(prompt, model)
         if content:
             logger.info("文章内容生成成功")

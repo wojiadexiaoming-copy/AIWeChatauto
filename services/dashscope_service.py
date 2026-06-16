@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import logging
+from datetime import datetime
 from typing import List, Dict, Optional
 from openai import OpenAI
 import requests
@@ -250,40 +251,40 @@ class DashScopeService:
                 }
     
     def generate_content(self, prompt: str, model: str = "qwen-turbo", max_tokens: int = 1000) -> Dict:
-        """生成内容"""
+        """生成内容，返回 dict（兼容旧接口）"""
         try:
             client = self._get_client()
             if not client:
-                return {
-                    "success": False,
-                    "message": "API密钥未配置或客户端创建失败"
-                }
-            
+                return {"success": False, "message": "API密钥未配置或客户端创建失败"}
+
             completion = client.chat.completions.create(
                 model=model,
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=max_tokens,
                 stream=False
             )
-            
+
             if completion.choices and completion.choices[0].message:
+                usage = completion.usage.dict() if completion.usage else None
                 return {
                     "success": True,
                     "content": completion.choices[0].message.content,
-                    "usage": completion.usage.dict() if completion.usage else None
+                    "usage": usage
                 }
             else:
-                return {
-                    "success": False,
-                    "message": "生成失败，未收到有效响应"
-                }
-                
+                return {"success": False, "message": "生成失败，未收到有效响应"}
+
         except Exception as e:
             logger.error(f"阿里云百炼内容生成失败: {e}")
-            return {
-                "success": False,
-                "message": f"生成失败: {str(e)}"
-            }
+            return {"success": False, "message": f"生成失败: {str(e)}"}
+
+    def generate_with_usage(self, prompt: str, model: str = "qwen-turbo", max_tokens: int = 1000) -> tuple:
+        """生成内容，返回 (text, tokens_used)"""
+        result = self.generate_content(prompt, model, max_tokens)
+        if result.get('success'):
+            tokens_used = (result.get('usage') or {}).get('total_tokens', 0) or 0
+            return result['content'], tokens_used
+        return None, 0
     
     def generate_article_content(self, title: str, model: str = "qwen-turbo", word_count: int = None, format_template: str = '') -> str:
         """
@@ -296,18 +297,13 @@ class DashScopeService:
         """
         try:
             char_limit = 20000
-            if format_template:
-                prompt = f"{PromptManager.ROLE_PROMPT}\n请根据以下HTML格式模板，生成一篇关于‘{title}’的公众号文章，排版核心风格要与模板一致，字数约{word_count}字，且最终输出的HTML内容总字符数必须小于等于{char_limit}字符。模板如下：\n{format_template}"
-            else:
-                prompt = PromptManager.article_prompt(title, word_count, char_limit)
-            
+            prompt = PromptManager.article_prompt(title, word_count, char_limit, format_template=format_template)
             result = self.generate_content(prompt, model, max_tokens=4000)
             if result['success']:
                 return result['content']
             else:
                 logger.error(f"文章内容生成失败: {result['message']}")
                 return None
-                
         except Exception as e:
             logger.error(f"生成文章内容时发生错误: {e}")
             return None

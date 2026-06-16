@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>引载树 v1.0.0 - 创作人设</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              sidebar: '#18181a',
+              main: '#222226',
+              card: '#2c2d33',
+              cardHover: '#33343b',
+              border: '#3f4048',
+              text: '#f3f4f6',
+              textMuted: '#9ca3af',
+              primary: '#3b82f6',
+              activeBg: '#2a3143'
+            },
+            'app-bg': '#1e1e24',
+            'sidebar-bg': '#25252b',
+            'sidebar-hover': '#2d2d34',
+            'sidebar-active-bg': '#33333b',
+            'sidebar-active-text': '#4eb1ff',
+            'content-bg': '#2a2a30',
+            'text-primary': '#d1d1d6',
+            'text-secondary': '#8e8e93',
+            'border-color': '#3a3a40',
+            'button-bg': '#33333b',
+            'button-hover': '#404048',
+            'input-bg': '#2a2a30',
+          },
+          fontFamily: {
+            sans: ['"Microsoft YaHei"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style data-purpose="custom-scrollbars">
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1e1e24;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3a3a40;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4eb1ff;
+    }
+  </style>
+</head>
+<body class="bg-app-bg text-text-primary h-screen flex flex-col overflow-hidden font-sans antialiased">
+
+<!-- BEGIN: Top Window Bar -->
+<header class="flex items-center justify-between px-4 py-2 border-b border-border-color bg-app-bg select-none">
+  <div class="flex items-center gap-2">
+    <div class="w-5 h-5 bg-green-500 rounded-sm flex items-center justify-center text-white text-xs font-bold shadow-sm">
+      引
+    </div>
+    <span class="text-sm font-medium">引载树 v1.0.0</span>
+  </div>
+  <div class="flex items-center gap-4 text-text-secondary">
+    <button class="hover:text-white transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </button>
+    <button class="hover:text-white transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M20 12H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </button>
+    <button class="hover:text-white transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </button>
+    <button class="hover:text-white transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+    </button>
+  </div>
+</header>
+<!-- END: Top Window Bar -->
+
+<div class="flex flex-1 overflow-hidden">
+  
+  <!-- BEGIN: Left Sidebar -->
+  <aside class="w-20 bg-sidebar-bg flex flex-col justify-between py-4 border-r border-border-color shrink-0">
+    <div class="flex flex-col gap-2">
+      <button class="flex flex-col items-center justify-center py-3 text-text-secondary hover:text-white hover:bg-sidebar-hover transition-colors group">
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span class="text-[10px]">一键启动</span>
+      </button>
+      <button class="flex flex-col items-center justify-center py-3 text-text-secondary hover:text-white hover:bg-sidebar-hover transition-colors group">
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span class="text-[10px]">高级选项</span>
+      </button>
+      
+      <!-- Active Item: Writing Persona (创作人设) -->
+      <div class="relative">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-sidebar-active-text rounded-r-md"></div>
+        <button class="w-full flex flex-col items-center justify-center py-3 bg-sidebar-active-bg text-sidebar-active-text transition-colors">
+          <i class="fa-solid fa-user-pen text-lg mb-1"></i>
+          <span class="text-[10px]">创作人设</span>
+        </button>
+      </div>
+
+      <button class="flex flex-col items-center justify-center py-3 text-text-secondary hover:text-white hover:bg-sidebar-hover transition-colors group">
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span class="text-[10px]">版本管理</span>
+      </button>
+      <button class="flex flex-col items-center justify-center py-3 text-text-secondary hover:text-white hover:bg-sidebar-hover transition-colors group">
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span class="text-[10px]">微信后台</span>
+      </button>
+      <button class="flex flex-col items-center justify-center py-3 text-text-secondary hover:text-white hover:bg-sidebar-hover transition-colors group">
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span class="text-[10px]">小工具</span>
+      </button>
+    </div>
+    <div class="flex flex-col gap-2">
+      <button class="flex flex-col items-center justify-center py-3 text-text-secondary hover:text-white hover:bg-sidebar-hover transition-colors group">
+        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span class="text-[10px]">交流群</span>
+      </button>
+      <button class="flex flex-col items-center justify-center py-3 text-text-secondary hover:text-white hover:bg-sidebar-hover transition-colors group">
+        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span class="text-[10px]">主题切换</span>
+      </button>
+      <button class="flex flex-col items-center justify-center py-3 text-text-secondary hover:text-white hover:bg-sidebar-hover transition-colors group">
+        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span class="text-[10px]">控制台</span>
+      </button>
+      <button class="flex flex-col items-center justify-center py-3 text-text-secondary hover:text-white hover:bg-sidebar-hover transition-colors group">
+        <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span class="text-[10px]">设置</span>
+      </button>
+    </div>
+  </aside>
+  <!-- END: Left Sidebar -->
+
+  <!-- BEGIN: Main Content Area -->
+  <main class="flex-1 flex flex-col min-w-0 bg-[#222226] relative">
+    
+    <!-- Content Header -->
+    <header class="flex items-center justify-between p-6 pb-4 flex-shrink-0 border-b border-app-border/40">
+      <div>
+        <h1 class="text-xl font-semibold tracking-wide text-app-text flex items-center gap-2">
+          <i class="fa-solid fa-user-gear text-[#4eb1ff]"></i>
+          创作人设管理 (Writing Personas)
+        </h1>
+        <p class="text-xs text-app-textMuted mt-1">配置大模型创作文章时的系统人设指令，让生成内容风格多变且符合预期</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="restore-defaults-btn" class="flex items-center gap-1.5 px-4 py-2 bg-[#2c2d33] hover:bg-[#33343b] active:scale-95 text-xs text-app-text font-medium rounded transition-all border border-app-border">
+          <i class="fa-solid fa-rotate-left text-yellow-500"></i>
+          恢复默认人设
+        </button>
+        <button id="add-persona-btn" class="flex items-center gap-1.5 px-4 py-2 bg-app-primary hover:bg-blue-600 active:scale-95 text-xs text-white font-semibold rounded transition-all shadow-md">
+          <i class="fa-solid fa-plus"></i>
+          创建新人设
+        </button>
+      </div>
+    </header>
+
+    <!-- Content Body -->
+    <div class="flex-1 p-6 overflow-y-auto">
+      <!-- Grid Layout for Persona Cards -->
+      <div id="personas-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+        <!-- Cards injected by JS -->
+      </div>
+      
+      <!-- Empty state -->
+      <div id="empty-state" class="hidden flex flex-col items-center justify-center py-24 text-app-textMuted text-center">
+        <i class="fa-solid fa-user-slash text-4xl mb-3 text-app-border"></i>
+        <p class="text-sm">暂无自定义人设，点击右上角创建或恢复默认。</p>
+      </div>
+    </div>
+
+    <!-- Background overlay -->
+    <div class="absolute inset-0 pointer-events-none bg-gradient-to-br from-transparent to-[#1a1b1e] opacity-20"></div>
+
+    <!-- Modal Dialog Overlay (Add / Edit) -->
+    <div id="persona-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden transition-opacity duration-300">
+      <div id="persona-modal-card" class="bg-[#2c2d33] border border-app-border rounded-lg shadow-xl w-full max-w-xl mx-4 overflow-hidden flex flex-col transform scale-95 transition-transform duration-300">
+        <!-- Modal Header -->
+        <div class="px-5 py-4 border-b border-app-border flex items-center justify-between">
+          <h3 id="modal-title" class="text-sm font-semibold text-app-text">创建新人设</h3>
+          <button id="close-modal-btn" class="text-app-textMuted hover:text-app-text transition-colors">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+        
+        <!-- Modal Body -->
+        <div class="p-5 space-y-4 overflow-y-auto max-h-[70vh]">
+          <input type="hidden" id="edit-persona-id" />
+          
+          <!-- Name -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-medium text-app-textMuted">人设名称 <span class="text-rose-500">*</span></label>
+            <input type="text" id="modal-persona-name" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="例如：爆款口语写手" required />
+          </div>
+
+          <!-- Description -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-medium text-app-textMuted">人设简短描述 <span class="text-rose-500">*</span></label>
+            <input type="text" id="modal-persona-desc" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="描述人设风格，用于选择框预览说明" required />
+          </div>
+
+          <!-- IDENTITY.md -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-medium text-app-textMuted">角色性格与自我认知 (IDENTITY.md) <span class="text-rose-500">*</span></label>
+            <textarea id="modal-persona-identity" rows="4" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600 font-sans" placeholder="写明主笔的身份定位与语气风格（例如：严谨的技术分析师、活泼的种草博主）..." required></textarea>
+          </div>
+
+          <!-- USER.md -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-medium text-app-textMuted">目标受众画像 (USER.md) <span class="text-rose-500">*</span></label>
+            <textarea id="modal-persona-user" rows="3" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600 font-sans" placeholder="写明文章的目标读者群体是谁，他们有什么阅读偏好（例如：年轻群体、数码发烧友）..." required></textarea>
+          </div>
+
+          <!-- WORKFLOW.md -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-medium text-app-textMuted">写作流程与排版规范 (WORKFLOW.md) <span class="text-rose-500">*</span></label>
+            <textarea id="modal-persona-workflow" rows="4" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600 font-sans" placeholder="写明具体的排版标准、Emoji 偏好、以及必须保留的 HTML 排版标记等规范..." required></textarea>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-5 py-3 border-t border-app-border bg-[#222226] flex justify-end gap-2.5">
+          <button id="cancel-modal-btn" class="border border-app-border hover:bg-white/5 text-app-text rounded-md px-4 py-2 text-xs font-medium transition-all">
+            取消
+          </button>
+          <button id="save-persona-btn" class="bg-app-primary hover:bg-blue-600 text-white rounded-md px-4 py-2 text-xs font-semibold transition-all">
+            保存人设
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+  <!-- END: Main Content Area -->
+
+</div>
+
+<script>
+  // ── Toast 通知 ──
+  function showToast(message, type = 'success') {
+      let container = document.getElementById('launcher-toast-container');
+      if (!container) {
+          container = document.createElement('div');
+          container.id = 'launcher-toast-container';
+          container.className = 'fixed top-16 right-6 z-50 flex flex-col gap-2 pointer-events-none';
+          document.body.appendChild(container);
+      }
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-2.5 rounded-lg text-xs font-semibold shadow-xl transition-all duration-300 transform translate-x-12 opacity-0 pointer-events-auto flex items-center gap-2 max-w-xs ' + 
+          (type === 'success' ? 'bg-emerald-600 text-white' : type === 'error' ? 'bg-rose-600 text-white' : 'bg-yellow-500 text-white');
+                  
+      const icon = document.createElement('i');
+      icon.className = type === 'success' ? 'fa-solid fa-circle-check' : type === 'error' ? 'fa-solid fa-circle-xmark' : 'fa-solid fa-triangle-exclamation';
+      
+      toast.appendChild(icon);
+      const span = document.createElement('span');
+      span.textContent = message;
+      toast.appendChild(span);
+      
+      container.appendChild(toast);
+      
+      requestAnimationFrame(() => {
+          toast.classList.remove('translate-x-12', 'opacity-0');
+      });
+      
+      setTimeout(() => {
+          toast.classList.add('translate-x-12', 'opacity-0');
+          setTimeout(() => toast.remove(), 300);
+      }, 3000);
+  }
+
+  // ── 内置的默认人设 ──
+  const DEFAULT_SKILLS = [
+      {
+          "id": "skill_1",
+          "name": "小红书爆款风",
+          "description": "多使用 Emoji 表情符号，用语口语化且具有强烈的情感煽动力，擅长种草和分享日常。",
+          "identity": "你是一位拥有百万粉丝的小红书爆款文案博主。请用活泼、亲切、极其口语化的语气撰写内容。",
+          "user": "你的目标受众主要是年轻群体、寻求生活好物推荐或日常共鸣的读者。",
+          "workflow": "多使用表情符号（如✨, 💡, 🔥, 🙌）来润色文本，分段短小精悍，善于引发读者共鸣、设置悬念和种草推荐。确保段落标题和正文具有极强的吸引力，同时必须保留所有的 HTML 标记规范。"
+      },
+      {
+          "id": "skill_2",
+          "name": "深度科技评测",
+          "description": "严谨科学、条理清晰，使用专业术语进行细致的客观横向对比，适合深度干货文章。",
+          "identity": "你是一位资深的科技数码主笔与技术分析师。在写作时请保持客观、中立、极其专业的笔调。",
+          "user": "你的目标受众主要是极客、数码发烧友以及对深度科技内容感兴趣的读者。",
+          "workflow": "多引用具体的技术参数、测试数据和行业背景进行横向深度对比。文章结构要非常严谨，段落层级分明，逻辑连贯性强。禁止使用任何轻浮口语或过多的语气助词，直接提供高密度的技术干货信息。"
+      },
+      {
+          "id": "skill_3",
+          "name": "大众科普风格",
+          "description": "通俗易懂、生动有趣，擅长将复杂的科学原理以打比方、讲故事的形式解释清楚。",
+          "identity": "你是一位知名的大众科普作家。你的任务是将深奥、复杂的科学概念以生动有趣、通俗易懂的方式讲解给普通读者听。",
+          "user": "你的目标受众是普通大众、科学爱好者 and 求知欲强烈的非专业读者。",
+          "workflow": "请在写作时多采用日常生活中的比喻、类比或趣味小故事。避免生搬硬套难懂的学术词汇，行文要亲切温和、条理清晰，确保读者能轻松理解核心知识并保持好奇心。"
+      },
+      {
+          "id": "skill_4",
+          "name": "官方公众号创作者",
+          "description": "系统默认人设。文笔端庄大方、专业权威，精通新媒体排版与读者心理分析。",
+          "identity": "你是一位专业的微信公众号内容创作者，拥有丰富的数字媒体经验，精通内容策划、用户心理分析和新媒体营销。",
+          "user": "你的目标受众是微信公众号的广泛读者群体。",
+          "workflow": "你擅长为不同目标受众创作引人入胜、易于传播的内容，熟悉微信公众号的运营规则、排版规范和传播机制。你能够根据主题调整写作风格，结合热点、数据或故事提升文章吸引力，确保高阅读量和分享率。"
+      }
+  ];
+
+  let currentSkills = [];
+
+  // ── 获取并渲染人设列表 ──
+  function loadPersonas() {
+      if (!window.pywebview || !window.pywebview.api) return;
+      window.pywebview.api.get_config().then(config => {
+          currentSkills = config.skills || [];
+          renderGrid();
+      }).catch(err => {
+          showToast('加载配置失败: ' + err.message, 'error');
+      });
+  }
+
+  function renderGrid() {
+      const grid = document.getElementById('personas-grid');
+      const emptyState = document.getElementById('empty-state');
+      grid.innerHTML = '';
+      
+      if (currentSkills.length === 0) {
+          emptyState.classList.remove('hidden');
+          grid.classList.add('hidden');
+          return;
+      }
+      
+      emptyState.classList.add('hidden');
+      grid.classList.remove('hidden');
+ 
+      currentSkills.forEach(skill => {
+          const card = document.createElement('div');
+          card.className = 'bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-all';
+          
+          // Truncate previews
+          const identityText = skill.identity || skill.system_prompt || '';
+          const userText = skill.user || '';
+          const workflowText = skill.workflow || '';
+          
+          const identityPreview = identityText.length > 35 ? identityText.substring(0, 35) + '...' : identityText || '未配置';
+          const userPreview = userText.length > 35 ? userText.substring(0, 35) + '...' : userText || '未配置';
+          const workflowPreview = workflowText.length > 35 ? workflowText.substring(0, 35) + '...' : workflowText || '未配置';
+
+          card.innerHTML = `
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-app-primary">
+                    <i class="fa-solid fa-user-ninja"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-app-text">${skill.name}</h3>
+                    <p class="text-[10px] text-app-textMuted mt-0.5">ID: ${skill.id}</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1">
+                  <button onclick="editPersona('${skill.id}')" class="p-1.5 text-app-textMuted hover:text-app-text hover:bg-white/5 rounded transition-colors" title="编辑人设">
+                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                  </button>
+                  <button onclick="deletePersona('${skill.id}')" class="p-1.5 text-app-textMuted hover:text-rose-500 hover:bg-rose-500/10 rounded transition-colors" title="删除人设">
+                    <i class="fa-solid fa-trash text-xs"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="flex-1 flex flex-col gap-2">
+                <p class="text-xs text-app-textMuted leading-relaxed mb-1">${skill.description}</p>
+                <div class="bg-black/10 border border-app-border/20 rounded p-2.5 mt-auto space-y-1.5 text-[11px] leading-normal select-text">
+                  <div>
+                    <span class="text-[9px] text-blue-400 font-bold uppercase mr-1">性格 (IDENTITY):</span>
+                    <span class="text-app-textMuted font-sans">${identityPreview}</span>
+                  </div>
+                  <div>
+                    <span class="text-[9px] text-green-400 font-bold uppercase mr-1">受众 (USER):</span>
+                    <span class="text-app-textMuted font-sans">${userPreview}</span>
+                  </div>
+                  <div>
+                    <span class="text-[9px] text-yellow-500 font-bold uppercase mr-1">规范 (WORKFLOW):</span>
+                    <span class="text-app-textMuted font-sans">${workflowPreview}</span>
+                  </div>
+                </div>
+              </div>
+          `;
+          grid.appendChild(card);
+      });
+  }
+
+  // ── 保存人设配置到后端 ──
+  function saveSkillsToConfig() {
+      if (!window.pywebview || !window.pywebview.api) return;
+      window.pywebview.api.get_config().then(config => {
+          config.skills = currentSkills;
+          return window.pywebview.api.save_config(config);
+      }).then(success => {
+          if (success) {
+              showToast('人设配置保存成功！', 'success');
+              renderGrid();
+          } else {
+              showToast('保存到 config.json 失败', 'error');
+          }
+      }).catch(err => {
+          showToast('人设操作异常: ' + err.message, 'error');
+      });
+  }
+
+  // ── 增/改/删/恢复 操作逻辑 ──
+  window.editPersona = function(id) {
+      const skill = currentSkills.find(s => s.id === id);
+      if (!skill) return;
+      
+      document.getElementById('edit-persona-id').value = skill.id;
+      document.getElementById('modal-persona-name').value = skill.name;
+      document.getElementById('modal-persona-desc').value = skill.description;
+      document.getElementById('modal-persona-identity').value = skill.identity || skill.system_prompt || '';
+      document.getElementById('modal-persona-user').value = skill.user || '';
+      document.getElementById('modal-persona-workflow').value = skill.workflow || '';
+      
+      document.getElementById('modal-title').textContent = '编辑人设';
+      openModal();
+  };
+
+  window.deletePersona = function(id) {
+      if (confirm('确认要删除该写作人设吗？删除后在写作页将不可选。')) {
+          currentSkills = currentSkills.filter(s => s.id !== id);
+          saveSkillsToConfig();
+      }
+  };
+
+  function openModal() {
+      const modal = document.getElementById('persona-modal');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+          const card = document.getElementById('persona-modal-card');
+          if (card) card.classList.remove('scale-95');
+      }, 50);
+  }
+
+  function closeModal() {
+      const modal = document.getElementById('persona-modal');
+      const card = document.getElementById('persona-modal-card');
+      if (card) card.classList.add('scale-95');
+      setTimeout(() => {
+          modal.classList.add('hidden');
+          // Clear inputs
+          document.getElementById('edit-persona-id').value = '';
+          document.getElementById('modal-persona-name').value = '';
+          document.getElementById('modal-persona-desc').value = '';
+          document.getElementById('modal-persona-identity').value = '';
+          document.getElementById('modal-persona-user').value = '';
+          document.getElementById('modal-persona-workflow').value = '';
+      }, 150);
+  }
+
+  // ── 绑定按钮点击事件 ──
+  window.initPage3 = function() {
+      // 打开新建人设弹窗
+      document.getElementById('add-persona-btn')?.addEventListener('click', () => {
+          document.getElementById('edit-persona-id').value = '';
+          document.getElementById('modal-title').textContent = '创建新人设';
+          openModal();
+      });
+
+      // 关闭模态框
+      document.getElementById('close-modal-btn')?.addEventListener('click', closeModal);
+      document.getElementById('cancel-modal-btn')?.addEventListener('click', closeModal);
+
+      // 保存人设
+      document.getElementById('save-persona-btn')?.addEventListener('click', () => {
+          const editId = document.getElementById('edit-persona-id').value;
+          const name = document.getElementById('modal-persona-name').value.trim();
+          const desc = document.getElementById('modal-persona-desc').value.trim();
+          const identity = document.getElementById('modal-persona-identity').value.trim();
+          const user = document.getElementById('modal-persona-user').value.trim();
+          const workflow = document.getElementById('modal-persona-workflow').value.trim();
+
+          if (!name || !desc || !identity || !user || !workflow) {
+              showToast('请完整填写所有必填字段 (*)', 'warning');
+              return;
+          }
+
+          if (editId) {
+              // 编辑已有
+              const idx = currentSkills.findIndex(s => s.id === editId);
+              if (idx !== -1) {
+                  currentSkills[idx] = { id: editId, name, description: desc, identity: identity, user: user, workflow: workflow };
+              }
+          } else {
+              // 创建新的人设
+              const newId = 'skill_' + Date.now();
+              currentSkills.push({ id: newId, name, description: desc, identity: identity, user: user, workflow: workflow });
+          }
+
+          closeModal();
+          saveSkillsToConfig();
+      });
+
+      // 恢复默认人设
+      document.getElementById('restore-defaults-btn')?.addEventListener('click', () => {
+          if (confirm('确认要恢复默认人设吗？您自定义修改的人设将会被重置为内置配置。')) {
+              currentSkills = JSON.parse(JSON.stringify(DEFAULT_SKILLS));
+              saveSkillsToConfig();
+          }
+      });
+
+      // 获取当前列表
+      loadPersonas();
+  };
+
+  // ── 统一启动 ──
+  document.addEventListener('DOMContentLoaded', () => {
+      if (window.pywebview && window.pywebview.api) {
+          window.initPage3();
+      } else {
+          window.addEventListener('pywebviewready', window.initPage3);
+      }
+  });
+</script>
+</body>
+</html>

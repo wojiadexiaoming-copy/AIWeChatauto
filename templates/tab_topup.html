@@ -1,0 +1,182 @@
+<!-- ═══════════════════════════════════════════════════════
+     Tab: 模型集成与发布记录
+     ═══════════════════════════════════════════════════════ -->
+<div class="max-w-[1600px] mx-auto px-4 md:px-6 py-lg">
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+
+    <!-- ── 统计概览 ── -->
+    <section class="lg:col-span-12 glass-panel rounded-lg p-lg">
+      <!-- 头部：标题 + 时间段切换 -->
+      <div class="flex items-center justify-between mb-lg">
+        <h2 class="text-headline-sm font-bold flex items-center gap-xs">
+          <span class="material-symbols-outlined text-wechat-green" style="font-variation-settings:'FILL' 1;">bar_chart</span>
+          数据统计
+        </h2>
+        <div class="flex bg-surface-container-high p-xs rounded-full gap-xs" id="stats-period-switcher">
+          <button data-period="day"   class="stats-period-btn px-md py-xs rounded-full text-label font-medium text-on-surface-variant transition-all">今日</button>
+          <button data-period="week"  class="stats-period-btn px-md py-xs rounded-full text-label font-medium bg-white shadow-sm text-wechat-green transition-all">本周</button>
+          <button data-period="month" class="stats-period-btn px-md py-xs rounded-full text-label font-medium text-on-surface-variant transition-all">本月</button>
+        </div>
+      </div>
+
+      <!-- 六宫格 -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-gutter">
+
+        <div class="bg-surface-container-low rounded-lg p-md flex flex-col gap-xs">
+          <div class="flex items-center gap-xs text-on-surface-variant">
+            <span class="material-symbols-outlined" style="font-size:16px;">article</span>
+            <span class="text-caption">总文章</span>
+          </div>
+          <div class="flex items-baseline gap-xs mt-auto">
+            <span id="stat-total" class="text-headline font-bold text-on-surface">—</span>
+            <span class="text-caption text-on-surface-variant">篇</span>
+          </div>
+          <p class="text-caption text-on-surface-variant">累计 <span id="stat-all-total" class="font-medium text-on-surface">—</span> 篇</p>
+        </div>
+
+        <div class="bg-surface-container-low rounded-lg p-md flex flex-col gap-xs">
+          <div class="flex items-center gap-xs text-wechat-green">
+            <span class="material-symbols-outlined" style="font-size:16px;">send</span>
+            <span class="text-caption">已发布</span>
+          </div>
+          <div class="flex items-baseline gap-xs mt-auto">
+            <span id="stat-published" class="text-headline font-bold text-on-surface">—</span>
+            <span class="text-caption text-on-surface-variant">篇</span>
+          </div>
+          <p class="text-caption text-on-surface-variant">累计 <span id="stat-all-published" class="font-medium text-on-surface">—</span> 篇</p>
+        </div>
+
+        <div class="bg-surface-container-low rounded-lg p-md flex flex-col gap-xs">
+          <div class="flex items-center gap-xs text-on-surface-variant">
+            <span class="material-symbols-outlined" style="font-size:16px;">save</span>
+            <span class="text-caption">已保存草稿</span>
+          </div>
+          <div class="flex items-baseline gap-xs mt-auto">
+            <span id="stat-draft" class="text-headline font-bold text-on-surface">—</span>
+            <span class="text-caption text-on-surface-variant">篇</span>
+          </div>
+          <p class="text-caption text-on-surface-variant">累计 <span id="stat-all-draft" class="font-medium text-on-surface">—</span> 篇</p>
+        </div>
+
+        <div class="bg-surface-container-low rounded-lg p-md flex flex-col gap-xs">
+          <div class="flex items-center gap-xs text-blue-500">
+            <span class="material-symbols-outlined" style="font-size:16px;">token</span>
+            <span class="text-caption">使用 Token</span>
+          </div>
+          <div class="flex items-baseline gap-xs mt-auto">
+            <span id="stat-tokens" class="text-headline font-bold text-on-surface">—</span>
+            <span class="text-caption text-on-surface-variant">tokens</span>
+          </div>
+          <p class="text-caption text-on-surface-variant">模型实际消耗量</p>
+        </div>
+
+        <div class="bg-surface-container-low rounded-lg p-md flex flex-col gap-xs">
+          <div class="flex items-center gap-xs text-orange-400">
+            <span class="material-symbols-outlined" style="font-size:16px;">image</span>
+            <span class="text-caption">生图数量</span>
+          </div>
+          <div class="flex items-baseline gap-xs mt-auto">
+            <span id="stat-images" class="text-headline font-bold text-on-surface">—</span>
+            <span class="text-caption text-on-surface-variant">张</span>
+          </div>
+          <p class="text-caption text-on-surface-variant">&nbsp;</p>
+        </div>
+
+        <div class="bg-surface-container-low rounded-lg p-md flex flex-col gap-xs">
+          <div class="flex items-center gap-xs text-purple-500">
+            <span class="material-symbols-outlined" style="font-size:16px;">videocam</span>
+            <span class="text-caption">生视频数量</span>
+          </div>
+          <div class="flex items-baseline gap-xs mt-auto">
+            <span id="stat-videos" class="text-headline font-bold text-on-surface">—</span>
+            <span class="text-caption text-on-surface-variant">条</span>
+          </div>
+          <p class="text-caption text-on-surface-variant">&nbsp;</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── 已集成模型状态 ── -->
+    <section class="lg:col-span-4 glass-panel rounded-lg p-lg flex flex-col gap-sm">
+      <h2 class="text-headline-sm font-bold flex items-center gap-xs mb-sm">
+        <span class="material-symbols-outlined text-wechat-green" style="font-variation-settings:'FILL' 1;">hub</span>
+        已集成模型
+      </h2>
+      <div id="model-status-list" class="space-y-xs flex-1">
+        <!-- 由 JS 动态渲染 -->
+        <div class="text-caption text-on-surface-variant text-center py-md">加载中…</div>
+      </div>
+    </section>
+
+    <!-- ── 积分套餐（静态展示） ── -->
+    <section class="lg:col-span-12 mt-md">
+      <div class="flex items-center justify-between mb-md">
+        <h2 class="text-headline-sm font-bold">Token 套餐（示例）</h2>
+        <div class="flex bg-surface-container-high p-xs rounded-full gap-xs">
+          <button class="px-md py-xs rounded-full text-label font-medium bg-white shadow-sm text-wechat-green">预付费</button>
+          <button class="px-md py-xs rounded-full text-label font-medium text-on-surface-variant">订阅制</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-gutter">
+
+        <!-- Starter -->
+        <div class="glass-panel rounded-lg p-lg flex flex-col gap-md border border-outline-variant/30 cursor-pointer hover:-translate-y-1 transition-transform">
+          <p class="text-label text-on-surface-variant">Starter</p>
+          <div>
+            <span class="text-headline font-bold">¥99</span>
+            <span class="text-caption text-on-surface-variant"> / 1M Tokens</span>
+          </div>
+          <ul class="space-y-xs flex-1 text-caption text-on-surface-variant">
+            <li class="flex items-center gap-xs"><span class="material-symbols-outlined text-wechat-green" style="font-size:14px;">check_circle</span>标准优先级</li>
+            <li class="flex items-center gap-xs"><span class="material-symbols-outlined text-wechat-green" style="font-size:14px;">check_circle</span>30 天有效期</li>
+          </ul>
+          <button class="w-full py-2 rounded-lg bg-surface-container-highest text-on-surface text-label font-semibold hover:bg-surface-variant transition-colors">选择</button>
+        </div>
+
+        <!-- Professional (推荐) -->
+        <div class="glass-panel rounded-lg p-lg flex flex-col gap-md border-2 border-wechat-green relative cursor-pointer hover:-translate-y-1 transition-transform">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-wechat-green text-white text-[10px] font-bold px-sm py-xs rounded-full uppercase tracking-wider">最佳性价比</div>
+          <p class="text-label text-wechat-green font-bold">Professional</p>
+          <div>
+            <span class="text-headline font-bold">¥499</span>
+            <span class="text-caption text-on-surface-variant"> / 6M Tokens</span>
+          </div>
+          <ul class="space-y-xs flex-1 text-caption text-on-surface-variant">
+            <li class="flex items-center gap-xs"><span class="material-symbols-outlined text-wechat-green" style="font-size:14px;">check_circle</span>高优先级访问</li>
+            <li class="flex items-center gap-xs"><span class="material-symbols-outlined text-wechat-green" style="font-size:14px;">check_circle</span>永不过期</li>
+            <li class="flex items-center gap-xs"><span class="material-symbols-outlined text-wechat-green" style="font-size:14px;">check_circle</span>Beta 功能抢先体验</li>
+          </ul>
+          <button class="w-full py-2 rounded-lg bg-wechat-green text-white text-label font-semibold hover:brightness-110 transition-all shadow-sm shadow-wechat-green/20">选择</button>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="glass-panel rounded-lg p-lg flex flex-col gap-md border border-outline-variant/30 cursor-pointer hover:-translate-y-1 transition-transform">
+          <p class="text-label text-on-surface-variant">Enterprise</p>
+          <div>
+            <span class="text-headline font-bold">¥1,999</span>
+            <span class="text-caption text-on-surface-variant"> / 30M Tokens</span>
+          </div>
+          <ul class="space-y-xs flex-1 text-caption text-on-surface-variant">
+            <li class="flex items-center gap-xs"><span class="material-symbols-outlined text-wechat-green" style="font-size:14px;">check_circle</span>专属带宽</li>
+            <li class="flex items-center gap-xs"><span class="material-symbols-outlined text-wechat-green" style="font-size:14px;">check_circle</span>7×24 技术支持</li>
+            <li class="flex items-center gap-xs"><span class="material-symbols-outlined text-wechat-green" style="font-size:14px;">check_circle</span>模型精调支持</li>
+          </ul>
+          <button class="w-full py-2 rounded-lg bg-surface-container-highest text-on-surface text-label font-semibold hover:bg-surface-variant transition-colors">选择</button>
+        </div>
+
+        <!-- Custom -->
+        <div class="glass-panel rounded-lg p-lg flex flex-col items-center justify-center text-center gap-md border border-dashed border-outline-variant/50 cursor-pointer hover:border-wechat-green transition-colors group">
+          <div class="w-11 h-11 rounded-full bg-surface-container-high flex items-center justify-center group-hover:bg-wechat-green/10 transition-colors">
+            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-wechat-green transition-colors">add</span>
+          </div>
+          <h3 class="text-headline-sm font-bold">自定义规模</h3>
+          <p class="text-caption text-on-surface-variant">需要超过 100M Token？联系我们获取定制报价。</p>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /grid -->
+</div><!-- /container -->

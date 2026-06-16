@@ -1,3 +1,4 @@
+
 """
 配置控制器模块
 处理配置相关的HTTP请求
@@ -11,6 +12,8 @@ from services.wechat_service import WeChatService
 from services.gemini_service import GeminiService
 from services.deepseek_service import DeepSeekService
 from services.dashscope_service import DashScopeService
+from services.inodetree_service import InodeTreeService
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -127,7 +130,7 @@ class ConfigController:
             'wechat_appid': '微信AppID',
             'wechat_appsecret': '微信AppSecret', 
             # 其他不做强制校验，coze_token 不做强制校验
-            # coze_workflow_id 不做强制校验
+            # firecrawl_api_key 不做强制校验
         }
         
         # 只验证存在且非空的字段
@@ -427,6 +430,32 @@ class ConfigController:
                 'message': f'获取调试信息失败: {str(e)}'
             }
     
+    def test_inodetree_connection(self) -> Dict[str, Any]:
+        """测试 InodeTree 连接"""
+        try:
+            logger.info("开始测试 InodeTree 连接")
+            inodetree_config = self.config_service.get_inodetree_config()
+            api_key = inodetree_config.get('api_key', '')
+            if not api_key:
+                return {'success': False, 'message': '请先配置 InodeTree API Key'}
+            from services.inodetree_service import InodeTreeService
+            inodetree = InodeTreeService(api_key)
+            result = inodetree.test_connection()
+            status_el = 'inodetree-status'
+            if result.get('success'):
+                logger.info("InodeTree 连接测试成功")
+                return {
+                    'success': True,
+                    'message': result.get('message', 'InodeTree 连接成功'),
+                    'data': {'api_key_set': True, 'model': inodetree.model}
+                }
+            else:
+                logger.error(f"InodeTree 连接测试失败: {result.get('message')}")
+                return {'success': False, 'message': result.get('message', 'InodeTree 连接失败')}
+        except Exception as e:
+            logger.error(f"测试 InodeTree 连接时发生异常: {e}")
+            return {'success': False, 'message': str(e)}
+
     def get_config_status(self) -> Dict[str, Any]:
         """获取配置状态"""
         try:
@@ -629,4 +658,73 @@ class ConfigController:
             return {
                 'success': False,
                 'message': f'测试失败: {str(e)}'
+            }
+    
+    def test_firecrawl_connection(self) -> Dict[str, Any]:
+        """测试Firecrawl连接"""
+        try:
+            logger.info("开始测试Firecrawl连接")
+            config = self.config_service.load_config()
+            firecrawl_config = self.config_service.get_firecrawl_config()
+            api_key = firecrawl_config.get('api_key', '')
+            if not api_key:
+                logger.error("Firecrawl API密钥未配置")
+                return {
+                    'success': False,
+                    'message': '请先配置Firecrawl API密钥',
+                    'debug_info': {
+                        'has_api_key': bool(api_key),
+                        'config_keys': list(config.keys())
+                    }
+                }
+            # 用/scrape接口抓取firecrawl官网主页测试密钥有效性
+            url = 'https://api.firecrawl.dev/v1/scrape'
+            headers = {
+                'Authorization': f'Bearer {api_key}',
+                'Content-Type': 'application/json'
+            }
+            payload = {
+                'url': 'https://firecrawl.dev',
+                'formats': ['markdown'],
+                'onlyMainContent': True
+            }
+            try:
+                import json
+                resp = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
+                if resp.status_code == 200:
+                    return {
+                        'success': True,
+                        'message': 'Firecrawl连接测试成功',
+                        'data': resp.json()
+                    }
+                elif resp.status_code == 401:
+                    return {
+                        'success': False,
+                        'message': 'API密钥无效或未提供',
+                        'status_code': resp.status_code
+                    }
+                elif resp.status_code == 429:
+                    return {
+                        'success': False,
+                        'message': 'API请求频率超限',
+                        'status_code': resp.status_code
+                    }
+                else:
+                    return {
+                        'success': False,
+                        'message': f'Firecrawl API请求失败，状态码: {resp.status_code}',
+                        'status_code': resp.status_code,
+                        'response': resp.text
+                    }
+            except Exception as e:
+                logger.error(f"Firecrawl API请求异常: {str(e)}")
+                return {
+                    'success': False,
+                    'message': f'Firecrawl API请求异常: {str(e)}'
+                }
+        except Exception as e:
+            logger.error(f"测试Firecrawl连接时发生错误: {str(e)}", exc_info=True)
+            return {
+                'success': False,
+                'message': f'测试Firecrawl连接失败: {str(e)}'
             }

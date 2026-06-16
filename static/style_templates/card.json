@@ -1,5 +1,2 @@
-<<<<<<< HEAD
-﻿{"id": "card", "name": "科技01", "desc": "带卡片阴影的现代风格结构", "cover": "card.png"}
-=======
-﻿{"id": "card", "name": "科技01", "desc": "带卡片阴影的现代风格结构", "cover": "card.png"}
->>>>>>> 4939a71745bd4c2b6983a54b58451f6e8eb98712
+{"id": "card", "name": "科技01", "desc": "带卡片阴影的现代风格结构", "cover": "card.png"}
+

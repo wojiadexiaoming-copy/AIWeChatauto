@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>引载树 v1.0.0 - 数据资产启动器</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          app: {
+            sidebar: '#18181a',
+            main: '#222226',
+            card: '#2c2d33',
+            cardHover: '#33343b',
+            border: '#3f4048',
+            text: '#f3f4f6',
+            textMuted: '#9ca3af',
+            primary: '#3b82f6',
+            activeBg: '#2a3143',
+            bg: '#1a1b1e',
+            topbar: '#25262b',
+            panel: '#2c2e33',
+            accent: '#3b82f6',
+            accentHover: '#2563eb',
+            muted: '#a0a0a0'
+          },
+          'app-bg': '#1e1e24',
+          'sidebar-bg': '#25252b',
+          'sidebar-hover': '#2d2d34',
+          'sidebar-active-bg': '#33333b',
+          'sidebar-active-text': '#4eb1ff',
+          'content-bg': '#2a2a30',
+          'text-primary': '#d1d1d6',
+          'text-secondary': '#8e8e93',
+          'border-color': '#3a3a40',
+          'button-bg': '#33333b',
+          'button-hover': '#404048',
+          'input-bg': '#2a2a30',
+        },
+        fontFamily: {
+          sans: ['"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+        }
+      }
+    }
+  };
+</script>
+<style type="text/tailwindcss">
+    @layer utilities {
+      .bg-app-dark { background-color: var(--bg-app-dark); }
+      .bg-sidebar { background-color: var(--bg-sidebar); }
+      .bg-card { background-color: var(--bg-card); }
+      .bg-card-hover { background-color: var(--bg-card-hover); }
+      .bg-blue-btn { background-color: var(--bg-blue-btn); }
+      .bg-blue-btn-hover { background-color: var(--bg-blue-btn-hover); }
+      .text-gray-light { color: var(--text-gray-light); }
+      .text-blue-icon { color: var(--text-blue-icon); }
+      .border-sidebar { border-color: var(--border-sidebar); }
+      .border-card { border-color: var(--border-card); }
+      .border-top-bar { border-color: var(--border-top-bar); }
+    }
+  </style>
+<link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<style data-purpose="custom-styles">
+    :root {
+      /* Dark Theme variables */
+      --bg-app-dark: #2b2d36;
+      --bg-sidebar: #212229;
+      --bg-card: #353843;
+      --bg-card-hover: #3f4250;
+      --bg-blue-btn: #3fa1f4;
+      --bg-blue-btn-hover: #55b0fd;
+      --text-gray-light: #a1a3b1;
+      --text-blue-icon: #3fa1f4;
+      --border-sidebar: #1e1e24;
+      --border-card: #3d414e;
+      --border-top-bar: #353843;
+    }
+
+    body.light-theme {
+      /* Light Theme variables */
+      --bg-app-dark: #f3f4f6;
+      --bg-sidebar: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f9fafb;
+      --bg-blue-btn: #2563eb;
+      --bg-blue-btn-hover: #3b82f6;
+      --text-gray-light: #4b5563;
+      --text-blue-icon: #2563eb;
+      --border-sidebar: #e5e7eb;
+      --border-card: #e5e7eb;
+      --border-top-bar: #e5e7eb;
+    }
+
+    /* Global Light Theme overrides */
+    body.light-theme {
+      background-color: var(--bg-app-dark) !important;
+      color: #1f2937 !important;
+    }
+
+    body.light-theme header,
+    body.light-theme nav,
+    body.light-theme main,
+    body.light-theme .bg-app-main,
+    body.light-theme .bg-content-bg,
+    body.light-theme .bg-app-bg,
+    body.light-theme .bg-panel-bg,
+    body.light-theme main.bg-\[\#2b2b36\],
+    body.light-theme main.bg-\[\#1E1F22\],
+    body.light-theme .bg-\[\#1e1e24\],
+    body.light-theme .bg-\[\#2b2b36\],
+    body.light-theme .bg-\[\#1E1F22\] {
+      background-color: var(--bg-app-dark) !important;
+    }
+
+    body.light-theme header.bg-sidebar,
+    body.light-theme nav.bg-sidebar {
+      background-color: var(--bg-sidebar) !important;
+    }
+
+    body.light-theme .bg-sidebar,
+    body.light-theme .bg-app-card,
+    body.light-theme .bg-card,
+    body.light-theme .bg-\[\#1c1c1f\],
+    body.light-theme .bg-\[\#1f1f23\],
+    body.light-theme .bg-\[\#2c2d33\],
+    body.light-theme .bg-\[\#2c2e33\],
+    body.light-theme .bg-\[\#353843\] {
+      background-color: var(--bg-sidebar) !important;
+    }
+
+    body.light-theme .text-white:not(.banner-text),
+    body.light-theme .text-gray-200:not(.banner-text),
+    body.light-theme .text-gray-300:not(.banner-text) {
+      color: #1f2937 !important;
+    }
+
+    body.light-theme .text-gray-400 {
+      color: #4b5563 !important;
+    }
+
+    body.light-theme .text-gray-500 {
+      color: #6b7280 !important;
+    }
+
+    body.light-theme .text-green-400:not(.banner-text) {
+      color: #16a34a !important;
+    }
+
+    body.light-theme input,
+    body.light-theme select,
+    body.light-theme textarea,
+    body.light-theme .bg-\[\#1e1e24\],
+    body.light-theme select.bg-\[\#1e1e24\],
+    body.light-theme input.bg-\[\#1e1e24\] {
+      background-color: #ffffff !important;
+      color: #1f2937 !important;
+      border-color: #d1d5db !important;
+    }
+
+    body.light-theme .nav-active,
+    body.light-theme .active,
+    body.light-theme .bg-app-activeBg {
+      background-color: #e5e7eb !important;
+      color: #2563eb !important;
+    }
+
+    body.light-theme .border-sidebar,
+    body.light-theme .border-card,
+    body.light-theme .border-top-bar,
+    body.light-theme .border-app-border,
+    body.light-theme .border-gray-700\/50,
+    body.light-theme .border-gray-700 {
+      border-color: #e5e7eb !important;
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .scrollbar-hide {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+    }
+    
+    /* Custom Scrollbar for Announcements */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #4a4d5e;
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #5f6377;
+    }
+
+    /* Window Control Buttons */
+    .window-ctrl {
+      transition: background-color 0.2s;
+    }
+    .window-ctrl:hover {
+      background-color: #3d414e;
+    }
+    .window-close:hover {
+      background-color: #e81123;
+      color: white;
+    }
+    
+    /* Nav Item active state */
+    .nav-active {
+      background-color: #353843;
+      position: relative;
+    }
+    .nav-active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background-color: #3fa1f4;
+    }
+
+    /* Page transition fade and slide-in effect */
+    .page-fade-enter {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .page-fade-enter-active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="bg-app-dark text-white h-screen flex flex-col overflow-hidden">
+<!-- BEGIN: Title Bar -->
+<header class="h-8 flex justify-between items-center bg-sidebar border-b border-top-bar flex-shrink-0 px-3 z-20 pywebview-drag-region">
+<div class="flex items-center text-sm font-semibold tracking-wide select-none">
+<i class="fa-solid fa-tree text-green-400 mr-2"></i>
+      引载树 v1.0.0
+    </div>
+<div class="flex h-full no-drag-region">
+<button class="window-ctrl w-10 h-full flex items-center justify-center text-gray-400 text-xs"><i class="fa-solid fa-question"></i></button>
+<button class="window-ctrl w-12 h-full flex items-center justify-center text-gray-400 text-xs"><i class="fa-solid fa-minus"></i></button>
+<button class="window-ctrl w-12 h-full flex items-center justify-center text-gray-400 text-xs"><i class="fa-regular fa-square"></i></button>
+<button class="window-ctrl window-close w-12 h-full flex items-center justify-center text-gray-400 text-xs"><i class="fa-solid fa-xmark"></i></button>
+</div>
+</header>
+<!-- END: Title Bar -->
+<div class="flex flex-1 overflow-hidden">
+<!-- BEGIN: Left Sidebar -->
+<nav class="w-20 bg-sidebar flex flex-col py-4 flex-shrink-0 z-10 border-r border-sidebar overflow-y-auto custom-scrollbar">
+<div class="flex flex-col gap-1 items-center w-full flex-shrink-0">
+<!-- Play Button Area -->
+<div id="play-btn-nav" class="w-16 h-12 bg-card rounded-lg flex justify-center items-center mb-4 cursor-pointer hover:bg-card-hover transition-colors border-l-4 border-blue-icon">
+<i class="fa-solid fa-play text-blue-icon text-xl"></i>
+</div>
+<!-- Navigation Items -->
+<a class="w-full py-3 flex flex-col items-center justify-center text-gray-400 hover:text-white transition-colors gap-1 hover:bg-card" href="page_2.html">
+<i class="fa-solid fa-list-ul text-lg"></i>
+<span class="text-[10px]">高级选项</span>
+</a>
+<a class="w-full py-3 flex flex-col items-center justify-center text-gray-400 hover:text-white transition-colors gap-1 hover:bg-card" href="page_3.html">
+<i class="fa-solid fa-user-pen text-lg"></i>
+<span class="text-[10px]">创作人设</span>
+</a>
+<a class="w-full py-3 flex flex-col items-center justify-center text-gray-400 hover:text-white transition-colors gap-1 hover:bg-card" href="page_6.html">
+<i class="fa-solid fa-clock-rotate-left text-lg"></i>
+<span class="text-[10px]">版本管理</span>
+</a>
+<a class="w-full py-3 flex flex-col items-center justify-center text-gray-400 hover:text-white transition-colors gap-1 hover:bg-card" href="page_7.html">
+<i class="fa-brands fa-weixin text-lg"></i>
+<span class="text-[10px]">微信后台</span>
+</a>
+<a class="w-full py-3 flex flex-col items-center justify-center text-gray-400 hover:text-white transition-colors gap-1 hover:bg-card" href="page_8.html">
+<i class="fa-solid fa-toolbox text-lg"></i>
+<span class="text-[10px]">小工具</span>
+</a>
+</div>
+<div class="flex flex-col gap-1 items-center w-full mt-auto flex-shrink-0">
+<a id="qr-modal-btn" class="w-full py-3 flex flex-col items-center justify-center text-gray-400 hover:text-white transition-colors gap-1 hover:bg-card cursor-pointer" href="#">
+<i class="fa-regular fa-comment-dots text-lg"></i>
+<span class="text-[10px]">交流群</span>
+</a>
+<a id="theme-toggle-btn" class="w-full py-3 flex flex-col items-center justify-center text-gray-400 hover:text-white transition-colors gap-1 hover:bg-card" href="#">
+<i class="fa-regular fa-lightbulb text-lg"></i>
+<span class="text-[10px]">主题切换</span>
+</a>
+<a class="w-full py-3 flex flex-col items-center justify-center text-gray-400 hover:text-white transition-colors gap-1 hover:bg-card" href="page_9.html">
+<i class="fa-solid fa-terminal text-lg"></i>
+<span class="text-[10px]">控制台</span>
+</a>
+<a class="w-full py-3 flex flex-col items-center justify-center text-gray-400 hover:text-white transition-colors gap-1 hover:bg-card" href="page_10.html">
+<i class="fa-solid fa-gear text-lg"></i>
+<span class="text-[10px]">设置</span>
+</a>
+</div>
+</nav>
+<!-- END: Left Sidebar -->
+<!-- BEGIN: Main Content Area -->
+<main class="flex-1 flex flex-col relative overflow-hidden">
+<!-- Top Banner -->
+<div class="h-64 w-full relative flex-shrink-0 bg-gradient-to-br from-[#1b3a24] via-[#161a1d] to-[#1c221e]">
+    <img src="../static/page_1.png" class="absolute inset-0 w-full h-full object-cover opacity-65" onerror="this.style.display='none';">
+<div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-transparent flex flex-col justify-center px-12">
+<h2 class="text-xl font-light tracking-wider mb-2 text-gray-200 banner-text">InodeTree 数据资产系统</h2>
+<h1 class="text-4xl font-bold mb-4 tracking-wide text-green-400 banner-text">引载树 - 启动器</h1>
+<p class="text-lg text-gray-200 banner-text">引用 · 引入 · 引导 · 载入 —— 汇数据之壤，成资产之树！</p>
+</div>
+<div class="absolute bottom-3 right-4 text-xs text-gray-400">Created by InodeTree</div>
+</div>
+<div class="flex-1 flex px-8 py-6 gap-8 overflow-hidden">
+<!-- Left Section: Folders -->
+<div class="flex-1 flex flex-col min-w-0 overflow-y-auto custom-scrollbar pr-2 pb-6">
+<h3 class="text-xl font-bold mb-4">文件夹</h3>
+<!-- Folder Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+<!-- Card 1 -->
+<div onclick="if(window.pywebview && window.pywebview.api) window.pywebview.api.open_folder('.')" class="bg-card hover:bg-card-hover border border-card rounded-md p-3 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3 overflow-hidden">
+<i class="fa-regular fa-folder-open text-gray-400 text-xl group-hover:text-white transition-colors"></i>
+<div class="flex flex-col truncate">
+<span class="text-sm font-medium">项目主目录</span>
+<span class="text-xs text-gray-500 truncate">.</span>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-gray-500 text-xs group-hover:text-gray-300"></i>
+</div>
+<!-- Card 2 -->
+<div onclick="if(window.pywebview && window.pywebview.api) window.pywebview.api.open_folder('cache')" class="bg-card hover:bg-card-hover border border-card rounded-md p-3 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3 overflow-hidden">
+<i class="fa-solid fa-pen-nib text-gray-400 text-xl group-hover:text-white transition-colors"></i>
+<div class="flex flex-col truncate">
+<span class="text-sm font-medium">生成文章草稿</span>
+<span class="text-xs text-gray-500 truncate">cache (HTML)</span>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-gray-500 text-xs group-hover:text-gray-300"></i>
+</div>
+<!-- Card 3 -->
+<div onclick="if(window.pywebview && window.pywebview.api) window.pywebview.api.open_folder('cache')" class="bg-card hover:bg-card-hover border border-card rounded-md p-3 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3 overflow-hidden">
+<i class="fa-regular fa-images text-gray-400 text-xl group-hover:text-white transition-colors"></i>
+<div class="flex flex-col truncate">
+<span class="text-sm font-medium">文章配图库</span>
+<span class="text-xs text-gray-500 truncate">cache (图片)</span>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-gray-500 text-xs group-hover:text-gray-300"></i>
+</div>
+<!-- Card 4 -->
+<div onclick="if(window.pywebview && window.pywebview.api) window.pywebview.api.open_folder('cache')" class="bg-card hover:bg-card-hover border border-card rounded-md p-3 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3 overflow-hidden">
+<i class="fa-solid fa-film text-gray-400 text-xl group-hover:text-white transition-colors"></i>
+<div class="flex flex-col truncate">
+<span class="text-sm font-medium">视频素材库</span>
+<span class="text-xs text-gray-500 truncate">cache (视频)</span>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-gray-500 text-xs group-hover:text-gray-300"></i>
+</div>
+<!-- Card 5 -->
+<div onclick="if(window.pywebview && window.pywebview.api) window.pywebview.api.open_folder('static/style_templates')" class="bg-card hover:bg-card-hover border border-card rounded-md p-3 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3 overflow-hidden">
+<i class="fa-solid fa-newspaper text-gray-400 text-xl group-hover:text-white transition-colors"></i>
+<div class="flex flex-col truncate">
+<span class="text-sm font-medium">排版样式模板</span>
+<span class="text-xs text-gray-500 truncate">static/style_templates</span>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-gray-500 text-xs group-hover:text-gray-300"></i>
+</div>
+<!-- Card 6 -->
+<div onclick="if(window.pywebview && window.pywebview.api) window.pywebview.api.open_folder('config')" class="bg-card hover:bg-card-hover border border-card rounded-md p-3 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3 overflow-hidden">
+<i class="fa-solid fa-sliders text-gray-400 text-xl group-hover:text-white transition-colors"></i>
+<div class="flex flex-col truncate">
+<span class="text-sm font-medium">系统配置文件</span>
+<span class="text-xs text-gray-500 truncate">config</span>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-gray-500 text-xs group-hover:text-gray-300"></i>
+</div>
+<!-- Card 7 -->
+<div onclick="if(window.pywebview && window.pywebview.api) window.pywebview.api.open_folder('data')" class="bg-card hover:bg-card-hover border border-card rounded-md p-3 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3 overflow-hidden">
+<i class="fa-solid fa-database text-gray-400 text-xl group-hover:text-white transition-colors"></i>
+<div class="flex flex-col truncate">
+<span class="text-sm font-medium">本地历史数据</span>
+<span class="text-xs text-gray-500 truncate">data</span>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-gray-500 text-xs group-hover:text-gray-300"></i>
+</div>
+<!-- Card 8 -->
+<div onclick="if(window.pywebview && window.pywebview.api) window.pywebview.api.open_folder('logs')" class="bg-card hover:bg-card-hover border border-card rounded-md p-3 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3 overflow-hidden">
+<i class="fa-solid fa-file-waveform text-gray-400 text-xl group-hover:text-white transition-colors"></i>
+<div class="flex flex-col truncate">
+<span class="text-sm font-medium">系统运行日志</span>
+<span class="text-xs text-gray-500 truncate">logs</span>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-gray-500 text-xs group-hover:text-gray-300"></i>
+</div>
+</div>
+</div>
+<!-- Right Section: Announcements -->
+<aside class="w-80 flex-shrink-0 flex flex-col border-l border-card pl-6">
+<h3 class="text-xl font-bold mb-4">公告</h3>
+<div class="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-4 text-sm text-gray-300 leading-relaxed">
+<p>欢迎使用<b>引载树数据资产发布系统</b>。本系统致力于帮助您更快速地引用和引导互联网数据，转化为自有的优质数字资产。</p>
+<p><b>设计理念</b>：我们认为散乱的数据如同落叶，只有经过“引用、引入、引导、载入”的一系列沉淀处理，才能够逐步汇总，最终聚沙成塔、汇叶成林，茁壮成长为您个人的数据资产大树。</p>
+<p>系统已集成微信公众号文章排版、素材加工与自动一键群发，您可以在设置版块填入个人配置进行使用。</p>
+<p>本系统完全免费提供，如您是通过付费渠道购得此软件，请立即退款并与我们取得联系。</p>
+<p>如有使用疑问或遇到软件报错，可随时前往版本管理或疑难解答界面进行检查，或联系官方团队进行技术反馈。</p>
+</div>
+</aside>
+</div>
+<!-- BEGIN: Bottom Bar -->
+<footer class="h-20 border-t border-card flex items-center justify-between px-8 bg-app-dark flex-shrink-0 z-20">
+<div class="flex flex-col text-xs text-gray-400 gap-1 font-mono">
+<div class="flex gap-4">
+<span class="w-20 text-gray-500">启动器版本:</span>
+<span>v1.0.0 Build 100</span>
+</div>
+<div class="flex gap-4">
+<span class="w-20 text-gray-500">系统发布版本:</span>
+<span>2026-06-15 12:00</span>
+</div>
+<div class="flex gap-4">
+<span class="w-20 text-gray-500">内核代码版本:</span>
+<span>v1.0.0 Release (2026-06-15 12:00)</span>
+</div>
+</div>
+<div class="flex gap-4">
+  <button id="open-web-btn" class="bg-gray-700 hover:bg-gray-600 disabled:opacity-40 disabled:hover:bg-gray-700 text-white px-6 py-3 rounded text-lg font-medium transition-colors shadow-lg" disabled>
+    打开网页端
+  </button>
+  <button id="start-btn" class="bg-blue-btn hover:bg-blue-btn-hover text-white px-10 py-3 rounded text-lg font-medium flex items-center gap-2 transition-colors shadow-lg">
+    <i class="fa-solid fa-play"></i> 一键启动
+  </button>
+</div>
+</footer>
+<!-- END: Bottom Bar -->
+</main>
+<!-- END: Main Content Area -->
+</div>
+
+<script>
+  // Dynamic Page Router
+  window.navigateTo = function(pageName) {
+      if (!window.pywebview || !window.pywebview.api) {
+          console.error("Pywebview API not ready");
+          return;
+      }
+      
+      // Stop status polling interval from page_9 if running
+      if (window.page9Interval) {
+          clearInterval(window.page9Interval);
+          window.page9Interval = null;
+      }
+      
+      window.pywebview.api.get_page_html(pageName).then(htmlContent => {
+          if (!htmlContent) {
+              console.error("Failed to load page content for " + pageName);
+              return;
+          }
+          
+          // Parse target HTML page
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(htmlContent, 'text/html');
+          
+          // Extract main element
+          const newMain = doc.querySelector('main');
+          if (!newMain) {
+              console.error("No <main> element found in " + pageName);
+              return;
+          }
+          
+          // Prepare transition
+          newMain.classList.add('page-fade-enter');
+          
+          // Swap main content
+          const currentMain = document.querySelector('main');
+          if (currentMain) {
+              currentMain.replaceWith(newMain);
+          }
+          
+          // Trigger transition in next frame
+          requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                  newMain.classList.add('page-fade-enter-active');
+              });
+          });
+          
+          // Clean up animation classes after transition completes
+          setTimeout(() => {
+              newMain.classList.remove('page-fade-enter', 'page-fade-enter-active');
+          }, 250);
+          
+          // Reset active class in sidebar links
+          document.querySelectorAll('nav a').forEach(a => {
+              a.classList.remove('nav-active');
+              a.classList.remove('active');
+              a.classList.add('text-gray-400');
+              a.classList.remove('text-gray-300');
+          });
+          const playBtn = document.getElementById('play-btn-nav');
+          if (playBtn) {
+              playBtn.classList.remove('border-l-4', 'border-blue-icon');
+          }
+          
+          if (pageName === 'page_1.html') {
+              if (playBtn) {
+                  playBtn.classList.add('border-l-4', 'border-blue-icon');
+              }
+          } else {
+              // Highlight matching sidebar item
+              const activeLink = document.querySelector(`nav a[href="${pageName}"]`);
+              if (activeLink) {
+                  activeLink.classList.add('nav-active');
+                  activeLink.classList.remove('text-gray-400');
+                  activeLink.classList.add('text-gray-300');
+              }
+          }
+          
+          // Manage dynamic page-specific styles
+          document.querySelectorAll('style[data-page-style]').forEach(el => el.remove());
+          doc.querySelectorAll('style').forEach(styleTag => {
+              const newStyle = document.createElement('style');
+              newStyle.setAttribute('data-page-style', 'true');
+              newStyle.textContent = styleTag.textContent;
+              document.head.appendChild(newStyle);
+          });
+          
+          // Intercept any local links inside the newly loaded main
+          const loadedMain = document.querySelector('main');
+          if (loadedMain) {
+              loadedMain.querySelectorAll('a').forEach(link => {
+                  const href = link.getAttribute('href');
+                  if (href && href.endsWith('.html') && !href.startsWith('http')) {
+                      link.addEventListener('click', (e) => {
+                          e.preventDefault();
+                          navigateTo(href);
+                      });
+                  }
+              });
+          }
+          
+          // Execute target page script tags
+          doc.querySelectorAll('script').forEach(oldScript => {
+              if (oldScript.textContent.indexOf('tailwind.config') !== -1) {
+                  return;
+              }
+              const newScript = document.createElement('script');
+              Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+              newScript.textContent = oldScript.textContent;
+              document.body.appendChild(newScript);
+          });
+          
+          // Initialize target page controller
+          initPage(pageName);
+      });
+  };
+  
+  function initPage(pageName) {
+      if (pageName === 'page_1.html') {
+          if (window.initPage1) window.initPage1();
+      } else if (pageName === 'page_2.html') {
+          if (window.initPage2) window.initPage2();
+      } else if (pageName === 'page_3.html') {
+          if (window.initPage3) window.initPage3();
+      } else if (pageName === 'page_6.html') {
+          if (window.initPage6) window.initPage6();
+      } else if (pageName === 'page_9.html') {
+          if (window.initPage9) window.initPage9();
+      } else if (pageName === 'page_10.html') {
+          if (window.initPage10) window.initPage10();
+      } else if (pageName === 'page_11.html') {
+          if (window.initPage11) window.initPage11();
+      } else if (pageName === 'page_8.html') {
+          if (window.initPage8) window.initPage8();
+      } else if (pageName === 'page_7.html') {
+          if (window.initPage7) window.initPage7();
+      }
+  }
+
+  // Shell Page (page_1.html) interactive logic
+  window.initPage1 = function() {
+      const startBtn = document.getElementById('start-btn');
+      const openWebBtn = document.getElementById('open-web-btn');
+      
+      if (!startBtn) return;
+      
+      checkStatus();
+      
+      function checkStatus() {
+        if (!document.getElementById('start-btn')) return;
+        window.pywebview.api.is_server_running().then((isRunning) => {
+          updateBtnState(isRunning);
+        });
+      }
+      
+      function updateBtnState(isRunning) {
+        if (isRunning) {
+          startBtn.innerHTML = '<i class="fa-solid fa-stop"></i> 停止服务';
+          startBtn.classList.remove('bg-blue-btn', 'hover:bg-blue-btn-hover');
+          startBtn.classList.add('bg-red-600', 'hover:bg-red-500');
+          if (openWebBtn) openWebBtn.disabled = false;
+        } else {
+          startBtn.innerHTML = '<i class="fa-solid fa-play"></i> 一键启动';
+          startBtn.classList.remove('bg-red-600', 'hover:bg-red-500');
+          startBtn.classList.add('bg-blue-btn', 'hover:bg-blue-btn-hover');
+          if (openWebBtn) openWebBtn.disabled = true;
+        }
+      }
+      
+      startBtn.addEventListener('click', () => {
+        window.pywebview.api.is_server_running().then((isRunning) => {
+          if (isRunning) {
+            window.pywebview.api.stop_server().then(() => {
+              updateBtnState(false);
+            });
+          } else {
+            startBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在启动...';
+            window.pywebview.api.start_server().then((success) => {
+              if (success) {
+                updateBtnState(true);
+                window.pywebview.api.open_browser();
+              } else {
+                alert('服务器启动失败，请检查端口占用或配置。');
+                updateBtnState(false);
+              }
+            });
+          }
+        });
+      });
+      
+      if (openWebBtn) {
+        openWebBtn.addEventListener('click', () => {
+          window.pywebview.api.open_browser();
+        });
+      }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+      // Wire up sidebar links for SPA routing
+      document.querySelectorAll('nav a').forEach(link => {
+          link.addEventListener('click', (e) => {
+              e.preventDefault();
+              const href = link.getAttribute('href');
+              if (href && href !== '#') {
+                  navigateTo(href);
+              }
+          });
+      });
+      
+      const playBtn = document.getElementById('play-btn-nav');
+      if (playBtn) {
+          playBtn.addEventListener('click', () => {
+              navigateTo('page_1.html');
+          });
+      }
+      
+      // Setup window controls (minimize, maximize, close) globally
+      setupWindowControls();
+      
+      // Theme Toggle Logic
+      const themeToggleBtn = document.getElementById('theme-toggle-btn');
+      if (themeToggleBtn) {
+          themeToggleBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              document.body.classList.toggle('light-theme');
+              const isLight = document.body.classList.contains('light-theme');
+              localStorage.setItem('launcher-theme', isLight ? 'light' : 'dark');
+              
+              const icon = themeToggleBtn.querySelector('i');
+              if (icon) {
+                  if (isLight) {
+                      icon.className = 'fa-solid fa-lightbulb text-lg text-yellow-500';
+                  } else {
+                      icon.className = 'fa-regular fa-lightbulb text-lg';
+                  }
+              }
+          });
+      }
+      
+      // Load saved theme on startup
+      const savedTheme = localStorage.getItem('launcher-theme');
+      if (savedTheme === 'light') {
+          document.body.classList.add('light-theme');
+          if (themeToggleBtn) {
+              const icon = themeToggleBtn.querySelector('i');
+              if (icon) {
+                  icon.className = 'fa-solid fa-lightbulb text-lg text-yellow-500';
+              }
+          }
+      }
+      
+      // Initialize home page logic
+      if (window.pywebview && window.pywebview.api) {
+          initPage1();
+      } else {
+          window.addEventListener('pywebviewready', initPage1);
+      }
+      
+      // Initialize QR modal
+      setupQrModal();
+  });
+
+  function setupWindowControls() {
+    const btns = document.querySelectorAll('.window-ctrl');
+    if (btns.length >= 4) {
+      const minBtn = btns[1];
+      const maxBtn = btns[2];
+      const closeBtn = btns[3];
+      
+      minBtn.addEventListener('click', () => {
+        if (window.pywebview && window.pywebview.api) window.pywebview.api.minimize_window();
+      });
+      maxBtn.addEventListener('click', () => {
+        if (window.pywebview && window.pywebview.api) {
+          window.pywebview.api.toggle_maximize_window().then(isMax => {
+            const icon = maxBtn.querySelector('i');
+            if (icon) {
+              if (isMax) {
+                icon.className = 'fa-regular fa-copy';
+              } else {
+                icon.className = 'fa-regular fa-square';
+              }
+            }
+          });
+        }
+      });
+      closeBtn.addEventListener('click', () => {
+        if (window.pywebview && window.pywebview.api) window.pywebview.api.close_window();
+      });
+    }
+  }
+
+  function setupQrModal() {
+    const btn = document.getElementById('qr-modal-btn');
+    const modal = document.getElementById('qr-modal');
+    const card = document.getElementById('qr-modal-card');
+    const closeBtns = [
+        document.getElementById('close-qr-modal-btn'),
+        document.getElementById('close-qr-modal-btn-bottom')
+    ];
+    
+    if (!btn || !modal) return;
+    
+    function showModal(e) {
+        if (e) e.preventDefault();
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            card.classList.remove('scale-95');
+            card.classList.add('scale-100');
+        }, 10);
+    }
+    
+    function closeModal() {
+        card.classList.remove('scale-100');
+        card.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 150);
+    }
+    
+    btn.addEventListener('click', showModal);
+    closeBtns.forEach(b => {
+        if (b) b.addEventListener('click', closeModal);
+    });
+    
+    // 点击背景关闭
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+  }
+</script>
+
+<!-- 交流群二维码 Modal -->
+<div id="qr-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden transition-opacity duration-300">
+  <div id="qr-modal-card" class="bg-[#2c2d33] border border-[#333438] rounded-lg shadow-xl w-full max-w-sm mx-4 overflow-hidden flex flex-col transform scale-95 transition-transform duration-300 select-none">
+    <!-- 头部 -->
+    <div class="flex items-center justify-between px-4 py-3 border-b border-[#333438]">
+      <h3 class="text-sm font-semibold text-gray-200">添加微信 / 扫码进群</h3>
+      <button id="close-qr-modal-btn" class="text-gray-400 hover:text-white transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+    <!-- 内容 -->
+    <div class="p-6 flex flex-col items-center gap-4 bg-[#1e1e24]">
+      <div class="w-48 h-48 bg-white p-2 rounded-md shadow-inner flex items-center justify-center">
+        <img src="../static/user.png" class="w-full h-full object-contain" alt="QR Code">
+      </div>
+      <p class="text-xs text-gray-400 text-center leading-relaxed">
+        微信扫一扫上方二维码<br>
+        添加个人微信，即可获取官方交流群邀请
+      </p>
+    </div>
+    <!-- 底部 -->
+    <div class="px-4 py-3 bg-[#2c2d33] flex justify-end border-t border-[#333438]">
+      <button id="close-qr-modal-btn-bottom" class="bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-1.5 text-xs font-medium transition-all shadow-md">
+        关闭
+      </button>
+    </div>
+  </div>
+</div>
+</body></html>

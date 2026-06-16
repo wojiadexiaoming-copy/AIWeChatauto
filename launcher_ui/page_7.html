@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>公众号助手 - 引载树</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              sidebar: '#18181a',
+              main: '#222226',
+              card: '#2c2d33',
+              cardHover: '#33343b',
+              border: '#3f4048',
+              text: '#f3f4f6',
+              textMuted: '#9ca3af',
+              primary: '#3b82f6',
+              activeBg: '#2a3143'
+            }
+          },
+          fontFamily: {
+            sans: ['"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style data-purpose="custom-scrollbars">
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #222226;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6b7280;
+    }
+  </style>
+</head>
+<body class="bg-app-main text-app-text font-sans h-screen flex overflow-hidden selection:bg-app-primary selection:text-white">
+
+<!-- BEGIN: Sidebar -->
+<aside class="w-20 bg-app-sidebar flex flex-col h-full border-r border-app-border z-10 flex-shrink-0">
+  <div class="flex-1 overflow-y-auto py-4 flex flex-col items-center gap-4 scrollbar-hide">
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+        <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">一键启动</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">高级选项</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">疑难解答</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">版本管理</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-primary bg-app-activeBg border-l-2 border-app-primary relative group cursor-pointer">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px] font-medium">模型管理</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">小工具</span>
+    </button>
+    <div class="flex-1"></div>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">交流群</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">灯泡</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">控制台</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">设置</span>
+    </button>
+  </div>
+</aside>
+<!-- END: Sidebar -->
+
+<!-- BEGIN: Main Panel -->
+<main class="flex-1 flex flex-col min-w-0 bg-app-main p-0 overflow-hidden">
+  <iframe src="https://mp.weixin.qq.com/" class="w-full h-full border-none bg-white"></iframe>
+</main>
+<!-- END: Main Panel -->
+
+<script>
+  window.initPage7 = function() {
+      // Embedded directly now, no extra actions needed.
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+      if (window.pywebview && window.pywebview.api) {
+          window.initPage7();
+      } else {
+          window.addEventListener('pywebviewready', window.initPage7);
+      }
+  });
+</script>
+</body>
+</html>

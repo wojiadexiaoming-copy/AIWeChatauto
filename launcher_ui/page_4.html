@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Extension Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              bg: '#1a1b1e',
+              sidebar: '#141517',
+              topbar: '#25262b',
+              panel: '#2c2e33',
+              border: '#373a40',
+              text: '#c1c2c5',
+              textMuted: '#909296',
+              accent: '#3b82f6',
+              btn: '#373a40',
+              btnHover: '#4a4d53',
+              rowEven: '#25262b',
+              rowOdd: '#1a1b1e',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-scrollbar">
+    /* Custom Scrollbar for the table area */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #4a4d53;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #5c5f66;
+    }
+  </style>
+</head>
+<body class="bg-app-bg text-app-text font-sans h-screen flex overflow-hidden selection:bg-app-accent selection:text-white">
+<!-- BEGIN: Sidebar -->
+<aside class="w-20 bg-app-sidebar border-r border-app-border flex flex-col items-center py-4 space-y-6 flex-shrink-0 z-20">
+<!-- Top Icon -->
+<div class="mb-4">
+<svg class="w-8 h-8 text-pink-500" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"></path>
+</svg>
+</div>
+<!-- Navigation Items -->
+<nav class="flex flex-col space-y-4 w-full">
+<a class="flex flex-col items-center text-app-textMuted hover:text-white group" href="page_1.html">
+<div class="p-2 rounded-lg group-hover:bg-app-btn">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="text-xs mt-1">一键启动</span>
+</a>
+<a class="flex flex-col items-center text-app-textMuted hover:text-white group" href="page_2.html">
+<div class="p-2 rounded-lg group-hover:bg-app-btn">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="text-xs mt-1">高级选项</span>
+</a>
+<a class="flex flex-col items-center text-app-textMuted hover:text-white group" href="page_3.html">
+<div class="p-2 rounded-lg group-hover:bg-app-btn">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="text-xs mt-1">疑难解答</span>
+</a>
+<!-- Active Item -->
+<a class="flex flex-col items-center text-app-accent group relative" href="#">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-app-accent rounded-r-md"></div>
+<div class="p-2 rounded-lg bg-app-btn/50 text-app-accent">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</a>
+<div class="w-8 h-px bg-app-border mx-auto my-2"></div>
+<a class="flex flex-col items-center text-app-textMuted hover:text-white group" href="page_7.html">
+<div class="p-2 rounded-lg group-hover:bg-app-btn">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="text-xs mt-1">模型管理</span>
+</a>
+<a class="flex flex-col items-center text-app-textMuted hover:text-white group" href="page_8.html">
+<div class="p-2 rounded-lg group-hover:bg-app-btn">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="text-xs mt-1">小工具</span>
+</a>
+</nav>
+<div class="flex-grow"></div>
+<!-- Bottom Actions -->
+<nav class="flex flex-col space-y-4 w-full mb-4">
+<a class="flex flex-col items-center text-app-textMuted hover:text-white group" href="#">
+<div class="p-2 rounded-lg group-hover:bg-app-btn">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="text-xs mt-1">交流群</span>
+</a>
+<a class="flex flex-col items-center text-app-textMuted hover:text-white group" href="#">
+<div class="p-2 rounded-lg group-hover:bg-app-btn">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="text-xs mt-1">提示词</span>
+</a>
+<a class="flex flex-col items-center text-app-textMuted hover:text-white group" href="page_9.html">
+<div class="p-2 rounded-lg group-hover:bg-app-btn">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="text-xs mt-1">控制台</span>
+</a>
+<a class="flex flex-col items-center text-app-textMuted hover:text-white group" href="page_10.html">
+<div class="p-2 rounded-lg group-hover:bg-app-btn">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="text-xs mt-1">设置</span>
+</a>
+</nav>
+</aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: Main Content -->
+<main class="flex-1 flex flex-col min-w-0 bg-app-bg relative">
+<!-- Title Bar -->
+<header class="h-10 flex items-center justify-between px-4 text-sm text-app-textMuted bg-app-sidebar/50 backdrop-blur-sm border-b border-app-border z-10">
+<div class="flex items-center gap-2">
+<i class="fa-solid fa-tree text-green-400 text-xs"></i>
+<span class="font-medium text-white">引载树 v1.0.0</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+<button class="hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M20 12H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+<button class="hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+<button class="hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="flex-1 flex flex-col p-6 overflow-hidden">
+<!-- Top Navigation Tabs -->
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-6 text-sm">
+<button class="flex items-center gap-2 text-app-textMuted hover:text-white transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            内核
+          </button>
+<button class="flex items-center gap-2 text-app-textMuted hover:text-white transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            扩展
+          </button>
+<button class="flex items-center gap-2 text-white border-b-2 border-white pb-1 font-medium">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            安装新扩展
+          </button>
+</div>
+<button class="flex items-center gap-2 text-sm text-app-textMuted hover:text-white transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          刷新列表
+        </button>
+</div>
+<!-- Search and Filters Panel -->
+<div class="bg-app-sidebar rounded-lg p-4 mb-4 border border-app-border flex flex-col gap-4 flex-shrink-0">
+<!-- Search Input -->
+<div class="relative">
+<input class="w-full bg-app-bg border border-app-border rounded p-2 pl-3 text-sm text-white placeholder-app-textMuted focus:outline-none focus:border-app-accent focus:ring-1 focus:ring-app-accent transition-colors" placeholder="搜索新插件..." type="text"/>
+</div>
+<!-- Filter Checkboxes -->
+<div class="flex flex-wrap gap-x-6 gap-y-3 text-sm text-app-text">
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            manipulations
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            science
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            UI related
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            dropdown
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            localization
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            script
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            online
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            prompting
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            editing
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            models
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            training
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            animation
+          </label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-white">
+<input checked="" class="form-checkbox rounded bg-app-bg border-app-border text-app-accent focus:ring-app-accent focus:ring-offset-app-bg" type="checkbox"/>
+            extras
+          </label>
+</div>
+</div>
+<!-- Extension List Table -->
+<div class="flex-1 bg-app-sidebar rounded-lg border border-app-border flex flex-col overflow-hidden">
+<!-- Table Header -->
+<div class="flex bg-app-sidebar border-b border-app-border text-sm font-medium text-app-textMuted py-2 px-4 sticky top-0 z-10">
+<div class="w-[200px] flex-shrink-0">插件名</div>
+<div class="flex-1">简介</div>
+<div class="w-[80px] flex-shrink-0 text-center">操作</div>
+</div>
+<!-- Table Body (Scrollable) -->
+<div class="flex-1 overflow-y-auto custom-scrollbar bg-app-sidebar">
+<div class="flex flex-col text-sm">
+<!-- Row 1 -->
+<div class="flex items-center px-4 py-3 bg-app-rowOdd hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Agent Scheduler</div>
+<div class="flex-1 text-app-text">Queue task and task history</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="flex items-center px-4 py-3 bg-app-rowEven hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">TemporalKit</div>
+<div class="flex-1 text-app-text">An all in one solution for adding Temporal Stability to a Stable Diffusion Render via an automatic1111 extension</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="flex items-center px-4 py-3 bg-app-rowOdd hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">ua_UA Localization</div>
+<div class="flex-1 text-app-text">Ukrainian localization</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="flex items-center px-4 py-3 bg-app-rowEven hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Batch Checkpoints and Prompts</div>
+<div class="flex-1 text-app-text">Test a base prompt with different checkpoints and for the checkpoints specific prompt templates</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 5 -->
+<div class="flex items-center px-4 py-3 bg-app-rowOdd hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Kandinsky</div>
+<div class="flex-1 text-app-text">Adds a script to run Kandinsky 2.X</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 6 -->
+<div class="flex items-center px-4 py-3 bg-app-rowEven hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Txt/Img to 3D Model</div>
+<div class="flex-1 text-app-text">An extension integrated OpenAI Shap-E that allow you to generate 3D model from prompt or image</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 7 -->
+<div class="flex items-center px-4 py-3 bg-app-rowOdd hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">sd-webui-openpose-editor</div>
+<div class="flex-1 text-app-text">Integrated openpose editor for ControlNet. Full hand/face support.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 8 -->
+<div class="flex items-center px-4 py-3 bg-app-rowEven hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">sd-webui-segment-anything</div>
+<div class="flex-1 text-app-text">Segment Anything for Stable Diffusion WebUI. Automatically generate high-quality segmentations/masks for images by clicking or text prompting. Aim for connecting WebUI and ControlNet with Segment Anything and GroundingDINO to enhance Stable Diffusion/ControlNet inpainting (both single image and batch process), enhance ControlNet semantic segmentation, automate image matting and create LoRA/LyCORIS training set.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 9 -->
+<div class="flex items-center px-4 py-3 bg-app-rowOdd hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Stable Diffusion AWS Extension</div>
+<div class="flex-1 text-app-text">Allow user to migrate existing workloads including ckpt merge, model training, model inferencing onto AWS</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 10 -->
+<div class="flex items-center px-4 py-3 bg-app-rowEven hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Aesthetic Gradients</div>
+<div class="flex-1 text-app-text">Allows training an embedding from one or few pictures, specifically meant for applying styles. Also, allows use of these specific embeddings to generated images.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 11 -->
+<div class="flex items-center px-4 py-3 bg-app-rowOdd hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Dreambooth</div>
+<div class="flex-1 text-app-text">Dreambooth training based on Shivam Shlaro's repo, optimized for lower-VRAM GPUs.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 12 -->
+<div class="flex items-center px-4 py-3 bg-app-rowEven hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">training-picker</div>
+<div class="flex-1 text-app-text">Adds a tab to the webui that allows the user to automatically extract keyframes from video, and manually extract 512x512 crops of those frames for use in model training.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 13 -->
+<div class="flex items-center px-4 py-3 bg-app-rowOdd hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Dataset Tag Editor</div>
+<div class="flex-1 text-app-text">Feature-rich UI tab that allows image viewing, search-filtering and editing.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 14 -->
+<div class="flex items-center px-4 py-3 bg-app-rowEven hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">DreamArtist</div>
+<div class="flex-1 text-app-text">Towards Controllable One-Shot Text-to-Image Generation via Contrastive Prompt-Tuning.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 15 -->
+<div class="flex items-center px-4 py-3 bg-app-rowOdd hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Hypernetwork-Monkeypatch-Extension</div>
+<div class="flex-1 text-app-text">Extension that provides additional training features for hypernetwork training. Also supports using multiple hypernetworks for inference.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 16 -->
+<div class="flex items-center px-4 py-3 bg-app-rowEven hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Custom Diffusion</div>
+<div class="flex-1 text-app-text">Custom Diffusion is, in short, finetuning-lite with TI, instead of tuning the whole model. Similar speed and memory requirements to TI and supposedly gives better results in less steps.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 17 -->
+<div class="flex items-center px-4 py-3 bg-app-rowOdd hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Smart Process</div>
+<div class="flex-1 text-app-text">Smart pre-process including auto subject identification, caption subject swapping, and upscaling/facial restoration.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 18 -->
+<div class="flex items-center px-4 py-3 bg-app-rowEven hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Embeddings editor</div>
+<div class="flex-1 text-app-text">Allows you to manually edit textual inversion embeddings using sliders.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 19 -->
+<div class="flex items-center px-4 py-3 bg-app-rowOdd hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Merge Board</div>
+<div class="flex-1 text-app-text">Multiple lane merge support(up to 10). Save and Load your merging combination as Recipes, which is simple text.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+<!-- Row 20 -->
+<div class="flex items-center px-4 py-3 bg-app-rowEven hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Model Converter</div>
+<div class="flex-1 text-app-text">Convert models to fp16/bf16 no-ema/ema-only safetensors. Convert/copy/delete any parts of model: unet, text encoder(clip), vae.</div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn/50 text-app-textMuted rounded text-xs border border-transparent cursor-not-allowed" disabled="">已装</button>
+</div>
+</div>
+<!-- Row 21 -->
+<div class="flex items-center px-4 py-3 bg-app-rowOdd hover:bg-app-btn/30 transition-colors border-b border-app-border/50">
+<div class="w-[200px] flex-shrink-0 text-app-accent hover:underline cursor-pointer truncate pr-4">Kohya-ss Additional</div>
+<div class="flex-1 text-app-text"></div>
+<div class="w-[80px] flex-shrink-0 flex justify-center">
+<button class="px-3 py-1 bg-app-btn hover:bg-app-btnHover text-white rounded text-xs transition-colors border border-app-border">安装</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Install from URL Bar -->
+<div class="mt-4 flex gap-4 items-center flex-shrink-0">
+<div class="flex-1 relative">
+<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-app-textMuted text-sm">
+            扩展 URL
+          </div>
+<input class="w-full bg-app-sidebar border border-app-border rounded p-2 pl-20 text-sm text-white focus:outline-none focus:border-app-accent focus:ring-1 focus:ring-app-accent transition-colors" type="text"/>
+</div>
+<button class="px-6 py-2 bg-app-btn hover:bg-app-btnHover text-white rounded text-sm transition-colors border border-app-border font-medium flex-shrink-0">
+          安装
+        </button>
+</div>
+</div>
+</main>
+<!-- END: Main Content -->
+</body></html>

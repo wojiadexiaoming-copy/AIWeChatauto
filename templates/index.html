@@ -45,7 +45,7 @@
                 <span id="current-time">--:--:--</span>
             </span>
             <div class="ms-auto d-flex align-items-center">
-                <a href="https://github.com/wojiadexiaoming-copy-copy/AIWeChatauto" target="_blank" class="btn btn-outline-dark btn-sm ms-3" style="display:flex;align-items:center;gap:4px;">
+                <a href="https://github.com/wojiadexiaoming-copy/AIWeChatauto" target="_blank" class="btn btn-outline-dark btn-sm ms-3" style="display:flex;align-items:center;gap:4px;">
                     <i class="bi bi-github"></i> 开源项目
                     <span id="github-star-count" style="margin-left:6px;"><i class="bi bi-star"></i> <span id="star-num">--</span></span>
                 </a>
@@ -181,6 +181,35 @@
                         </div>
                     </div>
                     
+
+                    <!-- InodeTree 配置 -->
+                    <div class="config-section">
+                        <h6><i class="bi bi-lightning-charge"></i> InodeTree 2.0 Flash 配置</h6>
+                        <div class="mb-3">
+                            <label for="inodetree-api-key" class="form-label">API密钥</label>
+                            <input type="password" class="form-control" id="inodetree-api-key" placeholder="请输入 InodeTree API Key">
+                            <div class="form-text">
+                                InodeTree 2.0 Flash，256K 上下文，支持图片理解，兼容 OpenAI 接口。
+                                <a href="https://inodetree-ai.com" target="_blank" class="text-decoration-none">
+                                    <i class="bi bi-link-45deg"></i> 获取 API Key
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-text text-muted" style="margin-top:4px;">
+                                <i class="bi bi-info-circle"></i>
+                                模型固定：文本 <code>inodetree-2.0-flash</code> &nbsp;|&nbsp;
+                                图片 <code>inodetree-image-2.1-flash</code> &nbsp;|&nbsp;
+                                视频 <code>inodetree-video-v2.0</code>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="test-inodetree">
+                                <i class="bi bi-plug"></i> 测试连接
+                            </button>
+                            <span class="badge bg-secondary" id="inodetree-status">未配置</span>
+                        </div>
+                    </div>
                     <!-- Pexels配置 -->
                     <div class="config-section">
                         <h6><i class="bi bi-images"></i> Pexels图片搜索配置</h6>
@@ -199,6 +228,26 @@
                                 <i class="bi bi-plug"></i> 测试连接
                             </button>
                             <span class="badge bg-secondary" id="pexels-status">未配置</span>
+                        </div>
+                    </div>
+                    <!-- Firecrawl配置 -->
+                    <div class="config-section">
+                        <h6><i class="bi bi-fire"></i> Firecrawl密钥配置</h6>
+                        <div class="mb-3">
+                            <label for="firecrawl-api-key" class="form-label">API密钥</label>
+                            <input type="password" class="form-control" id="firecrawl-api-key" placeholder="请输入Firecrawl API密钥">
+                            <div class="form-text">
+                                Firecrawl API密钥，用于网页内容抓取和解析。
+                                <a href="https://app.firecrawl.dev/api-keys" target="_blank" class="text-decoration-none">
+                                    <i class="bi bi-link-45deg"></i> 获取API密钥
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="test-firecrawl">
+                                <i class="bi bi-plug"></i> 测试连接
+                            </button>
+                            <span class="badge bg-secondary" id="firecrawl-status">未配置</span>
                         </div>
                     </div>
                     <!-- Coze配置 -->
@@ -257,8 +306,80 @@
                     <div class="generate-section">
                         <h6><i class="bi bi-textarea-t"></i> 文章标题</h6>
                         <div class="mb-3">
-                            <input type="text" class="form-control" id="article-title" placeholder="请输入文章标题">
+                            <div class="input-group mb-2">
+                                <select class="form-select" id="title-mode-select" style="max-width: 180px;">
+                                    <option value="custom" selected>自定义标题</option>
+                                    <option value="hot">今日热点标题</option>
+                                </select>
+                                <input type="text" class="form-control" id="article-title" placeholder="请输入文章标题">
+                            </div>
                             <div class="form-text">输入一个吸引人的标题，AI将据此生成文章内容</div>
+                        </div>
+                        <!-- 热点选项区域，默认隐藏 -->
+                        <div class="mb-3" id="hot-options-section" style="display:none;">
+                            <div class="mb-2"><strong>行业：</strong></div>
+                            <div class="d-flex flex-wrap gap-3 mb-2" id="industry-options">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-random" value="随机">
+                                    <label class="form-check-label" for="industry-random">随机</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-影视" value="影视">
+                                    <label class="form-check-label" for="industry-影视">影视</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-娱乐" value="娱乐">
+                                    <label class="form-check-label" for="industry-娱乐">娱乐</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-电影" value="电影">
+                                    <label class="form-check-label" for="industry-电影">电影</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-游戏" value="游戏">
+                                    <label class="form-check-label" for="industry-游戏">游戏</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-AI" value="AI">
+                                    <label class="form-check-label" for="industry-AI">AI</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-科技" value="科技">
+                                    <label class="form-check-label" for="industry-科技">科技</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-农业" value="农业">
+                                    <label class="form-check-label" for="industry-农业">农业</label>
+                                </div>
+                            </div>
+                            <div class="mb-2"><strong>热点平台：</strong></div>
+                            <div class="d-flex flex-wrap gap-3" id="platform-options">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-random" value="随机">
+                                    <label class="form-check-label" for="platform-random">随机</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-抖音" value="抖音">
+                                    <label class="form-check-label" for="platform-抖音">抖音</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-百度" value="百度">
+                                    <label class="form-check-label" for="platform-百度">百度</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-MSN" value="MSN">
+                                    <label class="form-check-label" for="platform-MSN">MSN</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-B站" value="B站">
+                                    <label class="form-check-label" for="platform-B站">B站</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-微信" value="微信">
+                                    <label class="form-check-label" for="platform-微信">微信</label>
+                                </div>
+                            </div>
+                            <div class="form-text">每组只能选择一个，如“AI+抖音”</div>
                         </div>
                         
                         <div class="mb-3">
@@ -267,6 +388,7 @@
                                 <option value="gemini">Google Gemini</option>
                                 <option value="deepseek">DeepSeek AI</option>
                                 <option value="dashscope">阿里云百炼</option>
+                                <option value="inodetree">InodeTree 2.0 Flash</option>
                             </select>
                             <div class="form-text">选择用于生成文章的AI模型</div>
                         </div>
@@ -277,6 +399,8 @@
                                     <option value="gemini">Gemini</option>
                                     <option value="deepseek">DeepSeek</option>
                                 <option value="dashscope">阿里云百炼</option>
+                                    <option value="inodetree">InodeTree Image 2.1 Flash</option>
+                                    <option value="inodetree_pexels">InodeTree+Pexels 搜图</option>
                                     <option value="pexels">Pexels</option>
                                     <option value="coze">Coze</option>
                             </select>
@@ -368,6 +492,43 @@
                                                             <div class="form-text mb-1">可粘贴公众号文章的&lt;section&gt;...&lt;/section&gt;等完整HTML结构，留空则用默认格式</div>
                                                             <textarea class="form-control" id="format-template" rows="6" placeholder="可粘贴公众号文章的<section>...</section>等完整HTML结构"></textarea>
                                                         </div>
+
+                        <!-- 视频生成配置 -->
+                        <div class="row mb-3" id="video-config-section">
+                            <div class="col-12 mb-2">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable-video" role="switch">
+                                    <label class="form-check-label" for="enable-video">
+                                        <i class="bi bi-camera-video"></i> <strong>插入视频</strong>
+                                        <small class="text-muted ms-1">（InodeTree Video V2.0，异步生成）</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="video-params" style="display:none;">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label for="video-count" class="form-label">视频数量</label>
+                                        <input type="number" class="form-control form-control-sm" id="video-count" min="1" max="5" value="1">
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="video-fps" class="form-label">帧率 (FPS)</label>
+                                        <select class="form-select form-select-sm" id="video-fps">
+                                            <option value="24">24 FPS — ≤15s 推荐</option>
+                                            <option value="30">30 FPS — ≤10s</option>
+                                            <option value="60">60 FPS — ≤5s</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label">预计时长</label>
+                                        <div class="form-control form-control-sm bg-light text-muted" id="video-duration-hint" style="font-size:12px;">≈ 15s</div>
+                                    </div>
+                                </div>
+                                <div class="form-text mt-1">
+                                    <i class="bi bi-info-circle text-warning"></i>
+                                    视频异步生成，需等待约 2-5 分钟。24FPS ≤15s / 30FPS ≤10s / 60FPS ≤5s 内成功率最高。
+                                </div>
+                            </div>
+                        </div>
                         <div class="d-grid">
                             <button type="button" class="btn btn-success" id="generate-article">
                                 <i class="bi bi-magic"></i> 生成文章
@@ -597,7 +758,7 @@
             let ip = data.ip || '获取失败';
             if (isLocalIp(ip)) {
                 // 用免费第三方API兜底
-                fetch('https://api.ipify.org?format=json').then(res2 => res2.json()).then(data2 => {
+                fetch('https://api4.ipify.org?format=json').then(res2 => res2.json()).then(data2 => {
                     document.getElementById('user-ip').textContent = data2.ip || ip;
                 }).catch(() => {
                     document.getElementById('user-ip').textContent = ip;
@@ -683,41 +844,163 @@
 })();
     </script>
     <script>
-        // 自动获取GitHub star数量
-        fetch('https://api.github.com/repos/wojiadexiaoming-copy/AIWeChatauto')
-          .then(res => res.json())
-          .then(data => {
-            if(data && typeof data.stargazers_count === 'number') {
-              document.getElementById('star-num').textContent = data.stargazers_count;
-            } else {
-              document.getElementById('star-num').textContent = '--';
+        // 获取 GitHub Star 数
+        (function() {
+          const starEl = document.getElementById('star-num');
+          if (!starEl) return;
+          
+          // 优先从本地后端接口获取（后端内置了缓存及多备用渠道解析）
+          fetch('/api/github-stars')
+            .then(res => {
+              if (res.ok) return res.json();
+              throw new Error('Local API error');
+            })
+            .then(d => {
+              if (d && d.success && d.stars && d.stars !== '--') {
+                starEl.textContent = d.stars;
+              } else {
+                fallbackFetch();
+              }
+            })
+            .catch(err => {
+              console.warn('Failed to fetch stars from backend, trying direct fetch:', err);
+              fallbackFetch();
+            });
+
+          function fallbackFetch() {
+            const cacheKey = 'github_stars_count';
+            const cacheTimeKey = 'github_stars_time';
+            const cachedStars = localStorage.getItem(cacheKey);
+            const cachedTime = localStorage.getItem(cacheTimeKey);
+            const now = Date.now();
+            
+            if (cachedStars && cachedTime && (now - parseInt(cachedTime) < 3600000)) {
+              starEl.textContent = cachedStars;
+              return;
             }
-          })
-          .catch(()=>{
-            document.getElementById('star-num').textContent = '--';
-          });
-    </script>
-    <script>
+            
+            const repo = 'wojiadexiaoming-copy/AIWeChatauto';
+            const sources = [
+              `https://api.github.com/repos/${repo}`,
+              `https://img.shields.io/github/stars/${repo}.json`
+            ];
+            
+            function tryFetch(index) {
+              if (index >= sources.length) {
+                if (!starEl.textContent || starEl.textContent === '--') {
+                  starEl.textContent = '--';
+                }
+                return;
+              }
+              const url = sources[index];
+              const controller = new AbortController();
+              const timeoutId = setTimeout(() => controller.abort(), 4000);
+              
+              fetch(url, { signal: controller.signal })
+                .then(res => {
+                  clearTimeout(timeoutId);
+                  if (res.ok) {
+                    return res.json();
+                  }
+                  throw new Error('Response not ok');
+                })
+                .then(d => {
+                  let count = null;
+                  if (d && typeof d.stargazers_count === 'number') {
+                    count = d.stargazers_count;
+                  } else if (d && d.message && url.includes('shields.io')) {
+                    if (d.message !== 'invalid' && d.message !== 'repo not found') {
+                      count = d.message;
+                    }
+                  }
+                  
+                  if (count !== null) {
+                    starEl.textContent = count;
+                    localStorage.setItem(cacheKey, count);
+                    localStorage.setItem(cacheTimeKey, now.toString());
+                  } else {
+                    tryFetch(index + 1);
+                  }
+                })
+                .catch(err => {
+                  clearTimeout(timeoutId);
+                  console.warn(`Failed to fetch stars from ${url}:`, err);
+                  tryFetch(index + 1);
+                });
+            }
+            
+            tryFetch(0);
+          }
+        })();
+        // 每天自动检测GitHub是否有新版本
+        function checkUpdateDaily() {
+            const key = 'last_update_check';
+            const today = new Date().toISOString().slice(0,10);
+            const last = JSON.parse(localStorage.getItem(key) || '{}');
+            const updateBtn = document.getElementById('check-update-btn');
+            // 检查是否已检测过
+            if (last.date === today && typeof last.hasUpdate !== 'undefined') {
+                showUpdateTip(last.hasUpdate);
+                return;
+            }
+            // 获取GitHub最新tag
+            fetch('https://api.github.com/repos/wojiadexiaoming-copy/AIWeChatauto/tags')
+              .then(res => res.json())
+              .then(tags => {
+                let latestTag = '';
+                if(Array.isArray(tags) && tags.length>0) {
+                    latestTag = tags[0].name;
+                }
+                // 获取本地版本
+                fetch('/api/local_version')
+                  .then(res2 => res2.json())
+                  .then(local => {
+                    const localTag = local && local.tag ? local.tag : '';
+                    let hasUpdate = false;
+                    if(latestTag && localTag && latestTag !== localTag) {
+                        hasUpdate = true;
+                    }
+                    localStorage.setItem(key, JSON.stringify({date: today, hasUpdate}));
+                    showUpdateTip(hasUpdate);
+                  });
+              });
+            function showUpdateTip(hasUpdate) {
+                if (hasUpdate) {
+                    updateBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> <span style="color:#d9534f;font-weight:bold;">有新版可更新</span>';
+                    updateBtn.classList.remove('btn-outline-info');
+                    updateBtn.classList.add('btn-outline-danger');
+                } else {
+                    updateBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> <span style="color:#888;">暂无新版</span>';
+                    updateBtn.classList.remove('btn-outline-danger');
+                    updateBtn.classList.add('btn-outline-info');
+                }
+            }
+        }
+        checkUpdateDaily();
         // 检查更新按钮逻辑
         document.getElementById('check-update-btn').addEventListener('click', function() {
             this.disabled = true;
             this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 检查中...';
-            // 1. 获取GitHub最新release或commit
-            fetch('https://api.github.com/repos/wojiadexiaoming-copy/AIWeChatauto/commits/main')
+            // 1. 获取GitHub最新tag
+            fetch('https://api.github.com/repos/wojiadexiaoming-copy/AIWeChatauto/tags')
               .then(res => res.json())
-              .then(data => {
-                const latestSha = data && data.sha ? data.sha : null;
+              .then(tags => {
+                let latestTag = '', latestSha = '';
+                if(Array.isArray(tags) && tags.length>0) {
+                    latestTag = tags[0].name;
+                    latestSha = tags[0].commit && tags[0].commit.sha ? tags[0].commit.sha : '';
+                }
                 // 2. 获取本地版本（需后端API支持）
                 fetch('/api/local_version')
                   .then(res2 => res2.json())
                   .then(local => {
-                    const localSha = local && local.sha ? local.sha : null;
-                    if(latestSha && localSha) {
-                      if(latestSha === localSha) {
-                        alert('当前已是最新版本！\n\n本地版本：' + localSha + '\nGitHub版本：' + latestSha);
+                    const localTag = local && local.tag ? local.tag : '';
+                    const localSha = local && local.sha ? local.sha : '';
+                    if(latestTag && localTag) {
+                      if(latestTag === localTag) {
+                        alert('当前已是最新版本！\n\n本地版本：' + localTag + '\nGitHub版本：' + latestTag);
                       } else {
-                        if(confirm('检测到有新版本！\n\n本地版本：' + localSha + '\nGitHub版本：' + latestSha + '\n\n是否下载并自动更新？')) {
-                          // 3. 触发后端自动拉取GitHub最新代码（需后端实现）
+                        if(confirm('检测到有新版本！\n\n本地版本：' + localTag + '\nGitHub版本：' + latestTag + '\n\n是否下载并自动更新？')) {
                           fetch('/api/update_from_github', {method:'POST'})
                             .then(r=>r.json()).then(r=>{
                               if(r.success){
@@ -725,7 +1008,26 @@
                                 location.reload();
                               } else if (r.needs_confirm) {
                                 if(confirm(r.message + "\n\n警告：更新将可能覆盖您的本地修改，是否强制更新？")) {
-                                    // 这里可以增加强制更新的逻辑，例如再次调用一个带force参数的API
+                                    alert('如需强制更新，请联系开发者开放此功能。');
+                                }
+                              } else{
+                                alert('更新失败：'+(r.message||'未知错误'));
+                              }
+                            }).catch(()=>alert('更新失败！'));
+                        }
+                      }
+                    } else if(latestSha && localSha) {
+                      if(latestSha === localSha) {
+                        alert('当前已是最新版本！\n\n本地版本：' + localSha.slice(0,7) + '\nGitHub版本：' + latestSha.slice(0,7));
+                      } else {
+                        if(confirm('检测到有新版本！\n\n本地版本：' + localSha.slice(0,7) + '\nGitHub版本：' + latestSha.slice(0,7) + '\n\n是否下载并自动更新？')) {
+                          fetch('/api/update_from_github', {method:'POST'})
+                            .then(r=>r.json()).then(r=>{
+                              if(r.success){
+                                alert('更新成功，请刷新页面！');
+                                location.reload();
+                              } else if (r.needs_confirm) {
+                                if(confirm(r.message + "\n\n警告：更新将可能覆盖您的本地修改，是否强制更新？")) {
                                     alert('如需强制更新，请联系开发者开放此功能。');
                                 }
                               } else{

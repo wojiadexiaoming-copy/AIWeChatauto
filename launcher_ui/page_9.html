@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>引载树 - 控制台</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style data-purpose="custom-fonts">
+    /* Using a standard sans-serif font to mimic the application UI */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+  </style>
+</head>
+<body class="bg-[#18181A] text-gray-300 h-screen w-screen overflow-hidden flex flex-col select-none">
+<!-- BEGIN: App Title Bar -->
+<header class="h-8 bg-[#18181A] flex items-center justify-between px-2 text-[12px] flex-shrink-0" data-purpose="app-title-bar">
+<div class="flex items-center gap-2 text-gray-300">
+<!-- App Icon Placeholder (Simplified) -->
+<div class="w-4 h-4 bg-green-400 rounded-sm flex items-center justify-center overflow-hidden">
+<div class="w-2 h-2 bg-white rounded-full opacity-50"></div>
+</div>
+<span>引载树 v1.0.0</span>
+</div>
+<!-- Window Controls -->
+<div class="flex items-center text-gray-400">
+<button aria-label="Help" class="px-3 h-8 hover:bg-[#2D2D30] hover:text-white flex items-center justify-center window-ctrl">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<button aria-label="Minimize" class="px-3 h-8 hover:bg-[#2D2D30] hover:text-white flex items-center justify-center window-ctrl">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M20 12H4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<button aria-label="Maximize" class="px-3 h-8 hover:bg-[#2D2D30] hover:text-white flex items-center justify-center window-ctrl">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><rect height="16" rx="1" ry="1" width="16" x="4" y="4"></rect></svg>
+</button>
+<button aria-label="Close" class="px-3 h-8 hover:bg-red-600 hover:text-white flex items-center justify-center window-ctrl">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</header>
+<!-- END: App Title Bar -->
+<div class="flex-1 flex overflow-hidden">
+<!-- BEGIN: Sidebar -->
+<aside class="w-[68px] bg-[#1E1F22] flex flex-col justify-between py-2 border-r border-[#151515] flex-shrink-0 z-10" data-purpose="sidebar">
+<!-- Top Navigation Group -->
+<nav class="flex flex-col gap-1">
+<!-- Home / Play -->
+<div class="flex flex-col items-center justify-center py-2 text-gray-400 hover:text-gray-200 hover:bg-[#2B2D31] cursor-pointer group">
+<svg class="w-5 h-5 mb-1 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
+<path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px]">一键启动</span>
+</div>
+<!-- Advanced Options -->
+<div class="flex flex-col items-center justify-center py-2 text-gray-400 hover:text-gray-200 hover:bg-[#2B2D31] cursor-pointer group">
+<svg class="w-5 h-5 mb-1 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
+<path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px]">高级选项</span>
+</div>
+<!-- Troubleshooting -->
+<div class="flex flex-col items-center justify-center py-2 text-gray-400 hover:text-gray-200 hover:bg-[#2B2D31] cursor-pointer group">
+<svg class="w-5 h-5 mb-1 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px]">疑难解答</span>
+</div>
+<!-- Version Management -->
+<div class="flex flex-col items-center justify-center py-2 text-gray-400 hover:text-gray-200 hover:bg-[#2B2D31] cursor-pointer group">
+<svg class="w-5 h-5 mb-1 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
+<path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px]">版本管理</span>
+</div>
+<!-- Model Management -->
+<div class="flex flex-col items-center justify-center py-2 text-gray-400 hover:text-gray-200 hover:bg-[#2B2D31] cursor-pointer group">
+<svg class="w-5 h-5 mb-1 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
+<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px]">模型管理</span>
+</div>
+<!-- Tools -->
+<div class="flex flex-col items-center justify-center py-2 text-gray-400 hover:text-gray-200 hover:bg-[#2B2D31] cursor-pointer group">
+<svg class="w-5 h-5 mb-1 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
+<path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px]">小工具</span>
+</div>
+</nav>
+<!-- Bottom Navigation Group -->
+<nav class="flex flex-col gap-1">
+<!-- Community/Chat -->
+<div class="flex flex-col items-center justify-center py-2 text-gray-400 hover:text-gray-200 hover:bg-[#2B2D31] cursor-pointer group">
+<svg class="w-5 h-5 mb-1 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
+<path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px]">交流群</span>
+</div>
+<!-- Lightbulb/Tips -->
+<div class="flex flex-col items-center justify-center py-2 text-gray-400 hover:text-gray-200 hover:bg-[#2B2D31] cursor-pointer group">
+<svg class="w-5 h-5 mb-1 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
+<path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px]">灯泡</span>
+</div>
+<!-- Console (Active) -->
+<div class="relative flex flex-col items-center justify-center py-2 bg-[#2B2D31] text-gray-200 cursor-pointer">
+<!-- Active Indicator Line -->
+<div class="absolute left-0 top-0 bottom-0 w-[3px] bg-blue-500 rounded-r-md"></div>
+<svg class="w-5 h-5 mb-1 text-red-400" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
+<path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<!-- Settings -->
+<div class="flex flex-col items-center justify-center py-2 text-gray-400 hover:text-gray-200 hover:bg-[#2B2D31] cursor-pointer group">
+<svg class="w-5 h-5 mb-1 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px]">设置</span>
+</div>
+</nav>
+</aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: Main Content Area -->
+<main class="flex-1 flex flex-col bg-[#1E1F22] overflow-hidden relative" data-purpose="main-content">
+<!-- Top Action Bar -->
+<div class="h-12 bg-[#2B2D31] flex items-center justify-between px-4 flex-shrink-0 z-10 shadow-sm border-b border-[#202225]">
+  <!-- Status -->
+  <div id="status-text" class="text-sm font-medium text-gray-200 tracking-wide">
+    未运行
+  </div>
+  <!-- Actions -->
+  <div class="flex items-center gap-2">
+    <!-- Log Operations -->
+    <button id="select-all-log-btn" class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-300 hover:text-white hover:bg-[#3F4147] rounded transition-colors">
+      全选
+    </button>
+    <button id="copy-log-btn" class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-300 hover:text-white hover:bg-[#3F4147] rounded transition-colors">
+      复制
+    </button>
+    <button id="clear-log-btn" class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-300 hover:text-white hover:bg-[#3F4147] rounded transition-colors">
+      清空
+    </button>
+    <div class="w-[1px] h-4 bg-gray-700/50 mx-1"></div>
+    <!-- Open WebUI -->
+    <button id="open-web-btn" class="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-300 hover:text-white hover:bg-[#3F4147] rounded disabled:opacity-40 disabled:hover:bg-gray-700 transition-colors" disabled>
+      打开网页端
+    </button>
+    <!-- Terminate Process -->
+    <button id="terminate-btn" class="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-500 hover:bg-[#ef4444] hover:text-white rounded disabled:opacity-40 disabled:hover:text-white transition-colors" disabled>
+      <div class="w-3 h-3 bg-red-500 rounded-sm"></div>
+      终止进程
+    </button>
+    <!-- One-click Start -->
+    <button id="start-btn" class="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-200 hover:text-white hover:bg-[#3F4147] rounded transition-colors ml-2">
+      <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24">
+        <path d="M8 5v14l11-7z"></path>
+      </svg>
+      一键启动
+    </button>
+  </div>
+</div>
+<!-- Console / Terminal View -->
+<div id="log-container" class="flex-1 bg-[#0E0E10] w-full h-full p-4 overflow-auto font-mono text-sm text-[#4ade80] shadow-inner whitespace-pre-wrap select-text"></div>
+</main>
+<!-- END: Main Content Area -->
+</div>
+<!-- BEGIN: Bottom Status Bar -->
+<footer class="h-6 bg-[#18181A] border-t border-[#202225] flex items-center px-4 text-[11px] text-gray-500 flex-shrink-0 z-20" data-purpose="status-bar">
+  <span>启动器版本: 2.8.14 Build 415</span>
+</footer>
+<!-- END: Bottom Status Bar -->
+
+<script>
+  window.initPage9 = function() {
+    const startBtn = document.getElementById('start-btn');
+    const terminateBtn = document.getElementById('terminate-btn');
+    const openWebBtn = document.getElementById('open-web-btn');
+    const statusText = document.getElementById('status-text');
+    const container = document.getElementById('log-container');
+    
+    // Check status on load
+    if (window.pywebview && window.pywebview.api) {
+      checkStatus();
+      loadActiveLogs();
+    } else {
+      window.addEventListener('pywebviewready', () => {
+        checkStatus();
+        loadActiveLogs();
+      });
+    }
+    
+    // Check status periodically
+    if (window.page9Interval) {
+        clearInterval(window.page9Interval);
+    }
+    window.page9Interval = setInterval(checkStatus, 2000);
+    
+    function checkStatus() {
+      if (!document.getElementById('start-btn')) {
+         clearInterval(window.page9Interval);
+         window.page9Interval = null;
+         return;
+      }
+      window.pywebview.api.is_server_running().then((isRunning) => {
+        updateUI(isRunning);
+      });
+    }
+    
+    function loadActiveLogs() {
+      window.pywebview.api.get_active_logs().then((logs) => {
+        if (logs && container) {
+          container.textContent = logs;
+          container.scrollTop = container.scrollHeight;
+        }
+      });
+    }
+    
+    function updateUI(isRunning) {
+      if (isRunning) {
+        statusText.innerText = '运行中';
+        statusText.classList.remove('text-gray-200');
+        statusText.classList.add('text-green-400');
+        
+        startBtn.disabled = true;
+        startBtn.classList.add('opacity-40', 'cursor-not-allowed');
+        
+        terminateBtn.disabled = false;
+        terminateBtn.classList.remove('text-gray-500');
+        terminateBtn.classList.add('text-gray-200');
+        
+        openWebBtn.disabled = false;
+      } else {
+        statusText.innerText = '未运行';
+        statusText.classList.remove('text-green-400');
+        statusText.classList.add('text-gray-200');
+        
+        startBtn.disabled = false;
+        startBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+        
+        terminateBtn.disabled = true;
+        terminateBtn.classList.remove('text-gray-200');
+        terminateBtn.classList.add('text-gray-500');
+        
+        openWebBtn.disabled = true;
+      }
+    }
+    
+    // Start Flask
+    startBtn.addEventListener('click', () => {
+      statusText.innerText = '正在启动...';
+      window.pywebview.api.start_server().then((success) => {
+        checkStatus();
+        if (success) {
+          window.pywebview.api.open_browser();
+        }
+      });
+    });
+    
+    // Stop Flask
+    terminateBtn.addEventListener('click', () => {
+      statusText.innerText = '正在停止...';
+      window.pywebview.api.stop_server().then(() => {
+        checkStatus();
+      });
+    });
+    
+    // Open Web
+    openWebBtn.addEventListener('click', () => {
+      window.pywebview.api.open_browser();
+    });
+
+    // Log operations listeners
+    const selectAllBtn = document.getElementById('select-all-log-btn');
+    const copyBtn = document.getElementById('copy-log-btn');
+    const clearBtn = document.getElementById('clear-log-btn');
+    
+    if (selectAllBtn) {
+      selectAllBtn.addEventListener('click', () => {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(container);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      });
+    }
+    
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        if (!container) return;
+        const text = container.textContent;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text).then(() => {
+            alert('日志已复制到剪贴板');
+          }).catch(err => {
+            console.error('Failed to copy: ', err);
+          });
+        } else {
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(container);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          document.execCommand('copy');
+          selection.removeAllRanges();
+          alert('日志已复制到剪贴板');
+        }
+      });
+    }
+    
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        if (container) {
+          container.textContent = '';
+        }
+        if (window.pywebview && window.pywebview.api && window.pywebview.api.clear_logs) {
+          window.pywebview.api.clear_logs();
+        }
+      });
+    }
+  };
+  
+  // Exposed function for python log streaming
+  window.addLogLine = function(line) {
+    const container = document.getElementById('log-container');
+    if (container) {
+      const isAtBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 50;
+      container.textContent += line + '\n';
+      if (isAtBottom) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+  };
+</script>
+</body></html>
