@@ -37,7 +37,7 @@ class DraftService:
             response = requests.post(
                 url, 
                 params=params,
-                data=json.dumps(draft_data, ensure_ascii=False), 
+                data=json.dumps(draft_data, ensure_ascii=False).encode('utf-8'), 
                 headers=headers,
                 timeout=self.timeout
             )
@@ -115,6 +115,13 @@ class DraftService:
         :param content_source_url: 原文链接
         :return: 草稿数据
         """
+        # Truncate title so that its UTF-8 encoded byte length is <= 64 bytes
+        encoded_title = title.encode('utf-8')
+        if len(encoded_title) > 64:
+            logger.warning(f"标题超过64字节，将被截断。原标题: {title}")
+            title = encoded_title[:64].decode('utf-8', errors='ignore')
+            logger.warning(f"截断后标题: {title}")
+
         logger.info(f"构建草稿数据，标题: {title}")
         
         draft_data = {
@@ -172,9 +179,9 @@ class DraftService:
                     logger.error(f"文章{i+1}内容超过1MB字节限制")
                     return False
                 
-                # 检查标题长度
-                if len(article['title']) > 64:
-                    logger.error(f"文章{i+1}标题过长，超过64字符")
+                # 检查标题长度（官方限制64字节）
+                if len(article['title'].encode('utf-8')) > 64:
+                    logger.error(f"文章{i+1}标题过长，超过64字节限制")
                     return False
             
             logger.info("草稿数据验证通过")
