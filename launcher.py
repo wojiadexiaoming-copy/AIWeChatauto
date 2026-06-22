@@ -167,21 +167,92 @@ class LauncherApi:
                 pass
         return "获取失败"
 
+    def _find_chrome_path(self):
+        """寻找谷歌浏览器路径：优先使用本地 chrome/ 目录，其次寻找系统安装路径"""
+        # 1. 检查本地项目目录
+        local_paths = [
+            os.path.join(os.getcwd(), "chrome", "chrome.exe"),
+            os.path.join(os.getcwd(), "chrome.exe")
+        ]
+        for p in local_paths:
+            if os.path.exists(p):
+                return p
+                
+        # 2. 检查系统常见路径
+        system_paths = [
+            r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+            r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+            os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\Application\chrome.exe")
+        ]
+        for p in system_paths:
+            if os.path.exists(p):
+                return p
+        return None
+
+    def _create_default_extension(self, ext_dir):
+        """在指定目录下释放默认浏览器辅助扩展"""
+        try:
+            os.makedirs(ext_dir, exist_ok=True)
+            manifest = {
+                "manifest_version": 3,
+                "name": "CodeStash WeChat Helper",
+                "version": "1.0.0",
+                "description": "CodeStash 微信公众号助手辅助扩展",
+                "permissions": ["activeTab", "scripting"],
+                "host_permissions": ["https://mp.weixin.qq.com/*", "http://127.0.0.1:5000/*"],
+                "content_scripts": [
+                    {
+                        "matches": ["https://mp.weixin.qq.com/*"],
+                        "js": ["content.js"]
+                    }
+                ]
+            }
+            with open(os.path.join(ext_dir, "manifest.json"), "w", encoding="utf-8") as f:
+                json.dump(manifest, f, indent=4, ensure_ascii=False)
+                
+            content_js = (
+                "console.log('CodeStash WeChat Helper Extension Loaded!');\n"
+                "// 后续可在此处与本地 Flask 后端进行数据传递，或执行页面自动点击逻辑\n"
+            )
+            with open(os.path.join(ext_dir, "content.js"), "w", encoding="utf-8") as f:
+                f.write(content_js)
+                
+            print(f"默认浏览器辅助扩展已释放至: {ext_dir}")
+        except Exception as e:
+            print(f"释放默认浏览器辅助扩展失败: {e}")
+
     def open_wechat_window(self):
-        """打开微信公众号管理平台的内置浏览器窗口"""
-        for w in webview.windows:
-            if w.title == "微信公众号平台":
-                w.focus()
-                return
+        """打开微信公众号管理平台的独立谷歌窗口，并加载自定义助手扩展"""
+        chrome_path = self._find_chrome_path()
+        if chrome_path:
+            profile_path = os.path.abspath(os.path.join("data", "chrome_profile"))
+            ext_path = os.path.abspath("chrome_extension")
+            os.makedirs(profile_path, exist_ok=True)
+            
+            # 确保扩展的 manifest.json 存在
+            manifest_file = os.path.join(ext_path, "manifest.json")
+            if not os.path.exists(manifest_file):
+                self._create_default_extension(ext_path)
+
+            args = [
+                chrome_path,
+                f"--user-data-dir={profile_path}",
+                f"--load-extension={ext_path}",
+                "--no-first-run",
+                "--no-default-browser-check",
+                "https://mp.weixin.qq.com/"
+            ]
+            print(f"启动独立谷歌浏览器进程: {' '.join(args)}")
+            try:
+                subprocess.Popen(args)
+                return True
+            except Exception as e:
+                print(f"启动谷歌浏览器进程失败: {e}")
         
-        # 打开独立窗口加载微信后台，支持后续通过自动化脚本注入和操作
-        webview.create_window(
-            title="微信公众号平台",
-            url="https://mp.weixin.qq.com/",
-            width=1280,
-            height=850,
-            resizable=True
-        )
+        # 降级方案：使用默认浏览器打开
+        import webbrowser
+        webbrowser.open("https://mp.weixin.qq.com/")
+        return False
 
     def open_external_browser(self, url):
         """在外部浏览器中打开指定链接"""

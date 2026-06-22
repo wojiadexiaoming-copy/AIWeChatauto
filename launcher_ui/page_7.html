@@ -149,13 +149,13 @@
 
     <!-- Buttons -->
     <div class="w-full flex flex-col sm:flex-row gap-3 pt-2">
-      <button onclick="openInExternal()" class="flex-1 py-3 px-4 rounded-xl bg-blue-btn hover:bg-blue-btn-hover text-white font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+      <button onclick="openInExternal()" class="flex-1 py-3 px-4 rounded-xl bg-app-card border border-app-border hover:bg-app-cardHover text-app-text font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98]">
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
-        在外部浏览器打开 (推荐)
+        在外部浏览器打开
       </button>
-      <button onclick="openInInternal()" class="flex-1 py-3 px-4 rounded-xl bg-app-card border border-app-border hover:bg-app-cardHover text-app-text font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98]">
-        <i class="fa-solid fa-window-restore"></i>
-        在内置独立窗口打开
+      <button onclick="openInInternal()" class="flex-1 py-3 px-4 rounded-xl bg-blue-btn hover:bg-blue-btn-hover text-white font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+        <i class="fa-brands fa-chrome"></i>
+        打开独立谷歌窗口 (支持辅助插件)
       </button>
     </div>
     
