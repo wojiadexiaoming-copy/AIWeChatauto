@@ -183,6 +183,17 @@ class LauncherApi:
             resizable=True
         )
 
+    def open_external_browser(self, url):
+        """在外部浏览器中打开指定链接"""
+        try:
+            # 过滤 url，安全防范
+            if url.startswith("https://mp.weixin.qq.com/"):
+                webbrowser.open(url)
+                return True
+        except Exception as e:
+            print(f"打开外部浏览器异常: {e}")
+        return False
+
     # ── 启动器配置逻辑 ────────────────────────────────────────────────
     def get_config(self):
         """获取 config.json 逻辑选项"""
