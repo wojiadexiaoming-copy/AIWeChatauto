@@ -713,8 +713,11 @@ def main():
         frameless=True
     )
     
-    # 启动应用
-    webview.start(debug=False)
+    # 启动应用，并伪装为标准桌面版 Chrome 浏览器 User-Agent，规避微信/Cloudflare等安全拦截
+    webview.start(
+        debug=False,
+        user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+    )
 
 if __name__ == "__main__":
     # 检查是否为打包后的 Flask 服务子进程启动指令
