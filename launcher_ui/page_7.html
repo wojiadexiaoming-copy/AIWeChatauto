@@ -126,36 +126,31 @@
     <div class="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl"></div>
     <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-green-500/10 rounded-full blur-3xl"></div>
     
-    <!-- WeChat Icon with pulsing border -->
-    <div class="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-400 text-3xl animate-pulse">
-      <i class="fa-brands fa-weixin"></i>
+    <!-- Chrome Icon with pulsing border -->
+    <div class="w-16 h-16 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 text-3xl animate-pulse">
+      <i class="fa-brands fa-chrome"></i>
     </div>
     
     <div class="space-y-2">
-      <h2 class="text-2xl font-bold tracking-tight text-app-text">微信公众平台登录</h2>
-      <p class="text-sm text-app-textMuted leading-relaxed px-4">
-        微信公众平台设有严格的防框架（Clickjacking）和内嵌 Webview 审查的安全风控。
-        如果将登录页面直接嵌入在页面内（即 iframe 模式），微信后台检测到非顶级窗口会直接拦截扫码授权。
+      <h2 class="text-2xl font-bold tracking-tight text-app-text">微信后台管理</h2>
+      <p id="status-text" class="text-sm text-app-textMuted leading-relaxed px-4">
+        正在自动启动独立谷歌浏览器窗口...
       </p>
     </div>
 
     <!-- Alert note -->
-    <div class="w-full bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4 text-left flex gap-3 text-xs text-yellow-500/90">
-      <div class="text-base"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <div class="w-full bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 text-left flex gap-3 text-xs text-app-textMuted">
+      <div class="text-base text-blue-400"><i class="fa-solid fa-circle-info"></i></div>
       <div>
-        <span class="font-bold">安全风控说明</span>：如果您使用内嵌窗口遇到“二维码扫码不成功”或“不支持在此环境扫描”，请选择下方推荐的“外部浏览器中打开”方案。
+        <span class="font-bold text-app-text">独立环境说明</span>：此独立窗口启用了隔离的沙盒环境（`data/chrome_profile`），并已自动挂载位于根目录 `chrome_extension/` 的助手插件，支持页面自动点击控制。
       </div>
     </div>
 
     <!-- Buttons -->
-    <div class="w-full flex flex-col sm:flex-row gap-3 pt-2">
-      <button onclick="openInExternal()" class="flex-1 py-3 px-4 rounded-xl bg-app-card border border-app-border hover:bg-app-cardHover text-app-text font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98]">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-        在外部浏览器打开
-      </button>
-      <button onclick="openInInternal()" class="flex-1 py-3 px-4 rounded-xl bg-blue-btn hover:bg-blue-btn-hover text-white font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-[0.98]">
-        <i class="fa-brands fa-chrome"></i>
-        打开独立谷歌窗口 (支持辅助插件)
+    <div class="w-full pt-2">
+      <button onclick="openWeChatChrome()" class="w-full py-3 px-4 rounded-xl bg-blue-btn hover:bg-blue-btn-hover text-white font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+        <i class="fa-solid fa-window-restore"></i>
+        重新打开谷歌浏览器
       </button>
     </div>
     
@@ -167,21 +162,23 @@
 <!-- END: Main Panel -->
 
 <script>
+  function openWeChatChrome() {
+      document.getElementById('status-text').innerText = "正在启动独立谷歌浏览器窗口...";
+      if (window.pywebview && window.pywebview.api) {
+          window.pywebview.api.open_wechat_window().then(success => {
+              if (success) {
+                  document.getElementById('status-text').innerText = "独立谷歌浏览器已成功启动，载入内置辅助插件。";
+              } else {
+                  document.getElementById('status-text').innerText = "启动失败，已降级调用系统默认浏览器打开微信公众号后台。";
+              }
+          });
+      }
+  }
+
   window.initPage7 = function() {
-      // Initialize if needed
+      // 默认自动打开谷歌浏览器
+      setTimeout(openWeChatChrome, 300);
   };
-
-  function openInExternal() {
-      if (window.pywebview && window.pywebview.api) {
-          window.pywebview.api.open_external_browser("https://mp.weixin.qq.com/");
-      }
-  }
-
-  function openInInternal() {
-      if (window.pywebview && window.pywebview.api) {
-          window.pywebview.api.open_wechat_window();
-      }
-  }
 
   document.addEventListener('DOMContentLoaded', () => {
       if (window.pywebview && window.pywebview.api) {
