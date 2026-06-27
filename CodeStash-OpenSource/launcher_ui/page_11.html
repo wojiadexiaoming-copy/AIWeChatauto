@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>引载树 - 关于</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              sidebar: '#202124',
+              main: '#1a1b1e',
+              card: '#292a2d',
+              cardHover: '#333438',
+              text: '#e0e0e0',
+              muted: '#a0a0a0',
+              accent: '#3b82f6',
+              border: '#333438'
+            }
+          },
+          fontFamily: {
+            sans: ['"Microsoft YaHei"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-scroll">
+    /* Custom Scrollbar for a more app-like feel */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1a1b1e;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #333438;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4a4b50;
+    }
+  </style>
+</head>
+<body class="bg-app-main text-app-text h-screen w-screen overflow-hidden flex select-none font-sans">
+<!-- BEGIN: Sidebar -->
+<aside class="w-[80px] bg-app-sidebar flex flex-col items-center py-4 border-r border-app-border shrink-0 z-10">
+<!-- Top Icons -->
+<div class="flex flex-col gap-6 w-full items-center mt-8">
+<!-- Nav Item: Start -->
+<div class="flex flex-col items-center gap-1 cursor-pointer group text-app-muted hover:text-white transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px]">一键启动</span>
+</div>
+<!-- Nav Item: List -->
+<div class="flex flex-col items-center gap-1 cursor-pointer group text-app-muted hover:text-white transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px]">高级选项</span>
+</div>
+<!-- Nav Item: Troubleshoot -->
+<div class="flex flex-col items-center gap-1 cursor-pointer group text-app-muted hover:text-white transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px]">疑难解答</span>
+</div>
+<!-- Nav Item: History -->
+<div class="flex flex-col items-center gap-1 cursor-pointer group text-app-muted hover:text-white transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px]">版本管理</span>
+</div>
+<!-- Nav Item: Models -->
+<div class="flex flex-col items-center gap-1 cursor-pointer group text-app-muted hover:text-white transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px]">模型管理</span>
+</div>
+<!-- Nav Item: Tools -->
+<div class="flex flex-col items-center gap-1 cursor-pointer group text-app-muted hover:text-white transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px]">小工具</span>
+</div>
+</div>
+<div class="mt-auto flex flex-col gap-6 w-full items-center mb-4">
+<!-- Nav Item: Chat -->
+<div class="flex flex-col items-center gap-1 cursor-pointer group text-app-muted hover:text-white transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px]">交流群</span>
+</div>
+<!-- Nav Item: Lightbulb -->
+<div class="flex flex-col items-center gap-1 cursor-pointer group text-app-muted hover:text-white transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px]">灯泡</span>
+</div>
+<!-- Nav Item: Dashboard -->
+<div class="flex flex-col items-center gap-1 cursor-pointer group text-app-muted hover:text-white transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px]">控制台</span>
+</div>
+<!-- Nav Item: Settings (Active) -->
+<div class="flex flex-col items-center gap-1 cursor-pointer group text-white bg-app-card w-full py-3 border-l-2 border-app-accent">
+<svg class="w-6 h-6 text-app-accent" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+</aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: Main Content Area -->
+<main class="flex-1 flex flex-col relative overflow-hidden">
+<!-- Title Bar Mockup (Optional based on screenshot, adding for completeness) -->
+<header class="h-10 bg-[#25262b] flex items-center justify-between px-4 text-xs text-app-muted shrink-0 border-b border-app-border">
+<div class="flex items-center gap-2">
+<i class="fa-solid fa-tree text-green-400 text-[14px]"></i>
+<span>引载树 v1.0.0</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="cursor-pointer hover:text-white">?</span>
+<span class="cursor-pointer hover:text-white">_</span>
+<span class="cursor-pointer hover:text-white">□</span>
+<span class="cursor-pointer hover:text-white">×</span>
+</div>
+</header>
+<!-- Top Tabs -->
+<div class="h-14 bg-app-sidebar flex items-center px-6 gap-2 shrink-0 border-b border-app-border">
+<button id="tab-general" class="px-4 py-1.5 rounded text-sm text-app-muted hover:bg-app-card hover:text-white transition-colors flex items-center gap-2">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        一般设置
+      </button>
+<button id="tab-about" class="px-4 py-1.5 rounded text-sm bg-[#3a3b40] text-white flex items-center gap-2 shadow-sm">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        关于
+      </button>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-8 relative">
+<div class="max-w-6xl mx-auto flex flex-col gap-8 pb-12">
+<!-- Banner Image Placeholder -->
+<div class="w-full h-[220px] rounded-xl overflow-hidden shadow-lg border border-app-border relative bg-gradient-to-r from-blue-600/30 via-indigo-700/30 to-purple-800/30">
+    <img src="../static/page_11.png" class="w-full h-full object-cover" onerror="this.style.display='none';">
+</div>
+<!-- App Info -->
+<div class="text-center flex flex-col gap-2 mt-4">
+<h1 class="text-3xl font-bold tracking-widest text-green-400">引载树</h1>
+<p class="text-app-muted text-sm">v1.0.0 Build 100</p>
+<p class="text-app-muted text-sm mt-1">由 引载树 官方研发团队发布</p>
+</div>
+<!-- Links Grid -->
+<div class="flex justify-center gap-6 mt-6">
+<!-- Card 1 -->
+<a class="bg-app-card hover:bg-app-cardHover transition-colors border border-app-border rounded-lg p-4 flex items-center justify-between group w-72" href="https://inodetree.com/" target="_blank">
+<div class="flex items-center gap-3">
+<div class="text-app-muted group-hover:text-green-400 transition-colors">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<div class="text-sm text-white">引载树官网</div>
+<div class="text-[11px] text-app-muted">inodetree.com</div>
+</div>
+</div>
+<svg class="w-4 h-4 text-app-muted" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+<!-- Card 2 -->
+<a class="bg-app-card hover:bg-app-cardHover transition-colors border border-app-border rounded-lg p-4 flex items-center justify-between group w-72" href="#">
+<div class="flex items-center gap-3">
+<div class="text-app-muted group-hover:text-green-400 transition-colors">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<div class="text-sm text-white">微信公众号发布系统</div>
+<div class="text-[11px] text-app-muted">CodeStash Controller</div>
+</div>
+</div>
+<svg class="w-4 h-4 text-app-muted" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+</div>
+<!-- Slogan -->
+<div class="text-center text-sm text-app-muted mt-8 mb-4">
+          引用 · 引入 · 引导 · 载入 —— 汇数据之壤，成资产之树。
+        </div>
+<!-- Terms and Conditions Text Block -->
+<div class="text-[13px] text-app-text leading-relaxed mt-4 max-w-4xl space-y-1">
+<p>使用本启动器即代表您已阅读并同意以下用户协议：</p>
+<p>您不得实施包括但不限于以下行为，也不得为任何违反法律法规的行为提供便利：</p>
+<ul class="pl-6 space-y-1">
+<li>反对宪法所规定的基本原则的。</li>
+<li>危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的。</li>
+<li>损害国家荣誉和利益的。</li>
+<li>煽动民族仇恨、民族歧视，破坏民族团结的。</li>
+<li>破坏国家宗教政策，宣扬邪教和封建迷信的。</li>
+<li>散布谣言，扰乱社会秩序，破坏社会稳定的。</li>
+<li>散布淫秽、色情、赌博、暴力、凶杀、恐怖或教唆犯罪的。</li>
+<li>侮辱或诽谤他人，侵害他人合法权益的。</li>
+<li>实施任何违背“七条底线”的行为。</li>
+<li>含有法律、行政法规禁止的其他内容的。</li>
+</ul>
+<p class="pt-2">因您的数据的产生、收集、处理、使用等任何相关事项存在违反法律法规等情况而造成的全部结果及责任均由您自行承担。</p>
+</div>
+</div>
+</div>
+</main>
+<!-- END: Main Content Area -->
+<script>
+  window.initPage11 = function() {
+      const generalTab = document.getElementById('tab-general');
+      const aboutTab = document.getElementById('tab-about');
+      
+      if (generalTab) {
+          generalTab.addEventListener('click', () => {
+              navigateTo('page_10.html');
+          });
+      }
+      if (aboutTab) {
+          aboutTab.addEventListener('click', () => {
+              navigateTo('page_11.html');
+          });
+      }
+  };
+</script>
+</body></html>

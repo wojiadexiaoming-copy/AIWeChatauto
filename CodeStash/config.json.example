@@ -1,0 +1,19 @@
+{
+    "wechat_appid": "your_wechat_appid",
+    "wechat_appsecret": "your_wechat_appsecret",
+    "gemini_api_key": "your_gemini_api_key",
+    "gemini_model": "gemini-2.5-flash",
+    "deepseek_api_key": "your_deepseek_api_key",
+    "deepseek_model": "deepseek-chat",
+    "dashscope_api_key": "your_dashscope_api_key",
+    "dashscope_model": "qwen-turbo",
+    "pexels_api_key": "your_pexels_api_key",
+    "coze_token": "your_coze_token",
+    "inodetree_api_key": "your_inodetree_api_key",
+    "inodetree_model": "inodetree-2.0-flash",
+    "image_model": "gemini",
+    "author": "AI笔记",
+    "content_source_url": "",
+    "firecrawl_api_key": "your_firecrawl_api_key",
+    "coze_workflow_id": "your_coze_workflow_id"
+}

@@ -1,0 +1,327 @@
+<!-- ═══════════════════════════════════════════════════════
+     Tab: 系统配置管理
+     ═══════════════════════════════════════════════════════ -->
+<div class="max-w-[1600px] mx-auto px-4 md:px-6 py-lg">
+
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+
+    <!-- ── 微信公众号 (大卡) ── -->
+    <section class="md:col-span-8 glass-panel rounded-lg p-lg flex flex-col gap-md">
+      <div class="flex items-center gap-sm">
+        <div class="w-9 h-9 rounded-lg bg-wechat-green/10 flex items-center justify-center">
+          <span class="material-symbols-outlined text-wechat-green" style="font-variation-settings:'FILL' 1;">chat</span>
+        </div>
+        <div>
+          <h2 class="text-headline-sm font-bold">微信公众号</h2>
+          <p class="text-caption text-on-surface-variant">开发者 AppID / AppSecret</p>
+        </div>
+        <span id="wechat-status" class="ml-auto text-caption px-sm py-xs rounded-full bg-surface-container-highest text-on-surface-variant">未配置</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+        <div class="space-y-xs">
+          <label class="block text-label text-on-surface-variant">AppID</label>
+          <input type="text" id="wechat-appid"
+            class="form-field w-full h-11 px-md rounded text-body" placeholder="wx1234567890abcdef">
+        </div>
+        <div class="space-y-xs">
+          <label class="block text-label text-on-surface-variant">AppSecret</label>
+          <input type="password" id="wechat-appsecret"
+            class="form-field w-full h-11 px-md rounded text-body" placeholder="••••••••••••••••">
+        </div>
+      </div>
+      <div class="flex items-center justify-between pt-sm border-t border-outline-variant/20">
+        <span class="text-caption text-on-surface-variant">Token 状态将显示在状态徽章</span>
+        <button id="test-wechat"
+          class="px-lg h-9 rounded-full bg-wechat-green text-white text-label font-semibold
+                 hover:brightness-110 active:scale-95 transition-all">
+          测试连接
+        </button>
+      </div>
+    </section>
+
+    <!-- ── 作者信息 (小卡) ── -->
+    <section class="md:col-span-4 glass-panel rounded-lg p-lg flex flex-col gap-md">
+      <div class="flex items-center gap-sm">
+        <div class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary">person</span>
+        </div>
+        <h2 class="text-headline-sm font-bold">作者信息</h2>
+      </div>
+      <div class="space-y-xs">
+        <label class="block text-label text-on-surface-variant">作者名称</label>
+        <input type="text" id="author-name"
+          class="form-field w-full h-11 px-md rounded text-body" placeholder="AI笔记" value="AI笔记">
+      </div>
+      <div class="space-y-xs">
+        <label class="block text-label text-on-surface-variant">原文链接（可选）</label>
+        <input type="url" id="content-source-url"
+          class="form-field w-full h-11 px-md rounded text-body" placeholder="https://…">
+      </div>
+      <div class="mt-auto">
+        <p class="text-caption text-on-surface-variant">公网 IP：<span id="user-ip" class="font-medium">获取中…</span></p>
+      </div>
+    </section>
+
+    <!-- ── InodeTree 模型 ── -->
+    <section class="md:col-span-4 glass-panel rounded-lg p-lg flex flex-col gap-md border border-wechat-green/20">
+      <div class="flex items-center gap-sm">
+        <div class="w-9 h-9 rounded-lg bg-wechat-green flex items-center justify-center">
+          <span class="material-symbols-outlined text-white" style="font-variation-settings:'FILL' 1;">hub</span>
+        </div>
+        <div class="flex-1">
+          <h2 class="text-headline-sm font-bold">InodeTree</h2>
+          <p class="text-caption text-on-surface-variant">文本 / 图像 / 视频生成</p>
+        </div>
+        <span class="text-caption px-sm py-xs rounded-full bg-wechat-green text-white font-bold tracking-wide">🎁 免费</span>
+        <span class="text-caption px-sm py-xs rounded-full bg-wechat-green/10 text-wechat-green font-semibold">推荐</span>
+        <span id="inodetree-status" class="text-caption px-sm py-xs rounded-full bg-surface-container-highest text-on-surface-variant">未配置</span>
+      </div>
+
+      <!-- 免费获取说明 -->
+      <div class="flex items-start gap-xs p-sm rounded-lg bg-wechat-green/5 border border-wechat-green/20">
+        <span class="material-symbols-outlined text-wechat-green flex-shrink-0 mt-[1px]" style="font-size:16px;">info</span>
+        <div class="text-caption text-on-surface-variant leading-relaxed">
+          发布一条含本项目介绍的自媒体作品（抖音/B站/小红书等），
+          提交链接即可<span class="text-wechat-green font-semibold">免费获取 Token 额度</span>。
+          播放量越高，额度越多。
+          <a href="/apply" target="_blank"
+             id="open-apply-page"
+             class="inline-flex items-center gap-xs ml-xs text-wechat-green font-semibold hover:underline">
+            立即申请
+            <span class="material-symbols-outlined" style="font-size:13px;">open_in_new</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="space-y-xs">
+        <label class="block text-label text-on-surface-variant">API Key</label>
+        <input type="password" id="inodetree-api-key"
+          class="form-field w-full h-11 px-md rounded text-body" placeholder="inodetree-…">
+      </div>
+      <div class="p-sm bg-surface-container-low rounded-lg border border-outline-variant/30 text-caption text-on-surface-variant space-y-xs">
+        <p class="font-medium text-on-surface">支持的子模型（同一 Key，无需单独选择）</p>
+        <p>文本：<code class="bg-white px-xs rounded">inodetree-pro</code></p>
+        <p>图片：<code class="bg-white px-xs rounded">inodetree-image</code></p>
+        <p>视频：<code class="bg-white px-xs rounded">inodetree-video</code></p>
+      </div>
+      <button id="test-inodetree"
+        class="w-full h-9 rounded-full bg-wechat-green text-white text-label font-semibold hover:brightness-110 active:scale-95 transition-all mt-auto">
+        测试连接
+      </button>
+    </section>
+
+    <!-- ── Gemini ── -->
+    <section class="md:col-span-4 glass-panel rounded-lg p-lg flex flex-col gap-md">
+      <div class="flex items-center gap-sm">
+        <div class="w-9 h-9 rounded-lg bg-secondary-container/30 flex items-center justify-center">
+          <span class="material-symbols-outlined text-secondary">auto_awesome</span>
+        </div>
+        <div class="flex-1">
+          <h2 class="text-headline-sm font-bold">Gemini AI</h2>
+          <p class="text-caption text-on-surface-variant">Google 文本 + 图像生成</p>
+        </div>
+        <span id="gemini-status" class="text-caption px-sm py-xs rounded-full bg-surface-container-highest text-on-surface-variant">未配置</span>
+      </div>
+      <div class="space-y-xs">
+        <label class="block text-label text-on-surface-variant">API 密钥</label>
+        <input type="password" id="gemini-api-key"
+          class="form-field w-full h-11 px-md rounded text-body" placeholder="AIza…">
+      </div>
+      <div class="space-y-xs">
+        <label class="block text-label text-on-surface-variant">模型</label>
+        <select id="gemini-model" class="form-field w-full h-11 px-md rounded text-body">
+          <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+          <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+          <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+        </select>
+      </div>
+      <div class="flex gap-xs mt-auto">
+        <button id="load-gemini-models"
+          class="flex-1 h-9 rounded-full border border-outline-variant text-label text-on-surface-variant hover:border-wechat-green hover:text-wechat-green transition-all">
+          刷新模型
+        </button>
+        <button id="test-gemini"
+          class="flex-1 h-9 rounded-full bg-wechat-green text-white text-label font-semibold hover:brightness-110 active:scale-95 transition-all">
+          测试连接
+        </button>
+      </div>
+    </section>
+
+    <!-- ── DeepSeek ── -->
+    <section class="md:col-span-4 glass-panel rounded-lg p-lg flex flex-col gap-md">
+      <div class="flex items-center gap-sm">
+        <div class="w-9 h-9 rounded-lg bg-on-background/5 flex items-center justify-center">
+          <span class="material-symbols-outlined text-on-background">psychology</span>
+        </div>
+        <div class="flex-1">
+          <h2 class="text-headline-sm font-bold">DeepSeek</h2>
+          <p class="text-caption text-on-surface-variant">深度求索文本模型</p>
+        </div>
+        <span id="deepseek-status" class="text-caption px-sm py-xs rounded-full bg-surface-container-highest text-on-surface-variant">未配置</span>
+      </div>
+      <div class="space-y-xs">
+        <label class="block text-label text-on-surface-variant">API 密钥</label>
+        <input type="password" id="deepseek-api-key"
+          class="form-field w-full h-11 px-md rounded text-body" placeholder="sk-…">
+      </div>
+      <div class="space-y-xs">
+        <label class="block text-label text-on-surface-variant">模型</label>
+        <select id="deepseek-model" class="form-field w-full h-11 px-md rounded text-body">
+          <option value="deepseek-chat">DeepSeek Chat</option>
+          <option value="deepseek-coder">DeepSeek Coder</option>
+          <option value="deepseek-reasoner">DeepSeek Reasoner</option>
+        </select>
+      </div>
+      <div class="flex gap-xs mt-auto">
+        <button id="load-deepseek-models"
+          class="flex-1 h-9 rounded-full border border-outline-variant text-label text-on-surface-variant hover:border-wechat-green hover:text-wechat-green transition-all">
+          刷新模型
+        </button>
+        <button id="test-deepseek"
+          class="flex-1 h-9 rounded-full bg-wechat-green text-white text-label font-semibold hover:brightness-110 active:scale-95 transition-all">
+          测试连接
+        </button>
+      </div>
+    </section>
+
+    <!-- ── 阿里云百炼 ── -->
+    <section class="md:col-span-4 glass-panel rounded-lg p-lg flex flex-col gap-md">
+      <div class="flex items-center gap-sm">
+        <div class="w-9 h-9 rounded-lg bg-orange-100 flex items-center justify-center">
+          <span class="material-symbols-outlined text-orange-500">cloud_queue</span>
+        </div>
+        <div class="flex-1">
+          <h2 class="text-headline-sm font-bold">阿里云百炼</h2>
+          <p class="text-caption text-on-surface-variant">通义文本 + 万相生图</p>
+        </div>
+        <span id="dashscope-status" class="text-caption px-sm py-xs rounded-full bg-surface-container-highest text-on-surface-variant">未配置</span>
+      </div>
+      <div class="space-y-xs">
+        <label class="block text-label text-on-surface-variant">API 密钥</label>
+        <input type="password" id="dashscope-api-key"
+          class="form-field w-full h-11 px-md rounded text-body" placeholder="sk-…">
+      </div>
+      <div class="space-y-xs">
+        <label class="block text-label text-on-surface-variant">文本模型</label>
+        <select id="dashscope-model" class="form-field w-full h-11 px-md rounded text-body">
+          <option value="qwen-turbo">通义 Turbo</option>
+          <option value="qwen-plus">通义 Plus</option>
+          <option value="qwen-max">通义 Max</option>
+        </select>
+      </div>
+      <div class="flex gap-xs mt-auto">
+        <button id="load-dashscope-models"
+          class="flex-1 h-9 rounded-full border border-outline-variant text-label text-on-surface-variant hover:border-wechat-green hover:text-wechat-green transition-all">
+          刷新模型
+        </button>
+        <button id="test-dashscope"
+          class="flex-1 h-9 rounded-full bg-wechat-green text-white text-label font-semibold hover:brightness-110 active:scale-95 transition-all">
+          测试连接
+        </button>
+      </div>
+    </section>
+
+    <!-- ── Pexels ── -->
+    <section class="md:col-span-4 glass-panel rounded-lg p-lg flex flex-col gap-md">
+      <div class="flex items-center gap-sm">
+        <div class="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center">
+          <span class="material-symbols-outlined text-green-600">image_search</span>
+        </div>
+        <div class="flex-1">
+          <h2 class="text-headline-sm font-bold">Pexels</h2>
+          <p class="text-caption text-on-surface-variant">高质量免费图片搜索</p>
+        </div>
+        <span id="pexels-status" class="text-caption px-sm py-xs rounded-full bg-surface-container-highest text-on-surface-variant">未配置</span>
+      </div>
+      <div class="space-y-xs">
+        <label class="block text-label text-on-surface-variant">API 密钥</label>
+        <input type="password" id="pexels-api-key"
+          class="form-field w-full h-11 px-md rounded text-body" placeholder="Pexels API Key">
+        <a href="https://www.pexels.com/api/" target="_blank"
+          class="inline-flex items-center gap-xs text-caption text-wechat-green hover:underline">
+          <span class="material-symbols-outlined" style="font-size:12px;">open_in_new</span>获取密钥
+        </a>
+      </div>
+      <button id="test-pexels"
+        class="w-full h-9 rounded-full border border-outline-variant text-label text-on-surface-variant hover:border-wechat-green hover:text-wechat-green transition-all mt-auto">
+        测试连接
+      </button>
+    </section>
+
+    <!-- ── Firecrawl ── -->
+    <section class="md:col-span-4 glass-panel rounded-lg p-lg flex flex-col gap-md">
+      <div class="flex items-center gap-sm">
+        <div class="w-9 h-9 rounded-lg bg-red-100 flex items-center justify-center">
+          <span class="material-symbols-outlined text-red-500">travel_explore</span>
+        </div>
+        <div class="flex-1">
+          <h2 class="text-headline-sm font-bold">Firecrawl</h2>
+          <p class="text-caption text-on-surface-variant">网页内容抓取与解析</p>
+        </div>
+        <span id="firecrawl-status" class="text-caption px-sm py-xs rounded-full bg-surface-container-highest text-on-surface-variant">未配置</span>
+      </div>
+      <div class="space-y-xs">
+        <label class="block text-label text-on-surface-variant">API 密钥</label>
+        <input type="password" id="firecrawl-api-key"
+          class="form-field w-full h-11 px-md rounded text-body" placeholder="fc-…">
+        <a href="https://app.firecrawl.dev/api-keys" target="_blank"
+          class="inline-flex items-center gap-xs text-caption text-wechat-green hover:underline">
+          <span class="material-symbols-outlined" style="font-size:12px;">open_in_new</span>获取密钥
+        </a>
+      </div>
+      <button id="test-firecrawl"
+        class="w-full h-9 rounded-full border border-outline-variant text-label text-on-surface-variant hover:border-wechat-green hover:text-wechat-green transition-all mt-auto">
+        测试连接
+      </button>
+    </section>
+
+    <!-- ── Coze ── -->
+    <section class="md:col-span-8 glass-panel rounded-lg p-lg flex flex-col gap-md">
+      <div class="flex items-center gap-sm">
+        <div class="w-9 h-9 rounded-lg bg-indigo-100 flex items-center justify-center">
+          <span class="material-symbols-outlined text-indigo-500">account_tree</span>
+        </div>
+        <h2 class="text-headline-sm font-bold">Coze 工作流</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+        <div class="space-y-xs">
+          <label class="block text-label text-on-surface-variant">Coze 令牌</label>
+          <input type="password" id="coze_token"
+            class="form-field w-full h-11 px-md rounded text-body" placeholder="pat_…">
+        </div>
+        <div class="space-y-xs">
+          <label class="block text-label text-on-surface-variant">工作流 ID</label>
+          <input type="text" id="coze_workflow_id"
+            class="form-field w-full h-11 px-md rounded text-body" placeholder="7526742102…">
+        </div>
+      </div>
+      <div class="p-sm bg-surface-container-low rounded-lg border border-outline-variant/30">
+        <p class="text-caption text-on-surface-variant">
+          <span class="material-symbols-outlined text-secondary align-middle" style="font-size:13px;">info</span>
+          请将工作流部署到自己的 Coze 空间后填写上方 ID。
+          <a id="coze-space-link" href="#" class="text-wechat-green hover:underline ml-xs">查看部署指南</a>
+        </p>
+      </div>
+    </section>
+
+  </div><!-- /grid -->
+
+  <!-- ── 底部浮动保存按钮 ── -->
+  <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50
+              flex items-center gap-md px-lg py-sm
+              bg-white/90 backdrop-blur-xl rounded-full
+              border border-outline-variant/30 shadow-2xl">
+    <button class="px-lg h-10 rounded-full text-label text-on-surface-variant hover:bg-surface-container transition-colors">
+      放弃更改
+    </button>
+    <button id="save-config"
+      class="px-xl h-10 rounded-full bg-wechat-green text-white font-semibold text-label
+             hover:brightness-110 active:scale-95 transition-all shadow-md shadow-wechat-green/20">
+      <span class="material-symbols-outlined align-middle mr-xs" style="font-size:16px;">save</span>保存配置
+    </button>
+  </div>
+
+  <!-- 底部占位，防止浮动按钮遮挡内容 -->
+  <div class="h-24"></div>
+
+</div><!-- /container -->

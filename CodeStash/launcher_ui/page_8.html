@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>引载树 - 小工具</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<style data-purpose="custom-theme">
+    :root {
+      --bg-dark: #1e1e24;
+      --bg-sidebar: #24252b;
+      --bg-card: #2d2e35;
+      --bg-card-hover: #36373e;
+      --text-primary: #e2e2e2;
+      --text-secondary: #a0a0a0;
+      --accent-blue: #3b82f6;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .sidebar {
+      background-color: var(--bg-sidebar);
+    }
+    .card-link {
+      background-color: var(--bg-card);
+      transition: background-color 0.2s ease;
+    }
+    .card-link:hover {
+      background-color: var(--bg-card-hover);
+    }
+    /* Custom scrollbar for webkit */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4a4a50;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #5a5a60;
+    }
+  </style>
+</head>
+<body class="h-screen w-full flex flex-col overflow-hidden">
+<!-- BEGIN: TitleBar -->
+<header class="flex-none h-12 bg-[#24252b] flex items-center justify-between px-4 select-none border-b border-[#1e1e24]">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-xs text-white">引</div>
+<span class="font-medium text-sm">引载树 v1.0.0</span>
+</div>
+<div class="flex items-center gap-4 text-gray-400">
+<button class="hover:text-white transition-colors"><i class="fa-solid fa-question text-sm"></i></button>
+<button class="hover:text-white transition-colors"><i class="fa-solid fa-minus text-sm"></i></button>
+<button class="hover:text-white transition-colors"><i class="fa-regular fa-square text-sm"></i></button>
+<button class="hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+</div>
+</header>
+<!-- END: TitleBar -->
+<div class="flex flex-1 overflow-hidden">
+<!-- BEGIN: Sidebar -->
+<nav class="sidebar w-[84px] flex-none flex flex-col justify-between py-4 border-r border-[#1e1e24]">
+<!-- Top Actions -->
+<div class="flex flex-col gap-2">
+<a class="flex flex-col items-center justify-center p-2 text-gray-400 hover:text-white hover:bg-[#2d2e35] mx-2 rounded-lg transition-colors group" href="page_1.html">
+<i class="fa-solid fa-play text-xl mb-1 group-hover:text-blue-400"></i>
+<span class="text-[10px]">一键启动</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 text-gray-400 hover:text-white hover:bg-[#2d2e35] mx-2 rounded-lg transition-colors" href="page_2.html">
+<i class="fa-solid fa-list-ul text-xl mb-1"></i>
+<span class="text-[10px]">高级选项</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 text-gray-400 hover:text-white hover:bg-[#2d2e35] mx-2 rounded-lg transition-colors" href="page_3.html">
+<i class="fa-solid fa-clipboard-question text-xl mb-1"></i>
+<span class="text-[10px]">疑难解答</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 text-gray-400 hover:text-white hover:bg-[#2d2e35] mx-2 rounded-lg transition-colors" href="page_6.html">
+<i class="fa-solid fa-clock-rotate-left text-xl mb-1"></i>
+<span class="text-[10px]">版本管理</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 text-gray-400 hover:text-white hover:bg-[#2d2e35] mx-2 rounded-lg transition-colors" href="page_7.html">
+<i class="fa-solid fa-cube text-xl mb-1"></i>
+<span class="text-[10px]">模型管理</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 text-blue-400 bg-[#2d2e35] mx-2 rounded-lg transition-colors border-l-2 border-blue-500 relative left-[-2px]" href="page_8.html">
+<i class="fa-solid fa-briefcase text-xl mb-1"></i>
+<span class="text-[10px]">小工具</span>
+</a>
+</div>
+<!-- Bottom Actions -->
+<div class="flex flex-col gap-2">
+<a class="flex flex-col items-center justify-center p-2 text-gray-400 hover:text-white hover:bg-[#2d2e35] mx-2 rounded-lg transition-colors" href="#">
+<i class="fa-regular fa-comment-dots text-xl mb-1"></i>
+<span class="text-[10px]">交流群</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 text-gray-400 hover:text-white hover:bg-[#2d2e35] mx-2 rounded-lg transition-colors" href="page_5.html">
+<i class="fa-regular fa-lightbulb text-xl mb-1"></i>
+<span class="text-[10px]">灯泡</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 text-gray-400 hover:text-white hover:bg-[#2d2e35] mx-2 rounded-lg transition-colors" href="page_9.html">
+<i class="fa-solid fa-desktop text-xl mb-1"></i>
+<span class="text-[10px]">控制台</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 text-gray-400 hover:text-white hover:bg-[#2d2e35] mx-2 rounded-lg transition-colors" href="page_10.html">
+<i class="fa-solid fa-gear text-xl mb-1"></i>
+<span class="text-[10px]">设置</span>
+</a>
+</div>
+</nav>
+<!-- END: Sidebar -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 overflow-y-auto p-6 scroll-smooth bg-app-dark text-white">
+  <!-- Sticky Header Block -->
+  <div id="sticky-header" class="sticky top-[-24px] bg-app-dark pt-6 pb-2 mb-6 z-20 border-b border-gray-800/30">
+    <!-- Header banner style container -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4">
+      <div>
+        <h2 class="text-xl font-bold text-app-text">AI 工具导航</h2>
+        <p class="text-xs text-app-textMuted mt-1">汇集精选优质 AI 工具，为您的内容创作保驾护航</p>
+      </div>
+      
+      <!-- Search Bar -->
+      <div class="relative w-full md:w-80">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+        <input type="text" id="tool-search" class="w-full pl-9 pr-4 py-2 bg-[#1e1e24] border border-gray-700/50 rounded-md text-sm text-gray-300 focus:outline-none focus:border-app-primary focus:ring-1 focus:ring-app-primary placeholder-gray-500" placeholder="搜索工具名称或描述..." />
+      </div>
+    </div>
+
+    <!-- Categories Navigation (Horizontal Pills scrollable) -->
+    <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide select-none" id="categories-container">
+      <!-- Categories will be rendered here dynamically -->
+      <button class="category-pill px-4 py-1.5 rounded-full text-xs font-medium bg-app-primary text-white border border-transparent transition-all shrink-0 cursor-pointer" data-category="all">全部</button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div id="loading-state" class="flex flex-col items-center justify-center py-20 text-app-textMuted">
+    <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-app-primary"></i>
+    <span class="text-sm">正在加载 AI 工具列表...</span>
+  </div>
+
+  <!-- Empty State -->
+  <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-app-textMuted">
+    <i class="fa-solid fa-briefcase text-3xl mb-3"></i>
+    <span class="text-sm">没有找到匹配的工具</span>
+  </div>
+
+  <!-- Tools Grid Wrapper -->
+  <div id="tools-grid" class="hidden">
+    <!-- Category sections will be rendered here dynamically -->
+  </div>
+</main>
+<!-- END: MainContent -->
+</div>
+
+<script>
+  window.initPage8 = function() {
+      const searchInput = document.getElementById('tool-search');
+      const categoriesContainer = document.getElementById('categories-container');
+      const toolsGrid = document.getElementById('tools-grid');
+      const loadingState = document.getElementById('loading-state');
+      const emptyState = document.getElementById('empty-state');
+      
+      let allTools = [];
+      let currentCategory = 'all';
+      let searchQuery = '';
+
+      async function loadTools() {
+          const CACHE_KEY = 'ai-tools-cache-data';
+          const CACHE_TIME_KEY = 'ai-tools-cache-time';
+          const CACHE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
+
+          // 1. Check local cache
+          const cachedData = localStorage.getItem(CACHE_KEY);
+          const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+          const now = Date.now();
+
+          if (cachedData && cachedTime && (now - parseInt(cachedTime) < CACHE_EXPIRY)) {
+              try {
+                  const tools = JSON.parse(cachedData);
+                  if (tools && tools.length > 0) {
+                      return tools;
+                  }
+              } catch (e) {
+                  console.error("Failed to parse cached tools:", e);
+              }
+          }
+
+          // 2. Cache expired or missing, try fetching from uniCloud
+          try {
+              const response = await fetch('https://env-00jxtxx9y58k.dev-hz.cloudbasefunction.cn/GPT_inodetree-ai_tools', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({})
+              });
+              if (response.ok) {
+                  const outer = await response.json();
+                  // Unwrap DCloud body trigger response
+                  const json = typeof outer.body === 'string' ? JSON.parse(outer.body) : (outer.body || outer);
+                  if (json && json.success && json.data && json.data.length > 0) {
+                      localStorage.setItem(CACHE_KEY, JSON.stringify(json.data));
+                      localStorage.setItem(CACHE_TIME_KEY, now.toString());
+                      return json.data;
+                  }
+              }
+              console.warn("uniCloud response not ok or success=false, status:", response.status);
+          } catch (e) {
+              console.error("Failed to fetch tools from uniCloud:", e);
+          }
+
+          // 3. uniCloud failed, try fetching from local fallback ../static/tools.json
+          try {
+              const response = await fetch('../static/tools.json');
+              if (response.ok) {
+                  const tools = await response.json();
+                  if (tools && tools.length > 0) {
+                      localStorage.setItem(CACHE_KEY, JSON.stringify(tools));
+                      localStorage.setItem(CACHE_TIME_KEY, now.toString());
+                      return tools;
+                  }
+              }
+          } catch (e) {
+              console.error("Failed to fetch local fallback tools:", e);
+          }
+
+          // 4. Last resort: return old cache if we have one
+          if (cachedData) {
+              try {
+                  return JSON.parse(cachedData);
+              } catch(e) {}
+          }
+          return [];
+      }
+
+      const mainEl = document.querySelector('main');
+      let isProgramScrolling = false;
+
+      loadTools().then(tools => {
+          allTools = tools;
+          if (loadingState) loadingState.classList.add('hidden');
+          
+          if (!allTools || allTools.length === 0) {
+              if (emptyState) emptyState.classList.remove('hidden');
+              return;
+          }
+          
+          // Extract unique categories and sort them
+          const categories = ['all', ...new Set(allTools.map(t => t.category).filter(Boolean))];
+          
+          // Render category buttons
+          renderCategories(categories);
+          
+          // Render tools
+          renderTools();
+          
+          // Bind search event
+          if (searchInput) {
+              searchInput.addEventListener('input', (e) => {
+                  searchQuery = e.target.value.toLowerCase().trim();
+                  renderTools();
+              });
+          }
+
+          // Bind scroll-spy event to main element
+          if (mainEl) {
+              mainEl.addEventListener('scroll', () => {
+                  if (isProgramScrolling) return;
+                  
+                  const sections = toolsGrid.querySelectorAll('.category-section');
+                  if (sections.length === 0) return;
+                  
+                  const mainRect = mainEl.getBoundingClientRect();
+                  const stickyHeader = document.getElementById('sticky-header');
+                  const stickyHeight = stickyHeader ? (stickyHeader.offsetHeight - 24) : 120;
+                  let activeCat = 'all';
+                  
+                  if (mainEl.scrollTop < 50) {
+                      activeCat = 'all';
+                  } else {
+                      sections.forEach(sec => {
+                          const secRect = sec.getBoundingClientRect();
+                          // If section top has passed the bottom of the stuck header (plus small offset)
+                          if (secRect.top - mainRect.top <= stickyHeight + 20) {
+                              activeCat = sec.getAttribute('data-category');
+                          }
+                      });
+                  }
+                  
+                  if (activeCat !== currentCategory) {
+                      currentCategory = activeCat;
+                      updateActivePill();
+                  }
+              });
+          }
+      });
+
+      function renderCategories(categories) {
+          if (!categoriesContainer) return;
+          const catMap = {
+              'all': '全部'
+          };
+          
+          categoriesContainer.innerHTML = categories.map(cat => {
+              const displayName = catMap[cat] || cat;
+              const isActive = cat === currentCategory;
+              const activeClasses = 'bg-app-primary text-white border-transparent';
+              const inactiveClasses = 'bg-app-card text-app-textMuted hover:text-app-text border-app-border border hover:bg-card-hover';
+              
+              return `<button class="category-pill px-4 py-1.5 rounded-full text-xs font-medium transition-all shrink-0 cursor-pointer ${isActive ? activeClasses : inactiveClasses}" data-category="${cat}">${displayName}</button>`;
+          }).join('');
+
+          // Bind click listeners
+          categoriesContainer.querySelectorAll('.category-pill').forEach(btn => {
+              btn.addEventListener('click', () => {
+                  const cat = btn.getAttribute('data-category');
+                  currentCategory = cat;
+                  updateActivePill();
+                  
+                  // Scroll to target section
+                  if (mainEl) {
+                      isProgramScrolling = true;
+                      if (cat === 'all') {
+                          mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+                          setTimeout(() => { isProgramScrolling = false; }, 800);
+                      } else {
+                          const sec = document.getElementById(`sec-${cat}`);
+                          if (sec) {
+                              const stickyHeader = document.getElementById('sticky-header');
+                              const stickyHeight = stickyHeader ? (stickyHeader.offsetHeight - 24) : 120;
+                              const relativeTop = sec.getBoundingClientRect().top - mainEl.getBoundingClientRect().top;
+                              const targetScrollTop = mainEl.scrollTop + relativeTop - stickyHeight - 10;
+                              mainEl.scrollTo({
+                                  top: targetScrollTop,
+                                  behavior: 'smooth'
+                              });
+                          }
+                          setTimeout(() => { isProgramScrolling = false; }, 800);
+                      }
+                  }
+              });
+          });
+      }
+
+      function updateActivePill() {
+          if (!categoriesContainer) return;
+          categoriesContainer.querySelectorAll('.category-pill').forEach(b => {
+              const cat = b.getAttribute('data-category');
+              const isActive = cat === currentCategory;
+              if (isActive) {
+                  b.className = 'category-pill px-4 py-1.5 rounded-full text-xs font-medium transition-all shrink-0 cursor-pointer bg-app-primary text-white border-transparent';
+                  // Auto scroll tab bar to keep active tab visible
+                  b.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+              } else {
+                  b.className = 'category-pill px-4 py-1.5 rounded-full text-xs font-medium transition-all shrink-0 cursor-pointer bg-app-card text-app-textMuted hover:text-app-text border-app-border border hover:bg-card-hover';
+              }
+          });
+      }
+
+      function renderTools() {
+          if (!toolsGrid) return;
+          
+          // Filter tools based on search query
+          const searched = allTools.filter(tool => {
+              return !searchQuery || 
+                     (tool.name && tool.name.toLowerCase().includes(searchQuery)) ||
+                     (tool.description && tool.description.toLowerCase().includes(searchQuery));
+          });
+          
+          if (searched.length === 0) {
+              toolsGrid.classList.add('hidden');
+              if (emptyState) emptyState.classList.remove('hidden');
+              return;
+          }
+          
+          if (emptyState) emptyState.classList.add('hidden');
+          toolsGrid.classList.remove('hidden');
+          
+          // Group by category
+          const groups = {};
+          searched.forEach(tool => {
+              const cat = tool.category || '其他';
+              if (!groups[cat]) groups[cat] = [];
+              groups[cat].push(tool);
+          });
+          
+          // Generate sections
+          let html = '';
+          for (const [catName, catTools] of Object.entries(groups)) {
+              html += `
+              <div class="category-section mb-10 scroll-mt-24" data-category="${catName}" id="sec-${catName}">
+                  <h3 class="text-[13px] font-bold text-gray-400/80 mb-4 px-1 flex items-center gap-2 select-none">
+                      <span class="w-1 h-3.5 bg-app-primary rounded-full"></span>
+                      ${catName} <span class="text-[10px] text-gray-600 font-normal">(${catTools.length})</span>
+                  </h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      ${catTools.map(tool => {
+                          const iconSrc = tool.icon_raw || (tool.icon && tool.icon.startsWith('http') ? tool.icon : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
+                          return `
+                          <a class="card-link flex items-start p-4 rounded-lg group cursor-pointer border border-app-border hover:border-gray-500/30 transition-all shadow-sm" href="${tool.link}" target="_blank">
+                              <div class="w-10 h-10 rounded bg-[#1e1e24] border border-gray-700/50 flex items-center justify-center mr-3 overflow-hidden flex-shrink-0">
+                                  <img src="${iconSrc}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                  <div style="display:none" class="w-full h-full items-center justify-center text-gray-400 group-hover:text-white transition-colors">
+                                      <i class="fa-solid fa-link text-sm"></i>
+                                  </div>
+                              </div>
+                              <div class="flex-1 min-w-0">
+                                  <div class="text-[14px] font-semibold text-app-text mb-1 truncate group-hover:text-app-primary transition-colors">${tool.name}</div>
+                                  <div class="text-[11px] text-app-textMuted line-clamp-2 leading-relaxed" title="${tool.description || ''}">${tool.description || '暂无描述'}</div>
+                              </div>
+                          </a>
+                          `;
+                      }).join('')}
+                  </div>
+              </div>
+              `;
+          }
+          
+          toolsGrid.innerHTML = html;
+      }
+  };
+</script>
+</body></html>

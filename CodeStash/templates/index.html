@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信公众号AI自动发布系统</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- 自定义CSS -->
+    <link href="{{ url_for('static', filename='css/layout.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/components.css') }}" rel="stylesheet">
+    <style>
+  .option-badge {
+    position: relative;
+    padding-right: 40px;
+  }
+  .badge-free {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: #ff9800;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 8px;
+    padding: 2px 6px;
+    z-index: 2;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-robot"></i>
+                微信公众号AI自动发布系统
+            </a>
+            <span class="navbar-text">
+                <i class="bi bi-clock"></i>
+                <span id="current-time">--:--:--</span>
+            </span>
+            <div class="ms-auto d-flex align-items-center">
+                <a href="https://github.com/wojiadexiaoming-copy/AIWeChatauto" target="_blank" class="btn btn-outline-dark btn-sm ms-3" style="display:flex;align-items:center;gap:4px;">
+                    <i class="bi bi-github"></i> 开源项目
+                    <span id="github-star-count" style="margin-left:6px;"><i class="bi bi-star"></i> <span id="star-num">--</span></span>
+                </a>
+                <button id="check-update-btn" class="btn btn-outline-info btn-sm ms-2" style="display:flex;align-items:center;gap:4px;" title="检查并自动更新到最新版本">
+                    <i class="bi bi-arrow-repeat"></i> 检查更新
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="container-fluid">
+        <div class="main-content">
+            <!-- 三列布局 -->
+            <div class="column-container">
+                
+                <!-- 第一列：配置管理 -->
+                <div class="column config-column">
+                    <div class="column-header">
+                        <i class="bi bi-gear"></i>
+                        <h5>配置管理</h5>
+                    </div>
+                    
+                    <!-- 微信配置 -->
+                    <div class="config-section">
+                        <h6><i class="bi bi-wechat"></i> 微信公众号配置</h6>
+                        <div class="mb-3">
+                            <label for="wechat-appid" class="form-label">AppID</label>
+                            <input type="text" class="form-control" id="wechat-appid" placeholder="请输入微信公众号AppID">
+                            <div class="form-text">以wx开头的18位字符串</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="wechat-appsecret" class="form-label">AppSecret</label>
+                            <input type="password" class="form-control" id="wechat-appsecret" placeholder="请输入微信公众号AppSecret">
+                            <div class="form-text">请妥善保管，不要泄露</div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="test-wechat">
+                                <i class="bi bi-plug"></i> 测试连接
+                            </button>
+                            <span class="badge bg-secondary" id="wechat-status">未配置</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Gemini配置 -->
+                    <div class="config-section">
+                        <h6><i class="bi bi-lightning"></i> Gemini AI配置</h6>
+                        <div class="mb-3">
+                            <label for="gemini-api-key" class="form-label">API密钥</label>
+                            <input type="password" class="form-control" id="gemini-api-key" placeholder="请输入Gemini API密钥">
+                            <div class="form-text">以AIza开头的API密钥</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gemini-model" class="form-label">模型选择</label>
+                            <div class="d-flex gap-2 mb-2">
+                            <select class="form-select" id="gemini-model">
+                                <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                            </select>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="load-gemini-models">
+                                    <i class="bi bi-arrow-clockwise"></i> 刷新模型
+                                </button>
+                            </div>
+                            <div class="form-text">项目启动时自动加载一次模型列表，如需更新请手动点击"刷新模型"按钮</div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="test-gemini">
+                                <i class="bi bi-plug"></i> 测试连接
+                            </button>
+                            <span class="badge bg-secondary" id="gemini-status">未配置</span>
+                        </div>
+                    </div>
+                    
+                    <!-- DeepSeek配置 -->
+                    <div class="config-section">
+                        <h6><i class="bi bi-cpu"></i> DeepSeek AI配置</h6>
+                        <div class="mb-3">
+                            <label for="deepseek-api-key" class="form-label">API密钥</label>
+                            <input type="password" class="form-control" id="deepseek-api-key" placeholder="请输入DeepSeek API密钥">
+                            <div class="form-text">DeepSeek API密钥</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="deepseek-model" class="form-label">模型选择</label>
+                            <div class="d-flex gap-2 mb-2">
+                                <select class="form-select" id="deepseek-model">
+                                    <option value="deepseek-chat">DeepSeek Chat</option>
+                                    <option value="deepseek-coder">DeepSeek Coder</option>
+                                    <option value="deepseek-chat-instruct">DeepSeek Chat Instruct</option>
+                                    <option value="deepseek-reasoner">DeepSeek Reasoner</option>
+                                </select>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="load-deepseek-models">
+                                    <i class="bi bi-arrow-clockwise"></i> 刷新模型
+                                </button>
+                            </div>
+                            <div class="form-text">项目启动时自动加载一次模型列表，如需更新请手动点击"刷新模型"按钮</div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="test-deepseek">
+                                <i class="bi bi-plug"></i> 测试连接
+                            </button>
+                            <span class="badge bg-secondary" id="deepseek-status">未配置</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 阿里云百炼配置 -->
+                    <div class="config-section">
+                        <h6><i class="bi bi-cloud"></i> 阿里云百炼配置</h6>
+                        <div class="mb-3">
+                            <label for="dashscope-api-key" class="form-label">API密钥</label>
+                            <input type="password" class="form-control" id="dashscope-api-key" placeholder="请输入阿里云百炼API密钥">
+                            <div class="form-text">阿里云百炼API密钥</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dashscope-model" class="form-label">模型选择</label>
+                            <div class="d-flex gap-2 mb-2">
+                                <select class="form-select" id="dashscope-model">
+                                    <option value="qwen-turbo">通义千问-Turbo</option>
+                                    <option value="qwen-plus">通义千问-Plus</option>
+                                    <option value="qwen-max">通义千问-Max</option>
+                                    <option value="qwen-omni-turbo">通义千问-Omni-Turbo</option>
+                                </select>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="load-dashscope-models">
+                                    <i class="bi bi-arrow-clockwise"></i> 刷新模型
+                                </button>
+                            </div>
+                            <div class="form-text">项目启动时自动加载一次模型列表，如需更新请手动点击"刷新模型"按钮</div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="test-dashscope">
+                                <i class="bi bi-plug"></i> 测试连接
+                            </button>
+                            <span class="badge bg-secondary" id="dashscope-status">未配置</span>
+                        </div>
+                    </div>
+                    
+
+                    <!-- InodeTree 配置 -->
+                    <div class="config-section">
+                        <h6><i class="bi bi-lightning-charge"></i> InodeTree 2.0 Flash 配置</h6>
+                        <div class="mb-3">
+                            <label for="inodetree-api-key" class="form-label">API密钥</label>
+                            <input type="password" class="form-control" id="inodetree-api-key" placeholder="请输入 InodeTree API Key">
+                            <div class="form-text">
+                                InodeTree 2.0 Flash，256K 上下文，支持图片理解，兼容 OpenAI 接口。
+                                <a href="https://inodetree-ai.com" target="_blank" class="text-decoration-none">
+                                    <i class="bi bi-link-45deg"></i> 获取 API Key
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-text text-muted" style="margin-top:4px;">
+                                <i class="bi bi-info-circle"></i>
+                                模型固定：文本 <code>inodetree-2.0-flash</code> &nbsp;|&nbsp;
+                                图片 <code>inodetree-image-2.1-flash</code> &nbsp;|&nbsp;
+                                视频 <code>inodetree-video-v2.0</code>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="test-inodetree">
+                                <i class="bi bi-plug"></i> 测试连接
+                            </button>
+                            <span class="badge bg-secondary" id="inodetree-status">未配置</span>
+                        </div>
+                    </div>
+                    <!-- Pexels配置 -->
+                    <div class="config-section">
+                        <h6><i class="bi bi-images"></i> Pexels图片搜索配置</h6>
+                        <div class="mb-3">
+                            <label for="pexels-api-key" class="form-label">API密钥</label>
+                            <input type="password" class="form-control" id="pexels-api-key" placeholder="请输入Pexels API密钥">
+                            <div class="form-text">
+                                Pexels图片搜索API密钥，用于获取高质量图片
+                                <a href="https://www.pexels.com/api/" target="_blank" class="text-decoration-none">
+                                    <i class="bi bi-link-45deg"></i> 获取API密钥
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="test-pexels">
+                                <i class="bi bi-plug"></i> 测试连接
+                            </button>
+                            <span class="badge bg-secondary" id="pexels-status">未配置</span>
+                        </div>
+                    </div>
+                    <!-- Firecrawl配置 -->
+                    <div class="config-section">
+                        <h6><i class="bi bi-fire"></i> Firecrawl密钥配置</h6>
+                        <div class="mb-3">
+                            <label for="firecrawl-api-key" class="form-label">API密钥</label>
+                            <input type="password" class="form-control" id="firecrawl-api-key" placeholder="请输入Firecrawl API密钥">
+                            <div class="form-text">
+                                Firecrawl API密钥，用于网页内容抓取和解析。
+                                <a href="https://app.firecrawl.dev/api-keys" target="_blank" class="text-decoration-none">
+                                    <i class="bi bi-link-45deg"></i> 获取API密钥
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="test-firecrawl">
+                                <i class="bi bi-plug"></i> 测试连接
+                            </button>
+                            <span class="badge bg-secondary" id="firecrawl-status">未配置</span>
+                        </div>
+                    </div>
+                    <!-- Coze配置 -->
+                    <div class="config-section">
+                        <h6><i class="bi bi-diagram-3"></i> Coze工作流配置</h6>
+                        <div class="mb-3 row">
+                            <label for="coze_token" class="col-sm-2 col-form-label">Coze令牌</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="coze_token" name="coze_token" placeholder="请输入Coze令牌">
+                                <!-- <input type="text" class="form-control" id="coze_token" name="coze_token" placeholder="请输入Coze令牌"> -->
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="coze_workflow_id" class="col-sm-2 col-form-label">Coze工作流ID</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="coze_workflow_id" name="coze_workflow_id" placeholder="请输入Coze工作流ID">
+                            </div>
+                        </div>
+                        <!-- 新增Coze工作流部署提示及一键复制JSON参数 -->
+                        <div class="alert alert-info" style="font-size: 15px;">
+                            <i class="bi bi-info-circle"></i>
+                            请将工作流部署到自己的Coze空间：
+                            <a href="#" id="coze-space-link" data-json='{"type":"coze-workflow-clipboard-data","source":{"workflowId":"7526742102417915919","flowMode":0,"spaceId":"7371639667240124479","isDouyin":false,"host":"www.coze.cn"},"json":{"nodes":[{"id":"115697","type":"16","meta":{"position":{"x":394.27487466970626,"y":-31.68505321549455}},"data":{"inputs":{"apiParam":null,"inputParameters":[{"name":"title","input":{"type":"string","value":{"type":"ref","content":{"source":"block-output","blockID":"100001","name":"title"},"rawMeta":{"type":1}}}}],"modelSetting":{"custom_ratio":{"height":768,"width":1024},"ddim_steps":25,"images_reference":{},"model":1,"ratio":0},"prompt":{"negative_prompt":"","prompt":"{{title}}"},"references":[],"settingOnError":{"processType":1,"timeoutMs":60000,"retryTimes":0}},"nodeMeta":{"description":"通过文字描述/添加参考图生成图片","icon":"https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-ImageGeneration-v2.jpg","title":"图像生成","subTitle":"图像生成"},"outputs":[{"type":"string","assistType":2,"name":"data","required":false},{"type":"string","name":"msg","required":false}],"settings":null,"version":""},"_temp":{"bounds":{"x":214.27487466970626,"y":-31.68505321549455,"width":360,"height":163.7},"externalData":{"icon":"https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-ImageGeneration-v2.jpg","description":"通过文字描述/添加参考图生成图片","title":"图像生成","mainColor":"#FF4DC3"}}}],"edges":[]},"bounds":{"x":214.27487466970626,"y":-31.68505321549455,"width":360,"height":163.7}}'>https://www.coze.cn/space <i class="bi bi-box-arrow-up-right"></i> 复制工作流自动跳转</a>
+                        </div>
+                    </div>
+                    
+                    <!-- 作者配置 -->
+                    <div class="config-section">
+                        <h6><i class="bi bi-person"></i> 作者信息</h6>
+                        <div class="mb-3">
+                            <label for="author-name" class="form-label">作者名称</label>
+                            <input type="text" class="form-control" id="author-name" placeholder="请输入作者名称" value="AI笔记">
+                        </div>
+                        <div class="mb-3">
+                            <label for="content-source-url" class="form-label">原文链接</label>
+                            <input type="url" class="form-control" id="content-source-url" placeholder="可选，原文链接地址">
+                        </div>
+                    </div>
+                    
+                    <!-- 保存配置 -->
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-primary" id="save-config">
+                            <i class="bi bi-save"></i> 保存配置
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 第二列：文章生成 -->
+                <div class="column generate-column">
+                    <div class="column-header">
+                        <i class="bi bi-pencil-square"></i>
+                        <h5>文章生成</h5>
+                    </div>
+                    
+                    <!-- 文章标题输入 -->
+                    <div class="generate-section">
+                        <h6><i class="bi bi-textarea-t"></i> 文章标题</h6>
+                        <div class="mb-3">
+                            <div class="input-group mb-2">
+                                <select class="form-select" id="title-mode-select" style="max-width: 180px;">
+                                    <option value="custom" selected>自定义标题</option>
+                                    <option value="hot">今日热点标题</option>
+                                </select>
+                                <input type="text" class="form-control" id="article-title" placeholder="请输入文章标题">
+                            </div>
+                            <div class="form-text">输入一个吸引人的标题，AI将据此生成文章内容</div>
+                        </div>
+                        <!-- 热点选项区域，默认隐藏 -->
+                        <div class="mb-3" id="hot-options-section" style="display:none;">
+                            <div class="mb-2"><strong>行业：</strong></div>
+                            <div class="d-flex flex-wrap gap-3 mb-2" id="industry-options">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-random" value="随机">
+                                    <label class="form-check-label" for="industry-random">随机</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-影视" value="影视">
+                                    <label class="form-check-label" for="industry-影视">影视</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-娱乐" value="娱乐">
+                                    <label class="form-check-label" for="industry-娱乐">娱乐</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-电影" value="电影">
+                                    <label class="form-check-label" for="industry-电影">电影</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-游戏" value="游戏">
+                                    <label class="form-check-label" for="industry-游戏">游戏</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-AI" value="AI">
+                                    <label class="form-check-label" for="industry-AI">AI</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-科技" value="科技">
+                                    <label class="form-check-label" for="industry-科技">科技</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="industry" id="industry-农业" value="农业">
+                                    <label class="form-check-label" for="industry-农业">农业</label>
+                                </div>
+                            </div>
+                            <div class="mb-2"><strong>热点平台：</strong></div>
+                            <div class="d-flex flex-wrap gap-3" id="platform-options">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-random" value="随机">
+                                    <label class="form-check-label" for="platform-random">随机</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-抖音" value="抖音">
+                                    <label class="form-check-label" for="platform-抖音">抖音</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-百度" value="百度">
+                                    <label class="form-check-label" for="platform-百度">百度</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-MSN" value="MSN">
+                                    <label class="form-check-label" for="platform-MSN">MSN</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-B站" value="B站">
+                                    <label class="form-check-label" for="platform-B站">B站</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="platform" id="platform-微信" value="微信">
+                                    <label class="form-check-label" for="platform-微信">微信</label>
+                                </div>
+                            </div>
+                            <div class="form-text">每组只能选择一个，如“AI+抖音”</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="ai-model-select" class="form-label">AI模型选择</label>
+                            <select class="form-select" id="ai-model-select">
+                                <option value="gemini">Google Gemini</option>
+                                <option value="deepseek">DeepSeek AI</option>
+                                <option value="dashscope">阿里云百炼</option>
+                                <option value="inodetree">InodeTree 2.0 Flash</option>
+                            </select>
+                            <div class="form-text">选择用于生成文章的AI模型</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image-model-select" class="form-label">生图模型选择</label>
+                            <div class="d-flex gap-2 align-items-center">
+                            <select class="form-select" id="image-model-select" style="max-width:180px;">
+                                    <option value="gemini">Gemini</option>
+                                    <option value="deepseek">DeepSeek</option>
+                                <option value="dashscope">阿里云百炼</option>
+                                    <option value="inodetree">InodeTree Image 2.1 Flash</option>
+                                    <option value="inodetree_pexels">InodeTree+Pexels 搜图</option>
+                                    <option value="pexels">Pexels</option>
+                                    <option value="coze">Coze</option>
+                            </select>
+                                <input type="text" class="form-control" id="custom-image-prompt" placeholder="自定义生图提示词（可选）" style="max-width:220px;">
+                                <div style="flex:1;min-width:260px;">
+                                    <div class="dropdown" id="dashscope-image-model-dropdown" style="display:none;max-width:260px;">
+                                        <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="dashscopeImageModelBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                            请选择阿里云百炼生图模型
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end w-100" aria-labelledby="dashscopeImageModelBtn" style="max-height:320px;overflow-y:auto;z-index:1055;">
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="wanx2.1-t2i-plus">通义万相2.1-文生图-Plus <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="wanx2.1-t2i-turbo">通义万相2.1-文生图-Turbo <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="aitryon-plus">AI试衣-Plus版 <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="aitryon">AI试衣-基础版 <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="flux-schnell">FLUX-schnell <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="flux-dev">FLUX-dev <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="wanx-v1">通义万相-文本生成图像 <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="wanx-virtualmodel">虚拟模特 <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="wanx-poster-generation-v1">创意海报生成 <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="wanx-sketch-to-image-lite">通义万相-涂鸦作画 <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="wanx-x-painting">通义万相-图像局部重绘 <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="wordart-semantic">WordArt锦书-文字变形 <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="wordart-texture">WordArt锦书-文字纹理生成 <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="wanx-background-generation-v2">图像背景生成 <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center" href="#" data-value="wanx2.0-t2i-turbo">通义万相-文生图2.0-Turbo <span class="badge bg-warning text-white ms-2">限免</span></a></li>
+                                            <!-- 非限免模型 -->
+                                            <li><a class="dropdown-item" href="#" data-value="wanx-v1-0521">通义万相-文本生成图像-2024-05-21</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="stable-diffusion-3.5-large-turbo">StableDiffusion文生图模型-3.5-large-turbo</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="stable-diffusion-3.5-large">StableDiffusion文生图模型-3.5-large</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="flux-merged">FLUX-merged</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="image-erase-completion">图像擦除补全</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="image-instance-segmentation">人物实例分割</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="virtualmodel-v2">虚拟模特V2</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="shoemodel-v1">鞋靴模特</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="stable-diffusion-v1.5">StableDiffusion文生图模型-v1.5</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="stable-diffusion-xl">StableDiffusion文生图模型-xl</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="facechain-finetune">FaceChain人物形象训练</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="facechain-generation">FaceChain人物写真生成</a></li>
+                                            <li><a class="dropdown-item" href="#" data-value="facechain-facedetect">FaceChain人物图像检测</a></li>
+                                        </ul>
+                                        <input type="hidden" id="dashscope-image-model-value" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 阿里云百炼高级参数区域单独一行，左侧与模型下拉框对齐 -->
+                            <div class="row" id="dashscope-extra-fields" style="display:none; margin-top: 10px;">
+                                <div class="col-12 col-md-6 offset-md-0" style="max-width:480px;">
+                                    <h6 style="font-weight:bold; margin-bottom:10px;">阿里云百炼高级参数</h6>
+                                    <div class="mb-2">
+                                        <label for="dashscope-positive-prompt" class="form-label">正向提示词</label>
+                                        <input type="text" class="form-control" id="dashscope-positive-prompt" placeholder="可默认留空——或输入你想要的风格/视角/景别/具体的人物（火柴人），切勿太过具体">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="dashscope-negative-prompt" class="form-label">反向提示词</label>
+                                        <input type="text" class="form-control" id="dashscope-negative-prompt" placeholder="为空则使用默认反向提示词">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="dashscope-image-ratio" class="form-label">图片比例</label>
+                                        <input type="text" class="form-control" id="dashscope-image-ratio" placeholder="默认4:3(1024*768)">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="dashscope-steps" class="form-label">采集步数</label>
+                                        <input type="number" class="form-control" id="dashscope-steps" placeholder="默认25">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-text">选择阿里云百炼后，请在右侧选择具体生图模型</div>
+                        </div>
+                        <!-- 新增：文章字数和配图数量设置 -->
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label for="article-word-count" class="form-label">文章字数</label>
+                                <input type="number" class="form-control" id="article-word-count" min="100" max="20000" value="8000">
+                            </div>
+                            <div class="col-6">
+                                <label for="article-image-count" class="form-label">配图数量</label>
+                                <input type="number" class="form-control" id="article-image-count" min="1" max="20" value="3">
+
+                            </div>
+                        </div>
+                                                        <!-- 样式库模板选择下拉框将由js动态插入到此处 -->
+                                                        <div id="style-template-section" class="mb-3 col-12">
+                                                            <label for="style-template-select" class="form-label"><i class="bi bi-layout-text-window"></i> 选择样式库模板</label>
+                                                            <div id="style-template-select-wrapper"></div>
+                                                        </div>
+                                                        <!-- 自定义HTML模板输入区 -->
+                                                        <div id="custom-template-section" class="mb-3 col-12">
+                                                            <label for="format-template" class="form-label"><i class="bi bi-code-slash"></i> 自定义HTML结构模板</label>
+                                                            <div class="form-text mb-1">可粘贴公众号文章的&lt;section&gt;...&lt;/section&gt;等完整HTML结构，留空则用默认格式</div>
+                                                            <textarea class="form-control" id="format-template" rows="6" placeholder="可粘贴公众号文章的<section>...</section>等完整HTML结构"></textarea>
+                                                        </div>
+
+                        <!-- 视频生成配置 -->
+                        <div class="row mb-3" id="video-config-section">
+                            <div class="col-12 mb-2">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enable-video" role="switch">
+                                    <label class="form-check-label" for="enable-video">
+                                        <i class="bi bi-camera-video"></i> <strong>插入视频</strong>
+                                        <small class="text-muted ms-1">（InodeTree Video V2.0，异步生成）</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="video-params" style="display:none;">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label for="video-count" class="form-label">视频数量</label>
+                                        <input type="number" class="form-control form-control-sm" id="video-count" min="1" max="5" value="1">
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="video-fps" class="form-label">帧率 (FPS)</label>
+                                        <select class="form-select form-select-sm" id="video-fps">
+                                            <option value="24">24 FPS — ≤15s 推荐</option>
+                                            <option value="30">30 FPS — ≤10s</option>
+                                            <option value="60">60 FPS — ≤5s</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label">预计时长</label>
+                                        <div class="form-control form-control-sm bg-light text-muted" id="video-duration-hint" style="font-size:12px;">≈ 15s</div>
+                                    </div>
+                                </div>
+                                <div class="form-text mt-1">
+                                    <i class="bi bi-info-circle text-warning"></i>
+                                    视频异步生成，需等待约 2-5 分钟。24FPS ≤15s / 30FPS ≤10s / 60FPS ≤5s 内成功率最高。
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-success" id="generate-article">
+                                <i class="bi bi-magic"></i> 生成文章
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 生成进度 -->
+                    <div class="generate-section" id="generation-progress" style="display: none;">
+                        <h6><i class="bi bi-hourglass-split"></i> 生成进度</h6>
+                        <div class="mb-3">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                     role="progressbar" style="width: 0%" id="progress-bar"></div>
+                            </div>
+                            <small class="text-muted" id="progress-text">准备中...</small>
+                        </div>
+                    </div>
+                    
+                    <!-- 生成历史 -->
+                    <div class="generate-section">
+                        <h6><i class="bi bi-clock-history"></i> 历史记录</h6>
+                        <div class="history-list" id="history-list">
+                            <div class="empty-state">
+                                <i class="bi bi-journal-text"></i>
+                                <h6>暂无历史记录</h6>
+                                <p>生成的文章将在这里显示</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 生成统计 -->
+                    <div class="generate-section">
+                        <h6><i class="bi bi-graph-up"></i> 统计信息</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="card text-center">
+                                    <div class="card-body py-2">
+                                        <h6 class="card-title mb-0" id="total-articles">0</h6>
+                                        <small class="text-muted">生成文章</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card text-center">
+                                    <div class="card-body py-2">
+                                        <h6 class="card-title mb-0" id="published-articles">0</h6>
+                                        <small class="text-muted">已发布</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 第三列：预览发布 -->
+                <div class="column preview-column">
+                    <div class="column-header">
+                        <i class="bi bi-eye"></i>
+                        <h5>预览发布</h5>
+                    </div>
+                    
+                    <!-- 文章预览 -->
+                    <div class="preview-section">
+                        <h6><i class="bi bi-file-earmark-text"></i> 文章预览</h6>
+                        <div class="d-flex justify-content-end mb-2 gap-2">
+                            <button class="btn btn-outline-secondary btn-sm" id="refresh-preview-btn" type="button">
+                                <i class="bi bi-arrow-clockwise"></i> 刷新预览
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm" id="copy-html-btn" type="button">复制HTML内容</button>
+                        </div>
+                        <div class="article-preview-content" id="article-preview">
+                            <div class="empty-state">
+                                <i class="bi bi-file-earmark"></i>
+                                <h6>暂无预览内容</h6>
+                                <p>生成文章后将在这里显示预览</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 发布操作 -->
+                    <div class="preview-section">
+                        <h6><i class="bi bi-send"></i> 发布操作</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="enable-mass-send">
+                            <label class="form-check-label" for="enable-mass-send">
+                                <i class="bi bi-broadcast"></i> 同时群发给所有粉丝
+                                <i class="bi bi-exclamation-triangle text-warning ms-1" 
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   title="需要微信认证开通群发接口才可以使用此功能"></i>
+                            </label>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-warning" id="publish-article" disabled>
+                                <i class="bi bi-cloud-upload"></i> 发布到微信
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="save-draft" disabled>
+                                <i class="bi bi-save"></i> 保存草稿
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 发布状态 -->
+                    <div class="preview-section" id="publish-status" style="display: none;">
+                        <h6><i class="bi bi-info-circle"></i> 发布状态</h6>
+                        <div class="alert alert-info" role="alert">
+                            <div class="d-flex align-items-center">
+                                <div class="loading-spinner me-2"></div>
+                                <span id="publish-message">正在发布...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 发布历史 -->
+                    <div class="preview-section">
+                        <h6><i class="bi bi-list-check"></i> 发布历史</h6>
+                        <div class="history-list" id="publish-history">
+                            <div class="empty-state">
+                                <i class="bi bi-journal-check"></i>
+                                <h6>暂无发布记录</h6>
+                                <p>成功发布的文章将在这里显示</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 页脚 -->
+        <div class="footer">
+            <small>
+                &copy; 2024 微信公众号AI发布系统 | 基于Flask和Gemini AI构建<br>
+                您的公网IP：<span id="user-ip">获取中...</span><br>
+                <span style="color: #d9534f;">提示：此IP需要添加到公众号的白名单之后项目才能运行</span>
+            </small>
+        </div>
+    </div>
+
+    <!-- Toast 容器 -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toast-container">
+        <!-- Toast 消息将在这里显示 -->
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 自定义JS -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    
+    <!-- 初始化应用 -->
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            App.init();
+        });
+    </script> -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+  // 生图模型选择与阿里云百炼自定义下拉菜单联动
+  const imageModelSelect = document.getElementById('image-model-select');
+  const customImagePrompt = document.getElementById('custom-image-prompt');
+  const dashscopeDropdown = document.getElementById('dashscope-image-model-dropdown');
+  const dashscopeExtraFields = document.getElementById('dashscope-extra-fields');
+  if (imageModelSelect && customImagePrompt && dashscopeDropdown && dashscopeExtraFields) {
+    imageModelSelect.addEventListener('change', function() {
+      if (this.value === 'dashscope') {
+        dashscopeDropdown.style.display = '';
+        dashscopeExtraFields.style.display = '';
+        customImagePrompt.style.display = 'none';
+      } else {
+        dashscopeDropdown.style.display = 'none';
+        dashscopeExtraFields.style.display = 'none';
+        customImagePrompt.style.display = '';
+      }
+    });
+    // 页面初始时根据当前选项显示/隐藏
+    if (imageModelSelect.value === 'dashscope') {
+      dashscopeDropdown.style.display = '';
+      dashscopeExtraFields.style.display = '';
+      customImagePrompt.style.display = 'none';
+    } else {
+      dashscopeDropdown.style.display = 'none';
+      dashscopeExtraFields.style.display = 'none';
+      customImagePrompt.style.display = '';
+    }
+  }
+
+  // 监听自定义下拉菜单选项点击
+  const dashscopeDropdownMenu = document.querySelector('#dashscope-image-model-dropdown .dropdown-menu');
+  const dashscopeDropdownBtn = document.getElementById('dashscopeImageModelBtn');
+  const dashscopeImageModelValue = document.getElementById('dashscope-image-model-value');
+  if (dashscopeDropdownMenu && dashscopeDropdownBtn && dashscopeImageModelValue) {
+    dashscopeDropdownMenu.addEventListener('click', function(e) {
+      const target = e.target.closest('a[data-value]');
+      if (target) {
+        e.preventDefault();
+        const val = target.getAttribute('data-value');
+        dashscopeImageModelValue.value = val;
+        dashscopeDropdownBtn.textContent = target.textContent.replace(/\s*限免\s*$/, '');
+      }
+    });
+    // 动态调整下拉菜单宽度以适配最长文本
+    let maxWidth = dashscopeDropdownBtn.offsetWidth;
+    Array.from(dashscopeDropdownMenu.querySelectorAll('a')).forEach(a => {
+      const span = document.createElement('span');
+      span.style.visibility = 'hidden';
+      span.style.position = 'absolute';
+      span.style.whiteSpace = 'nowrap';
+      span.style.font = window.getComputedStyle(a).font;
+      span.innerHTML = a.innerHTML;
+      document.body.appendChild(span);
+      const w = span.offsetWidth + 40;
+      if (w > maxWidth) maxWidth = w;
+      document.body.removeChild(span);
+    });
+    dashscopeDropdownMenu.style.minWidth = maxWidth + 'px';
+    dashscopeDropdownBtn.style.width = maxWidth + 'px';
+    dashscopeDropdownMenu.style.width = maxWidth + 'px';
+    dashscopeDropdownMenu.parentNode.style.maxWidth = maxWidth + 'px';
+  }
+});
+        // 优先用后端接口获取IP，若为127.0.0.1或内网IP则用第三方API兜底
+        function isLocalIp(ip) {
+            return ip === '127.0.0.1' || ip === '::1' || ip.startsWith('192.168.') || ip.startsWith('10.') || ip.startsWith('172.');
+        }
+        fetch('/api/get_ip').then(res => res.json()).then(data => {
+            let ip = data.ip || '获取失败';
+            if (isLocalIp(ip)) {
+                // 用免费第三方API兜底
+                fetch('https://api4.ipify.org?format=json').then(res2 => res2.json()).then(data2 => {
+                    document.getElementById('user-ip').textContent = data2.ip || ip;
+                }).catch(() => {
+                    document.getElementById('user-ip').textContent = ip;
+                });
+            } else {
+                document.getElementById('user-ip').textContent = ip;
+            }
+        }).catch(() => {
+            document.getElementById('user-ip').textContent = '获取失败';
+        });
+    </script>
+    <script>
+        document.getElementById('copy-html-btn').addEventListener('click', function() {
+            const html = document.getElementById('article-preview').innerHTML;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(html).then(function() {
+                    alert('HTML内容已复制到剪贴板！');
+                }, function() {
+                    alert('复制失败，请手动复制。');
+                });
+            } else {
+                // 兼容旧浏览器
+                const textarea = document.createElement('textarea');
+                textarea.value = html;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    alert('HTML内容已复制到剪贴板！');
+                } catch (err) {
+                    alert('复制失败，请手动复制。');
+                }
+                document.body.removeChild(textarea);
+            }
+        });
+        
+        // 刷新预览按钮事件（备用方案）
+        document.addEventListener('DOMContentLoaded', function() {
+            const refreshBtn = document.getElementById('refresh-preview-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    if (typeof ArticlePreview !== 'undefined' && ArticlePreview.refreshPreview) {
+                        ArticlePreview.refreshPreview();
+                    } else {
+                        alert('刷新功能正在加载中，请稍后再试');
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+// 下拉框option角标渲染
+(function() {
+  const select = document.getElementById('dashscope-image-model');
+  if (!select) return;
+  function renderBadges() {
+    // 移除旧的自定义渲染
+    const wrapper = select.parentNode.querySelector('.custom-select-badge-wrapper');
+    if (wrapper) wrapper.remove();
+    // 创建自定义下拉列表
+    const custom = document.createElement('div');
+    custom.className = 'custom-select-badge-wrapper';
+    custom.style.position = 'relative';
+    custom.style.width = select.offsetWidth + 'px';
+    custom.style.marginTop = '-38px';
+    custom.style.pointerEvents = 'none';
+    Array.from(select.options).forEach((opt, idx) => {
+      if (opt.dataset.badge) {
+        const badge = document.createElement('span');
+        badge.className = 'badge-free';
+        badge.innerText = opt.dataset.badge;
+        badge.style.top = (6 + idx * 34) + 'px';
+        badge.style.right = '8px';
+        badge.style.position = 'absolute';
+        custom.appendChild(badge);
+      }
+    });
+    select.parentNode.appendChild(custom);
+  }
+  select.addEventListener('change', renderBadges);
+  select.addEventListener('focus', renderBadges);
+  renderBadges();
+})();
+    </script>
+    <script>
+        // 获取 GitHub Star 数
+        (function() {
+          const starEl = document.getElementById('star-num');
+          if (!starEl) return;
+          
+          // 优先从本地后端接口获取（后端内置了缓存及多备用渠道解析）
+          fetch('/api/github-stars')
+            .then(res => {
+              if (res.ok) return res.json();
+              throw new Error('Local API error');
+            })
+            .then(d => {
+              if (d && d.success && d.stars && d.stars !== '--') {
+                starEl.textContent = d.stars;
+              } else {
+                fallbackFetch();
+              }
+            })
+            .catch(err => {
+              console.warn('Failed to fetch stars from backend, trying direct fetch:', err);
+              fallbackFetch();
+            });
+
+          function fallbackFetch() {
+            const cacheKey = 'github_stars_count';
+            const cacheTimeKey = 'github_stars_time';
+            const cachedStars = localStorage.getItem(cacheKey);
+            const cachedTime = localStorage.getItem(cacheTimeKey);
+            const now = Date.now();
+            
+            if (cachedStars && cachedTime && (now - parseInt(cachedTime) < 3600000)) {
+              starEl.textContent = cachedStars;
+              return;
+            }
+            
+            const repo = 'wojiadexiaoming-copy/AIWeChatauto';
+            const sources = [
+              `https://api.github.com/repos/${repo}`,
+              `https://img.shields.io/github/stars/${repo}.json`
+            ];
+            
+            function tryFetch(index) {
+              if (index >= sources.length) {
+                if (!starEl.textContent || starEl.textContent === '--') {
+                  starEl.textContent = '--';
+                }
+                return;
+              }
+              const url = sources[index];
+              const controller = new AbortController();
+              const timeoutId = setTimeout(() => controller.abort(), 4000);
+              
+              fetch(url, { signal: controller.signal })
+                .then(res => {
+                  clearTimeout(timeoutId);
+                  if (res.ok) {
+                    return res.json();
+                  }
+                  throw new Error('Response not ok');
+                })
+                .then(d => {
+                  let count = null;
+                  if (d && typeof d.stargazers_count === 'number') {
+                    count = d.stargazers_count;
+                  } else if (d && d.message && url.includes('shields.io')) {
+                    if (d.message !== 'invalid' && d.message !== 'repo not found') {
+                      count = d.message;
+                    }
+                  }
+                  
+                  if (count !== null) {
+                    starEl.textContent = count;
+                    localStorage.setItem(cacheKey, count);
+                    localStorage.setItem(cacheTimeKey, now.toString());
+                  } else {
+                    tryFetch(index + 1);
+                  }
+                })
+                .catch(err => {
+                  clearTimeout(timeoutId);
+                  console.warn(`Failed to fetch stars from ${url}:`, err);
+                  tryFetch(index + 1);
+                });
+            }
+            
+            tryFetch(0);
+          }
+        })();
+        // 每天自动检测GitHub是否有新版本
+        function checkUpdateDaily() {
+            const key = 'last_update_check';
+            const today = new Date().toISOString().slice(0,10);
+            const last = JSON.parse(localStorage.getItem(key) || '{}');
+            const updateBtn = document.getElementById('check-update-btn');
+            // 检查是否已检测过
+            if (last.date === today && typeof last.hasUpdate !== 'undefined') {
+                showUpdateTip(last.hasUpdate);
+                return;
+            }
+            // 获取GitHub最新tag
+            fetch('https://api.github.com/repos/wojiadexiaoming-copy/AIWeChatauto/tags')
+              .then(res => res.json())
+              .then(tags => {
+                let latestTag = '';
+                if(Array.isArray(tags) && tags.length>0) {
+                    latestTag = tags[0].name;
+                }
+                // 获取本地版本
+                fetch('/api/local_version')
+                  .then(res2 => res2.json())
+                  .then(local => {
+                    const localTag = local && local.tag ? local.tag : '';
+                    let hasUpdate = false;
+                    if(latestTag && localTag && latestTag !== localTag) {
+                        hasUpdate = true;
+                    }
+                    localStorage.setItem(key, JSON.stringify({date: today, hasUpdate}));
+                    showUpdateTip(hasUpdate);
+                  });
+              });
+            function showUpdateTip(hasUpdate) {
+                if (hasUpdate) {
+                    updateBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> <span style="color:#d9534f;font-weight:bold;">有新版可更新</span>';
+                    updateBtn.classList.remove('btn-outline-info');
+                    updateBtn.classList.add('btn-outline-danger');
+                } else {
+                    updateBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> <span style="color:#888;">暂无新版</span>';
+                    updateBtn.classList.remove('btn-outline-danger');
+                    updateBtn.classList.add('btn-outline-info');
+                }
+            }
+        }
+        checkUpdateDaily();
+        // 检查更新按钮逻辑
+        document.getElementById('check-update-btn').addEventListener('click', function() {
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 检查中...';
+            // 1. 获取GitHub最新tag
+            fetch('https://api.github.com/repos/wojiadexiaoming-copy/AIWeChatauto/tags')
+              .then(res => res.json())
+              .then(tags => {
+                let latestTag = '', latestSha = '';
+                if(Array.isArray(tags) && tags.length>0) {
+                    latestTag = tags[0].name;
+                    latestSha = tags[0].commit && tags[0].commit.sha ? tags[0].commit.sha : '';
+                }
+                // 2. 获取本地版本（需后端API支持）
+                fetch('/api/local_version')
+                  .then(res2 => res2.json())
+                  .then(local => {
+                    const localTag = local && local.tag ? local.tag : '';
+                    const localSha = local && local.sha ? local.sha : '';
+                    if(latestTag && localTag) {
+                      if(latestTag === localTag) {
+                        alert('当前已是最新版本！\n\n本地版本：' + localTag + '\nGitHub版本：' + latestTag);
+                      } else {
+                        if(confirm('检测到有新版本！\n\n本地版本：' + localTag + '\nGitHub版本：' + latestTag + '\n\n是否下载并自动更新？')) {
+                          fetch('/api/update_from_github', {method:'POST'})
+                            .then(r=>r.json()).then(r=>{
+                              if(r.success){
+                                alert('更新成功，请刷新页面！');
+                                location.reload();
+                              } else if (r.needs_confirm) {
+                                if(confirm(r.message + "\n\n警告：更新将可能覆盖您的本地修改，是否强制更新？")) {
+                                    alert('如需强制更新，请联系开发者开放此功能。');
+                                }
+                              } else{
+                                alert('更新失败：'+(r.message||'未知错误'));
+                              }
+                            }).catch(()=>alert('更新失败！'));
+                        }
+                      }
+                    } else if(latestSha && localSha) {
+                      if(latestSha === localSha) {
+                        alert('当前已是最新版本！\n\n本地版本：' + localSha.slice(0,7) + '\nGitHub版本：' + latestSha.slice(0,7));
+                      } else {
+                        if(confirm('检测到有新版本！\n\n本地版本：' + localSha.slice(0,7) + '\nGitHub版本：' + latestSha.slice(0,7) + '\n\n是否下载并自动更新？')) {
+                          fetch('/api/update_from_github', {method:'POST'})
+                            .then(r=>r.json()).then(r=>{
+                              if(r.success){
+                                alert('更新成功，请刷新页面！');
+                                location.reload();
+                              } else if (r.needs_confirm) {
+                                if(confirm(r.message + "\n\n警告：更新将可能覆盖您的本地修改，是否强制更新？")) {
+                                    alert('如需强制更新，请联系开发者开放此功能。');
+                                }
+                              } else{
+                                alert('更新失败：'+(r.message||'未知错误'));
+                              }
+                            }).catch(()=>alert('更新失败！'));
+                        }
+                      }
+                    } else {
+                      alert('无法获取版本信息，请稍后重试');
+                    }
+                  }).catch(()=>alert('获取本地版本失败'));
+              }).catch(()=>alert('获取GitHub最新版本失败'))
+              .finally(()=>{
+                this.disabled = false;
+                this.innerHTML = '<i class="bi bi-arrow-repeat"></i> 检查更新';
+              });
+        });
+    </script>
+</body>
+</html>

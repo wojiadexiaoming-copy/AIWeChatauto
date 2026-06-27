@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>免费申请 inodetree API Key</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0..1&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; line-height: 1; }
+    .glass { background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.8); }
+    .field { background: rgba(0,0,0,0.04); border: 1px solid transparent; border-radius: 8px; transition: all .2s; outline: none; width: 100%; padding: 10px 14px; font-size: 15px; }
+    .field:focus { background: #fff; border-color: #07c160; box-shadow: 0 0 0 3px rgba(7,193,96,.12); }
+    .field::placeholder { color: #aaa; }
+    .btn-primary { background: #07c160; color: #fff; border: none; border-radius: 12px; padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all .2s; width: 100%; }
+    .btn-primary:hover { filter: brightness(1.07); }
+    .btn-primary:active { transform: scale(.98); }
+    .btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .platform-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; cursor: default; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    .fade-in { animation: fadeIn .4s ease forwards; }
+    .step-dot { width:28px; height:28px; border-radius:50%; background:#07c160; color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; }
+  </style>
+</head>
+<body style="min-height:100vh; background: radial-gradient(ellipse at top right, #eaf3e7, #f3fcf0 60%);">
+
+  <div class="max-w-lg mx-auto px-4 py-10">
+
+    <!-- Logo + 标题 -->
+    <div class="text-center mb-8 fade-in">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-wechat-green mb-4" style="background:#07c160;">
+        <span class="material-symbols-outlined text-white" style="font-size:28px;font-variation-settings:'FILL' 1;">hub</span>
+      </div>
+      <h1 class="text-2xl font-bold text-gray-900 mb-1">免费获取 inodetree API Key</h1>
+      <p class="text-sm text-gray-500">发布一条自媒体推广作品，即可获得免费 Token 额度</p>
+    </div>
+
+    <!-- 规则说明 -->
+    <div class="glass rounded-2xl p-5 mb-5 fade-in" style="animation-delay:.05s;">
+      <p class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-1">
+        <span class="material-symbols-outlined" style="font-size:16px;color:#07c160;">emoji_events</span>
+        额度规则
+      </p>
+      <div class="space-y-2 text-sm text-gray-600">
+        <div class="flex items-center gap-2">
+          <div class="step-dot text-xs">1</div>
+          <span>发布包含本项目介绍的作品到任意平台</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="step-dot text-xs">2</div>
+          <span>提交作品链接 + 邮箱，等待审核（通常 24h 内）</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="step-dot text-xs">3</div>
+          <span>Key 发送至邮箱，播放量越高额度越多</span>
+        </div>
+      </div>
+      <div class="mt-3 pt-3 border-t border-gray-100 flex flex-wrap gap-2">
+        <span class="platform-chip">📱 抖音</span>
+        <span class="platform-chip">📺 B站</span>
+        <span class="platform-chip">📕 小红书</span>
+        <span class="platform-chip">🐦 微博</span>
+        <span class="platform-chip">▶️ YouTube</span>
+        <span class="platform-chip">💬 微信视频号</span>
+      </div>
+    </div>
+
+    <!-- 表单 -->
+    <div class="glass rounded-2xl p-5 fade-in" id="form-card" style="animation-delay:.1s;">
+      <form id="apply-form" novalidate>
+
+        <!-- 邮箱 -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            邮箱地址 <span class="text-red-500">*</span>
+          </label>
+          <input type="email" id="email" class="field" placeholder="your@email.com" required>
+          <p class="text-xs text-gray-400 mt-1">Key 将发送到此邮箱，请确保准确</p>
+        </div>
+
+        <!-- 平台选择 -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            发布平台 <span class="text-red-500">*</span>
+          </label>
+          <select id="platform" class="field" required>
+            <option value="">请选择平台</option>
+            <option value="抖音">抖音</option>
+            <option value="B站">B站 (bilibili)</option>
+            <option value="小红书">小红书</option>
+            <option value="微博">微博</option>
+            <option value="YouTube">YouTube</option>
+            <option value="微信视频号">微信视频号</option>
+            <option value="其他">其他平台</option>
+          </select>
+        </div>
+
+        <!-- 作品链接 -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            作品链接 <span class="text-red-500">*</span>
+          </label>
+          <input type="url" id="work-url" class="field" placeholder="https://…" required>
+          <p class="text-xs text-gray-400 mt-1">粘贴发布后的作品完整 URL</p>
+        </div>
+
+        <!-- 备注（可选） -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-700 mb-1">备注（可选）</label>
+          <textarea id="remark" class="field" rows="2"
+            placeholder="作品播放量、简单介绍等（选填）"
+            style="resize:none;"></textarea>
+        </div>
+
+        <!-- 提交 -->
+        <button type="submit" class="btn-primary" id="submit-btn">
+          <span id="btn-text">提交申请</span>
+        </button>
+
+        <p class="text-xs text-center text-gray-400 mt-3">
+          提交即表示同意我们使用以上信息处理申请
+        </p>
+      </form>
+    </div>
+
+    <!-- 成功态 -->
+    <div id="success-card" class="glass rounded-2xl p-8 text-center hidden fade-in">
+      <div class="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-4">
+        <span class="material-symbols-outlined text-green-500" style="font-size:36px;font-variation-settings:'FILL' 1;">check_circle</span>
+      </div>
+      <h2 class="text-xl font-bold text-gray-900 mb-2">申请已提交！</h2>
+      <p class="text-sm text-gray-500 mb-1">我们将在 <strong>24 小时内</strong> 审核并发送 Key 到您的邮箱</p>
+      <p class="text-sm text-gray-400">请留意邮件（含垃圾箱），申请编号：<span id="apply-id" class="font-mono text-gray-600"></span></p>
+      <button onclick="location.reload()"
+        class="mt-6 px-6 py-2 rounded-full border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+        再次申请
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+  // 云函数 URL（接收表单提交）
+  const SUBMIT_URL = 'https://env-00jxtxx9y58k.dev-hz.cloudbasefunction.cn/GPT_inodetree-proxy';
+
+  const form      = document.getElementById('apply-form');
+  const formCard  = document.getElementById('form-card');
+  const succCard  = document.getElementById('success-card');
+  const submitBtn = document.getElementById('submit-btn');
+  const btnText   = document.getElementById('btn-text');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email    = document.getElementById('email').value.trim();
+    const platform = document.getElementById('platform').value;
+    const workUrl  = document.getElementById('work-url').value.trim();
+    const remark   = document.getElementById('remark').value.trim();
+
+    // 简单校验
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert('请输入有效的邮箱地址');
+      document.getElementById('email').focus();
+      return;
+    }
+    if (!platform) { alert('请选择发布平台'); return; }
+    if (!workUrl || !workUrl.startsWith('http')) {
+      alert('请输入有效的作品链接（以 http 开头）');
+      document.getElementById('work-url').focus();
+      return;
+    }
+
+    submitBtn.disabled = true;
+    btnText.textContent = '提交中…';
+
+    try {
+      const res = await fetch(SUBMIT_URL, {
+        method:  'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Action':     'apply_key',   // 新增的 action
+        },
+        body: JSON.stringify({ email, platform, work_url: workUrl, remark }),
+      });
+
+      const outer = await res.json();
+      // 解包 DCloud body
+      const data = typeof outer.body === 'string' ? JSON.parse(outer.body) : (outer.body || outer);
+
+      if (data.success) {
+        formCard.classList.add('hidden');
+        succCard.classList.remove('hidden');
+        document.getElementById('apply-id').textContent = data.apply_id || '—';
+      } else {
+        alert('提交失败：' + (data.message || '未知错误'));
+        submitBtn.disabled = false;
+        btnText.textContent = '提交申请';
+      }
+    } catch (err) {
+      alert('网络错误，请稍后重试：' + err.message);
+      submitBtn.disabled = false;
+      btnText.textContent = '提交申请';
+    }
+  });
+  </script>
+</body>
+</html>

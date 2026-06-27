@@ -1,0 +1,7 @@
+{
+  "name": "GPT_inodetree-ai_tools",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>引载树 - 设置</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              sidebar: '#18181a',
+              main: '#222226',
+              card: '#2c2d33',
+              cardHover: '#33343b',
+              border: '#3f4048',
+              text: '#f3f4f6',
+              textMuted: '#9ca3af',
+              primary: '#3b82f6',
+              activeBg: '#2a3143'
+            }
+          },
+          fontFamily: {
+            sans: ['"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style data-purpose="custom-scrollbars">
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #222226;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6b7280;
+    }
+  </style>
+</head>
+<body class="bg-app-main text-app-text font-sans h-screen flex overflow-hidden selection:bg-app-primary selection:text-white">
+
+<!-- BEGIN: Sidebar -->
+<aside class="w-20 bg-app-sidebar flex flex-col h-full border-r border-app-border z-10 flex-shrink-0">
+  <div class="flex-1 overflow-y-auto py-4 flex flex-col items-center gap-4 scrollbar-hide">
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+        <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">一键启动</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">高级选项</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">疑难解答</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">版本管理</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">模型管理</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">小工具</span>
+    </button>
+    <div class="flex-1"></div>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">交流群</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">灯泡</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-textMuted hover:text-app-text hover:bg-white/5 transition-colors group cursor-pointer">
+      <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px]">控制台</span>
+    </button>
+    <button class="flex flex-col items-center justify-center w-full py-2 text-app-primary bg-app-activeBg border-l-2 border-app-primary relative group cursor-pointer">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <span class="text-[11px] font-medium">设置</span>
+    </button>
+  </div>
+</aside>
+<!-- END: Sidebar -->
+
+<!-- BEGIN: Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0">
+  
+  <!-- BEGIN: Top Bar Navigation -->
+  <header class="h-14 border-b border-app-border flex items-center justify-between px-6 flex-shrink-0">
+    <div class="h-full flex items-center gap-6">
+      <!-- Active Tab -->
+      <div id="tab-general" class="h-full flex items-center border-b-2 border-app-primary text-app-text px-1 cursor-pointer">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+          <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+          <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+        </svg>
+        <span class="text-sm font-medium">一般设置</span>
+      </div>
+      <!-- Inactive Tab -->
+      <div id="tab-about" class="h-full flex items-center text-app-textMuted hover:text-app-text px-1 cursor-pointer transition-colors">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+          <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+        </svg>
+        <span class="text-sm">关于</span>
+      </div>
+    </div>
+    <!-- Header Save Button -->
+    <button id="save-settings-btn" class="bg-app-primary hover:bg-blue-600 active:scale-95 text-white px-4 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm">
+      <i class="fa-solid fa-save"></i> 保存配置
+    </button>
+  </header>
+  <!-- END: Top Bar Navigation -->
+
+  <!-- BEGIN: Settings Container -->
+  <div class="flex-1 overflow-y-auto p-6 scroll-smooth">
+    <div class="max-w-[1600px] mx-auto space-y-6 pb-12">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Card 1: 微信公众号 (Col span: 8) -->
+        <section class="lg:col-span-8 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0 text-green-500">
+              <i class="fa-brands fa-weixin text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-semibold text-app-text">微信公众号</h2>
+              <p class="text-[11px] text-app-textMuted">开发者 AppID / AppSecret</p>
+            </div>
+            <span id="wechat-status" class="text-[11px] px-2.5 py-0.5 rounded-full bg-gray-500/10 text-app-textMuted border border-app-border/40 font-semibold">未配置</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">AppID</label>
+              <input type="text" id="wechat_appid" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="wx1234567890abcdef" />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">AppSecret</label>
+              <input type="password" id="wechat_appsecret" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="••••••••••••••••" />
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-app-border/40 mt-auto">
+            <span class="text-[11px] text-app-textMuted">连接状态将实时显示在状态徽章中</span>
+            <button id="test-wechat" class="border border-app-border hover:bg-white/5 text-app-text rounded-md px-4 py-1.5 text-xs font-medium transition-all">
+              测试连接
+            </button>
+          </div>
+        </section>
+
+        <!-- Card 2: 作者信息 (Col span: 4) -->
+        <section class="lg:col-span-4 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0 text-app-primary">
+              <i class="fa-solid fa-user text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-semibold text-app-text">作者信息</h2>
+              <p class="text-[11px] text-app-textMuted">生成文章时的署名和来源</p>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">作者名称</label>
+              <input type="text" id="author" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="AI笔记" />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">原文链接 (可选)</label>
+              <input type="url" id="content_source_url" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="https://..." />
+            </div>
+          </div>
+          <div class="pt-2 border-t border-app-border/40 mt-auto">
+            <p class="text-[11px] text-app-textMuted">当前公网 IP：<span id="user-ip" class="font-mono font-medium text-app-text">获取中…</span></p>
+          </div>
+        </section>
+
+        <!-- Card 3: InodeTree 模型 (Col span: 4) -->
+        <section class="lg:col-span-4 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0 text-emerald-400">
+              <i class="fa-solid fa-network-wired text-lg"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <h2 class="text-sm font-semibold text-app-text truncate">InodeTree</h2>
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">🎁 免费</span>
+              </div>
+              <p class="text-[11px] text-app-textMuted truncate">文本与多媒体生成</p>
+            </div>
+            <span id="inodetree-status" class="text-[11px] px-2.5 py-0.5 rounded-full bg-gray-500/10 text-app-textMuted border border-app-border/40 font-semibold flex-shrink-0">未配置</span>
+          </div>
+          
+          <!-- 免费获取说明 -->
+          <div class="p-2.5 rounded bg-emerald-500/5 border border-emerald-500/20 text-[11px] text-app-textMuted leading-relaxed">
+            <i class="fa-solid fa-circle-info text-emerald-400 mr-1"></i>
+            发布含项目介绍自媒体作品即可免费申请 Token。
+            <a href="https://inodetree.com/apply" target="_blank" id="open-apply-page" class="text-emerald-400 hover:underline font-semibold inline-flex items-center gap-0.5 ml-1">
+              立即申请 <i class="fa-solid fa-external-link-alt text-[9px]"></i>
+            </a>
+          </div>
+
+          <div class="space-y-3">
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">API Key</label>
+              <input type="password" id="inodetree_api_key" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="inodetree-..." />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">提取模型</label>
+              <select id="inodetree_model" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors">
+                <option value="inodetree-pro">inodetree-pro (高级版)</option>
+                <option value="inodetree-standard">inodetree-standard (标准版)</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="p-2 bg-black/10 border border-app-border/30 rounded text-[11px] text-app-textMuted space-y-0.5">
+            <p class="font-medium text-app-text">免选择自动支持子模型</p>
+            <p>文本：<code class="bg-gray-800 px-1 rounded text-[10px] text-gray-300">inodetree-pro</code></p>
+            <p>图片：<code class="bg-gray-800 px-1 rounded text-[10px] text-gray-300">inodetree-image</code></p>
+            <p>视频：<code class="bg-gray-800 px-1 rounded text-[10px] text-gray-300">inodetree-video</code></p>
+          </div>
+          
+          <button id="test-inodetree" class="w-full border border-app-border hover:bg-white/5 text-app-text rounded-md px-4 py-1.5 text-xs font-medium transition-all mt-auto">
+            测试连接
+          </button>
+        </section>
+
+        <!-- Card 4: Gemini AI (Col span: 4) -->
+        <section class="lg:col-span-4 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0 text-purple-400">
+              <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-semibold text-app-text">Gemini AI</h2>
+              <p class="text-[11px] text-app-textMuted">Google 官方生成模型</p>
+            </div>
+            <span id="gemini-status" class="text-[11px] px-2.5 py-0.5 rounded-full bg-gray-500/10 text-app-textMuted border border-app-border/40 font-semibold flex-shrink-0">未配置</span>
+          </div>
+          <div class="space-y-3">
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">API 密钥</label>
+              <input type="password" id="gemini_api_key" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="AIza..." />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">默认文本模型</label>
+              <select id="gemini_model" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors">
+                <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-auto pt-2">
+            <button id="load-gemini-models" class="flex-1 border border-app-border hover:bg-white/5 text-app-text rounded-md px-3 py-1.5 text-xs font-medium transition-all">
+              刷新模型
+            </button>
+            <button id="test-gemini" class="flex-1 bg-app-primary hover:bg-blue-600 text-white rounded-md px-3 py-1.5 text-xs font-medium transition-all shadow-sm">
+              测试连接
+            </button>
+          </div>
+        </section>
+
+        <!-- Card 5: DeepSeek (Col span: 4) -->
+        <section class="lg:col-span-4 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0 text-blue-400">
+              <i class="fa-solid fa-robot text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-semibold text-app-text">DeepSeek</h2>
+              <p class="text-[11px] text-app-textMuted">深度求索大语言模型</p>
+            </div>
+            <span id="deepseek-status" class="text-[11px] px-2.5 py-0.5 rounded-full bg-gray-500/10 text-app-textMuted border border-app-border/40 font-semibold flex-shrink-0">未配置</span>
+          </div>
+          <div class="space-y-3">
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">API 密钥</label>
+              <input type="password" id="deepseek_api_key" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="sk-..." />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">默认文本模型</label>
+              <select id="deepseek_model" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors">
+                <option value="deepseek-chat">DeepSeek Chat</option>
+                <option value="deepseek-coder">DeepSeek Coder</option>
+                <option value="deepseek-reasoner">DeepSeek Reasoner</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-auto pt-2">
+            <button id="load-deepseek-models" class="flex-1 border border-app-border hover:bg-white/5 text-app-text rounded-md px-3 py-1.5 text-xs font-medium transition-all">
+              刷新模型
+            </button>
+            <button id="test-deepseek" class="flex-1 bg-app-primary hover:bg-blue-600 text-white rounded-md px-3 py-1.5 text-xs font-medium transition-all shadow-sm">
+              测试连接
+            </button>
+          </div>
+        </section>
+
+        <!-- Card 6: 阿里云百炼 (Col span: 4) -->
+        <section class="lg:col-span-4 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0 text-orange-400">
+              <i class="fa-solid fa-cloud text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-semibold text-app-text">阿里云百炼</h2>
+              <p class="text-[11px] text-app-textMuted">通义千问系列与万相生图</p>
+            </div>
+            <span id="dashscope-status" class="text-[11px] px-2.5 py-0.5 rounded-full bg-gray-500/10 text-app-textMuted border border-app-border/40 font-semibold flex-shrink-0">未配置</span>
+          </div>
+          <div class="space-y-3">
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">API 密钥</label>
+              <input type="password" id="dashscope_api_key" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="sk-..." />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">默认文本模型</label>
+              <select id="dashscope_model" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors">
+                <option value="qwen-plus">Qwen Plus</option>
+                <option value="qwen-max">Qwen Max</option>
+                <option value="qwen-turbo">Qwen Turbo</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-auto pt-2">
+            <button id="load-dashscope-models" class="flex-1 border border-app-border hover:bg-white/5 text-app-text rounded-md px-3 py-1.5 text-xs font-medium transition-all">
+              刷新模型
+            </button>
+            <button id="test-dashscope" class="flex-1 bg-app-primary hover:bg-blue-600 text-white rounded-md px-3 py-1.5 text-xs font-medium transition-all shadow-sm">
+              测试连接
+            </button>
+          </div>
+        </section>
+
+        <!-- Card 7: Pexels (Col span: 4) -->
+        <section class="lg:col-span-4 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0 text-green-400">
+              <i class="fa-solid fa-image text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-semibold text-app-text">Pexels</h2>
+              <p class="text-[11px] text-app-textMuted">高质量免费图片搜索库</p>
+            </div>
+            <span id="pexels-status" class="text-[11px] px-2.5 py-0.5 rounded-full bg-gray-500/10 text-app-textMuted border border-app-border/40 font-semibold flex-shrink-0">未配置</span>
+          </div>
+          <div class="space-y-2">
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">API 密钥</label>
+              <input type="password" id="pexels_api_key" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="Pexels API Key" />
+            </div>
+            <a href="https://www.pexels.com/api/" target="_blank" class="inline-flex items-center gap-1 text-[11px] text-app-primary hover:underline">
+              <i class="fa-solid fa-external-link-alt text-[9px]"></i> 获取 Pexels API 密钥
+            </a>
+          </div>
+          <button id="test-pexels" class="w-full border border-app-border hover:bg-white/5 text-app-text rounded-md px-4 py-1.5 text-xs font-medium transition-all mt-auto">
+            测试连接
+          </button>
+        </section>
+
+        <!-- Card 8: Firecrawl (Col span: 4) -->
+        <section class="lg:col-span-4 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0 text-red-400">
+              <i class="fa-solid fa-globe text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-semibold text-app-text">Firecrawl</h2>
+              <p class="text-[11px] text-app-textMuted">网页内容抓取与 Markdown 解析</p>
+            </div>
+            <span id="firecrawl-status" class="text-[11px] px-2.5 py-0.5 rounded-full bg-gray-500/10 text-app-textMuted border border-app-border/40 font-semibold flex-shrink-0">未配置</span>
+          </div>
+          <div class="space-y-2">
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">API 密钥</label>
+              <input type="password" id="firecrawl_api_key" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="fc-..." />
+            </div>
+            <a href="https://app.firecrawl.dev/api-keys" target="_blank" class="inline-flex items-center gap-1 text-[11px] text-app-primary hover:underline">
+              <i class="fa-solid fa-external-link-alt text-[9px]"></i> 获取 Firecrawl API 密钥
+            </a>
+          </div>
+          <button id="test-firecrawl" class="w-full border border-app-border hover:bg-white/5 text-app-text rounded-md px-4 py-1.5 text-xs font-medium transition-all mt-auto">
+            测试连接
+          </button>
+        </section>
+
+        <!-- Card 9: 默认配图来源 (Col span: 4) -->
+        <section class="lg:col-span-4 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-teal-500/10 flex items-center justify-center flex-shrink-0 text-teal-400">
+              <i class="fa-solid fa-gear text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-semibold text-app-text">默认配图来源</h2>
+              <p class="text-[11px] text-app-textMuted">自动生成文章时的插图获取方式</p>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">插图数据源</label>
+              <select id="image_model" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors">
+                <option value="gemini">Gemini 视觉配图 (默认)</option>
+                <option value="coze">Coze 工作流配图</option>
+                <option value="pexels">Pexels 免费高清图库</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Card 10: Coze 工作流 (Col span: 8) -->
+        <section class="lg:col-span-8 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0 text-indigo-400">
+              <i class="fa-solid fa-diagram-project text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-semibold text-app-text">Coze 工作流</h2>
+              <p class="text-[11px] text-app-textMuted">配置 Coze Token 和具体工作流 ID</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">Coze 令牌 (Token)</label>
+              <input type="password" id="coze_token" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="pat_..." />
+            </div>
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">工作流 ID (Workflow ID)</label>
+              <input type="text" id="coze_workflow_id" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="7526742102..." />
+            </div>
+          </div>
+          
+          <div class="p-2.5 rounded bg-indigo-500/5 border border-indigo-500/20 text-[11px] text-app-textMuted leading-relaxed flex items-center justify-between">
+            <span>
+              <i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i>
+              请将工作流发布并在个人空间中部署后使用。
+            </span>
+            <a href="https://www.coze.cn/" target="_blank" class="text-indigo-400 hover:underline font-semibold inline-flex items-center gap-0.5">
+              查看部署指南 <i class="fa-solid fa-external-link-alt text-[9px]"></i>
+            </a>
+          </div>
+        </section>
+
+        <!-- Card 11: 网络设置 (Col span: 4) -->
+        <section class="lg:col-span-4 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-teal-500/10 flex items-center justify-center flex-shrink-0 text-teal-400">
+              <i class="fa-solid fa-network-wired text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-semibold text-app-text">网络设置</h2>
+              <p class="text-[11px] text-app-textMuted">配置系统端口与局域网共享</p>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="space-y-1">
+              <label class="block text-xs font-medium text-app-textMuted">运行端口</label>
+              <input type="number" id="server_port" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-3 py-2 text-sm text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors placeholder-gray-600" placeholder="5000" />
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <div class="flex flex-col">
+                <span class="text-xs font-medium text-app-text">局域网访问</span>
+                <span class="text-[10px] text-app-textMuted">允许局域网内的其他设备访问服务</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="lan_access" class="sr-only peer"/>
+                <div class="w-10 h-5 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#b0b3b8] after:border-gray-500 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-app-primary"></div>
+              </label>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+  <!-- END: Settings Container -->
+
+</main>
+<!-- END: Main Content Area -->
+
+<script>
+  // ── Toast 通知 ──
+  function showToast(message, type = 'success') {
+      let container = document.getElementById('launcher-toast-container');
+      if (!container) {
+          container = document.createElement('div');
+          container.id = 'launcher-toast-container';
+          container.className = 'fixed top-16 right-6 z-50 flex flex-col gap-2 pointer-events-none';
+          document.body.appendChild(container);
+      }
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-2.5 rounded-lg text-xs font-semibold shadow-xl transition-all duration-300 transform translate-x-12 opacity-0 pointer-events-auto flex items-center gap-2 max-w-xs ' + 
+          (type === 'success' 
+              ? 'bg-emerald-600 text-white' 
+              : type === 'error' 
+                  ? 'bg-rose-600 text-white' 
+                  : 'bg-yellow-500 text-white');
+                  
+      const icon = document.createElement('i');
+      icon.className = type === 'success' 
+          ? 'fa-solid fa-circle-check' 
+          : type === 'error' 
+              ? 'fa-solid fa-circle-xmark' 
+              : 'fa-solid fa-triangle-exclamation';
+      
+      toast.appendChild(icon);
+      const span = document.createElement('span');
+      span.textContent = message;
+      toast.appendChild(span);
+      
+      container.appendChild(toast);
+      
+      requestAnimationFrame(() => {
+          toast.classList.remove('translate-x-12', 'opacity-0');
+      });
+      
+      setTimeout(() => {
+          toast.classList.add('translate-x-12', 'opacity-0');
+          setTimeout(() => toast.remove(), 300);
+      }, 3500);
+  }
+
+  // ── 徽章状态设置 ──
+  function setStatus(id, ok, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg || (ok ? '已配置' : '配置失败');
+      el.className = ok
+          ? 'text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-semibold flex-shrink-0'
+          : 'text-[11px] px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20 font-semibold flex-shrink-0';
+  }
+
+  function btnLoading(btn, text = '测试中…') {
+      btn._orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> ${text}`;
+  }
+
+  function btnRestore(btn) {
+      btn.disabled = false;
+      btn.innerHTML = btn._orig;
+  }
+
+  // ── 测试连接通用封装 ──
+  function testBtn(btnId, statusId, apiPath) {
+      if (!window.pywebview || !window.pywebview.api) return;
+      window.pywebview.api.is_server_running().then(isRunning => {
+          if (!isRunning) {
+              showToast('请先在一键启动页面启动服务，然后再进行配置测试！', 'warning');
+              return;
+          }
+          const port = parseInt(document.getElementById('server_port').value) || 5000;
+          const btn = document.getElementById(btnId);
+          if (!btn) return;
+          btnLoading(btn);
+          
+          fetch(`http://127.0.0.1:${port}${apiPath}`, { method: 'POST' })
+              .then(res => res.json())
+              .then(data => {
+                  setStatus(statusId, data.success, data.success ? '连接正常' : '连接失败');
+                  showToast(data.success ? '连接成功' : ('连接失败：' + data.message),
+                            data.success ? 'success' : 'error');
+              })
+              .catch(e => {
+                  setStatus(statusId, false, '请求失败');
+                  showToast('请求失败：' + e.message, 'error');
+              })
+              .finally(() => {
+                  btnRestore(btn);
+              });
+      });
+  }
+
+  // ── 刷新模型列表通用封装 ──
+  function loadModels(btnId, selectId, apiPath) {
+      if (!window.pywebview || !window.pywebview.api) return;
+      window.pywebview.api.is_server_running().then(isRunning => {
+          if (!isRunning) {
+              showToast('请先在一键启动页面启动服务，然后再进行模型刷新！', 'warning');
+              return;
+          }
+          const port = parseInt(document.getElementById('server_port').value) || 5000;
+          const btn = document.getElementById(btnId);
+          if (btn) btnLoading(btn, '刷新中…');
+          
+          fetch(`http://127.0.0.1:${port}${apiPath}`)
+              .then(res => res.json())
+              .then(data => {
+                  const sel = document.getElementById(selectId);
+                  if (data.success && sel && data.models && data.models.length > 0) {
+                      const currentVal = sel.value;
+                      sel.innerHTML = '';
+                      data.models.forEach(m => {
+                          const opt = document.createElement('option');
+                          opt.value = typeof m === 'string' ? m : m.id;
+                          opt.textContent = typeof m === 'string' ? m : (m.name || m.id);
+                          sel.appendChild(opt);
+                      });
+                      if (currentVal && Array.from(sel.options).some(o => o.value === currentVal)) {
+                          sel.value = currentVal;
+                      }
+                      showToast('模型列表已成功更新', 'success');
+                  } else {
+                      showToast('获取模型失败：' + (data.message || '未知错误'), 'error');
+                  }
+              })
+              .catch(e => {
+                  showToast('请求失败：' + e.message, 'error');
+              })
+              .finally(() => {
+                  if (btn) btnRestore(btn);
+              });
+      });
+  }
+
+  // ── 公网 IP ───────────────────────────────────────────────
+  function loadUserIP() {
+      const setIPText = (v) => {
+          const el = document.getElementById('user-ip');
+          if (el) el.textContent = v;
+      };
+      
+      if (window.pywebview && window.pywebview.api && window.pywebview.api.get_public_ip) {
+          window.pywebview.api.get_public_ip().then(ip => {
+              setIPText(ip || '获取失败');
+          }).catch(() => {
+              setIPText('获取失败');
+          });
+      } else {
+          // Fallback if API is not fully loaded
+          fetch('https://api4.ipify.org?format=json')
+              .then(r => r.json())
+              .then(d => {
+                  if (d && d.ip) {
+                      setIPText(d.ip);
+                  } else {
+                      setIPText('获取失败');
+                  }
+              })
+              .catch(() => setIPText('获取失败'));
+      }
+  }
+
+  // ── 初始化 ──
+  window.initPage10 = function() {
+      const generalTab = document.getElementById('tab-general');
+      const aboutTab = document.getElementById('tab-about');
+      
+      if (generalTab) {
+          generalTab.addEventListener('click', () => {
+              navigateTo('page_10.html');
+          });
+      }
+      if (aboutTab) {
+          aboutTab.addEventListener('click', () => {
+              navigateTo('page_11.html');
+          });
+      }
+
+      // 绑定测试连接事件
+      document.getElementById('test-wechat')?.addEventListener('click', () => {
+          testBtn('test-wechat', 'wechat-status', '/api/test-wechat');
+      });
+      document.getElementById('test-inodetree')?.addEventListener('click', () => {
+          testBtn('test-inodetree', 'inodetree-status', '/api/test-inodetree');
+      });
+      document.getElementById('test-gemini')?.addEventListener('click', () => {
+          testBtn('test-gemini', 'gemini-status', '/api/test-gemini');
+      });
+      document.getElementById('test-deepseek')?.addEventListener('click', () => {
+          testBtn('test-deepseek', 'deepseek-status', '/api/test-deepseek');
+      });
+      document.getElementById('test-dashscope')?.addEventListener('click', () => {
+          testBtn('test-dashscope', 'dashscope-status', '/api/test-dashscope');
+      });
+      document.getElementById('test-pexels')?.addEventListener('click', () => {
+          testBtn('test-pexels', 'pexels-status', '/api/test-pexels');
+      });
+      document.getElementById('test-firecrawl')?.addEventListener('click', () => {
+          testBtn('test-firecrawl', 'firecrawl-status', '/api/test-firecrawl');
+      });
+
+      // 绑定加载模型事件
+      document.getElementById('load-gemini-models')?.addEventListener('click', () => {
+          loadModels('load-gemini-models', 'gemini_model', '/api/gemini-models');
+      });
+      document.getElementById('load-deepseek-models')?.addEventListener('click', () => {
+          loadModels('load-deepseek-models', 'deepseek_model', '/api/deepseek-models');
+      });
+      document.getElementById('load-dashscope-models')?.addEventListener('click', () => {
+          loadModels('load-dashscope-models', 'dashscope_model', '/api/dashscope-models');
+      });
+
+      // 获取公网 IP
+      loadUserIP();
+
+      // 载入配置信息
+      if (window.pywebview && window.pywebview.api) {
+          window.pywebview.api.get_config().then(config => {
+              document.getElementById('wechat_appid').value = config.wechat_appid || '';
+              document.getElementById('wechat_appsecret').value = config.wechat_appsecret || '';
+              document.getElementById('gemini_api_key').value = config.gemini_api_key || '';
+              document.getElementById('gemini_model').value = config.gemini_model || 'gemini-2.5-flash';
+              document.getElementById('deepseek_api_key').value = config.deepseek_api_key || '';
+              document.getElementById('inodetree_api_key').value = config.inodetree_api_key || '';
+              document.getElementById('dashscope_api_key').value = config.dashscope_api_key || '';
+              document.getElementById('coze_token').value = config.coze_token || '';
+              document.getElementById('coze_workflow_id').value = config.coze_workflow_id || '';
+              document.getElementById('firecrawl_api_key').value = config.firecrawl_api_key || '';
+              document.getElementById('server_port').value = config.server_port || 5000;
+              document.getElementById('lan_access').checked = !!config.lan_access;
+
+              document.getElementById('author').value = config.author || '';
+              document.getElementById('content_source_url').value = config.content_source_url || '';
+              document.getElementById('image_model').value = config.image_model || 'gemini';
+              document.getElementById('pexels_api_key').value = config.pexels_api_key || '';
+              document.getElementById('deepseek_model').value = config.deepseek_model || 'deepseek-chat';
+              document.getElementById('dashscope_model').value = config.dashscope_model || 'qwen-plus';
+              document.getElementById('inodetree_model').value = config.inodetree_model || 'inodetree-pro';
+
+              // 更新初始状态 Badge
+              const updateStatus = (id, val) => {
+                  if (val) setStatus(id, true, '已配置');
+              };
+              updateStatus('wechat-status', config.wechat_appid && config.wechat_appsecret);
+              updateStatus('gemini-status', config.gemini_api_key);
+              updateStatus('deepseek-status', config.deepseek_api_key);
+              updateStatus('dashscope-status', config.dashscope_api_key);
+              updateStatus('pexels-status', config.pexels_api_key);
+              updateStatus('firecrawl-status', config.firecrawl_api_key);
+              updateStatus('inodetree-status', config.inodetree_api_key);
+          });
+      }
+      
+      // 保存配置事件
+      const saveBtn = document.getElementById('save-settings-btn');
+      if (saveBtn) {
+          saveBtn.addEventListener('click', () => {
+              const configData = {
+                  wechat_appid: document.getElementById('wechat_appid').value,
+                  wechat_appsecret: document.getElementById('wechat_appsecret').value,
+                  gemini_api_key: document.getElementById('gemini_api_key').value,
+                  gemini_model: document.getElementById('gemini_model').value,
+                  deepseek_api_key: document.getElementById('deepseek_api_key').value,
+                  inodetree_api_key: document.getElementById('inodetree_api_key').value,
+                  dashscope_api_key: document.getElementById('dashscope_api_key').value,
+                  coze_token: document.getElementById('coze_token').value,
+                  coze_workflow_id: document.getElementById('coze_workflow_id').value,
+                  firecrawl_api_key: document.getElementById('firecrawl_api_key').value,
+                  server_port: parseInt(document.getElementById('server_port').value) || 5000,
+                  lan_access: document.getElementById('lan_access').checked,
+
+                  author: document.getElementById('author').value,
+                  content_source_url: document.getElementById('content_source_url').value,
+                  image_model: document.getElementById('image_model').value,
+                  pexels_api_key: document.getElementById('pexels_api_key').value,
+                  deepseek_model: document.getElementById('deepseek_model').value,
+                  dashscope_model: document.getElementById('dashscope_model').value,
+                  inodetree_model: document.getElementById('inodetree_model').value
+              };
+              
+              if (window.pywebview && window.pywebview.api) {
+                  window.pywebview.api.save_config(configData).then(success => {
+                      if (success) {
+                          showToast('设置配置已成功保存！', 'success');
+                          
+                          // 更新配置后的状态
+                          const updateStatus = (id, val) => {
+                              setStatus(id, !!val, val ? '已配置' : '未配置');
+                          };
+                          updateStatus('wechat-status', configData.wechat_appid && configData.wechat_appsecret);
+                          updateStatus('gemini-status', configData.gemini_api_key);
+                          updateStatus('deepseek-status', configData.deepseek_api_key);
+                          updateStatus('dashscope-status', configData.dashscope_api_key);
+                          updateStatus('pexels-status', configData.pexels_api_key);
+                          updateStatus('firecrawl-status', configData.firecrawl_api_key);
+                          updateStatus('inodetree-status', configData.inodetree_api_key);
+                      } else {
+                          showToast('设置保存失败，请检查配置参数。', 'error');
+                      }
+                  });
+              }
+          });
+      }
+  };
+
+  // 网页端直接载入逻辑支持
+  document.addEventListener('DOMContentLoaded', () => {
+      if (window.pywebview && window.pywebview.api) {
+          initPage10();
+      } else {
+          window.addEventListener('pywebviewready', initPage10);
+      }
+  });
+</script>
+</body>
+</html>

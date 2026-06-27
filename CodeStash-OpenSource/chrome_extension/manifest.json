@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "CodeStash WeChat Helper",
+    "version": "1.0.0",
+    "description": "CodeStash 微信公众号助手辅助扩展",
+    "permissions": ["activeTab", "scripting"],
+    "host_permissions": ["https://mp.weixin.qq.com/*", "http://127.0.0.1:5000/*"],
+    "content_scripts": [
+        {
+            "matches": ["https://mp.weixin.qq.com/*"],
+            "js": ["content.js"]
+        }
+    ]
+}

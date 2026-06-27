@@ -1,0 +1,1 @@
+﻿            result = self.generate_content(prompt, model, max_tokens=4000)

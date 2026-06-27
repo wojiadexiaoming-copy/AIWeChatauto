@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "公众号智能美化助手",
+    "description": "扩展名称"
+  },
+  "extDescription": {
+    "message": "为微信公众号文章提供智能美化和优化功能",
+    "description": "扩展描述"
+  }
+}

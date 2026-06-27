@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "WeChat Official Account Smart Beautifier",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Provides intelligent beautification and optimization features for WeChat Official Account articles",
+    "description": "Extension description"
+  }
+}

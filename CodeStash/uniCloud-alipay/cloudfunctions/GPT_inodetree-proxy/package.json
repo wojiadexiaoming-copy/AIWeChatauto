@@ -1,0 +1,10 @@
+{
+  "name": "GPT_inodetree-proxy",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  },
+  "cloudFunction": {
+    "timeout": 10800
+  }
+}

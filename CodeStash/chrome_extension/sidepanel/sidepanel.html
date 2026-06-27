@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公众号智能美化美化助手</title>
+    <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-status">
+                <div class="status-badge" id="statusIndicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">未连接</span>
+                </div>
+                <div class="status-badge" id="contentStatusIndicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text" id="contentStatusText">未检测到内容</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导航标签 -->
+        <div class="tab-nav" style="display: none;">
+            <button class="tab-btn active" data-tab="editor">内容生成</button>
+            <button class="tab-btn" data-tab="config">设置</button>
+        </div>
+
+        <!-- 内容生成面板 -->
+        <div class="tab-content active" id="editorTab">
+            <!-- 模板选择区域 -->
+            <div class="section scrollable">
+                <div class="section-header">
+                    <h3>选择模板</h3>
+                    <button class="btn-icon" id="refreshTemplatesBtn" title="刷新">
+                        🔄
+                    </button>
+                </div>
+
+                <!-- 搜索和筛选控件 -->
+                <div class="search-filter-container">
+                    <div class="search-box">
+                        <input type="text" id="templateSearchInput" placeholder="搜索模板名称或关键词..." class="search-input">
+                        <button class="search-clear-btn" id="searchClearBtn" title="清除搜索">✕</button>
+                    </div>
+                    
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">全部</button>
+                        <button class="filter-tab" data-filter="free">通用</button>
+                        <button class="filter-tab" data-filter="vip">VIP</button>
+                    </div>
+                </div>
+
+                <!-- 模板列表 -->
+                <div class="templates-container">
+                    <div id="templatesList">
+                        <!-- 模板将通过JavaScript动态加载 -->
+                        <div class="loading-state">
+                            <div class="preview-loading">
+                                <div class="loading-spinner"></div>
+                                <span>正在加载模板...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 生成按钮 -->
+            <div class="section generate-section">
+                <button class="btn-primary" id="generateBtn" disabled>
+                    <span>🚀</span>
+                    开始生成
+                </button>
+            </div>
+
+            <!-- 生成结果 -->
+            <div class="section result-section" id="optimizationResult" style="display: none;">
+                <div class="section-header">
+                    <h3>生成结果</h3>
+                </div>
+                <div class="content-box" id="optimizedContent"></div>
+                <div class="section-footer">
+                    <div class="result-actions">
+                        <button class="btn-small btn-success" id="applyBtn">
+                            <span>✅</span>
+                            应用
+                        </button>
+                        <button class="btn-small" id="copyBtn">
+                            <span>📋</span>
+                            复制
+                        </button>
+                        <button class="btn-small btn-danger" id="discardBtn">
+                            <span>🗑️</span>
+                            丢弃
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置面板 -->
+        <div class="tab-content" id="configTab">
+            <div class="section">
+                <h3>API配置</h3>
+                <div class="form-group">
+                    <label>API Key <span class="required">*</span></label>
+                    <div class="input-group">
+                        <input type="password" id="apiKeyInput" placeholder="请输入API Key (以sk-开头)" class="form-input">
+                        <button type="button" class="btn-icon" id="toggleApiKeyBtn">👁️</button>
+                    </div>
+                    <div class="form-help">获取API Key: <a href="https://dashscope.console.aliyun.com/apiKey" target="_blank" class="help-link">阿里云百炼平台</a></div>
+                </div>
+
+                <div class="form-group">
+                    <label>模型选择</label>
+                    <div class="input-group">
+                        <input type="text" id="modelInput" placeholder="请输入模型名称" class="form-input">
+                    </div>
+                    <div class="form-help">请输入您要使用的模型名称</div>
+                </div>
+
+                <div class="form-group">
+                    <label>VIP 密钥 <span class="optional">(可选)</span></label>
+                    <div class="input-group">
+                        <input type="password" id="vipKeyInput" placeholder="请输入VIP密钥" class="form-input">
+                        <button type="button" class="btn-icon" id="toggleVipKeyBtn">👁️</button>
+                    </div>
+                    <div class="form-help">VIP密钥用于访问高级模板功能</div>
+                </div>
+
+                <div class="vip-status" id="vipStatus" style="display: none;">
+                    <div class="status-badge">
+                        <span class="status-dot"></span>
+                        <span class="status-text">VIP状态检测中...</span>
+                    </div>
+                </div>
+
+                <div class="vip-info" id="vipInfo" style="display: none;">
+                    <div class="info-item">
+                        <span class="info-label">剩余天数</span>
+                        <span class="info-value" id="vipRemainingDays">-</span>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="saveAllConfigBtn">
+                    <span>💾</span>
+                    保存配置
+                </button>
+            </div>
+
+            <div class="section">
+                <h3>使用说明</h3>
+                <div class="help-content">
+                    <div class="help-step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">配置API Key</div>
+                    </div>
+                    <div class="help-step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">在公众号编辑器中输入内容</div>
+                    </div>
+                    <div class="help-step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">选择合适的模板</div>
+                    </div>
+                    <div class="help-step">
+                        <div class="step-number">4</div>
+                        <div class="step-text">点击生成按钮</div>
+                    </div>
+                    <div class="help-step">
+                        <div class="step-number">5</div>
+                        <div class="step-text">
+                            <strong>联系我们</strong><br>
+                            如果您对此隐私政策有任何疑问，请通过以下方式联系我们：<br>
+                            - 邮箱：<a href="mailto:1576129288@qq.com" class="help-link">1576129288@qq.com</a><br>
+                            - GitHub Issues：<a href="https://github.com/wojiadexiaoming-copy/AIWeChatauto" target="_blank" class="help-link">https://github.com/wojiadexiaoming-copy/AIWeChatauto</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 加载指示器 -->
+        <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <div class="progress-info">
+                    <div class="timer-display">耗时：<span id="generationTimer">00:00</span></div>
+                    <div class="step-display" id="currentStep">步骤1/3：正在发送参数...</div>
+                </div>
+                <div class="loading-progress">
+                    <div class="progress-bar" id="progressBar" style="width: 33%"></div>
+                </div>
+                <div class="loading-text" id="loadingText">正在处理中...</div>
+            </div>
+        </div>
+
+        <!-- 通知消息 -->
+        <div class="notification" id="notification" style="display: none;">
+            <span class="notification-icon"></span>
+            <span class="notification-text"></span>
+        </div>
+    </div>
+
+    <script src="../utils/dom-sanitizer.js"></script>
+    <script src="sidepanel.js"></script>
+</body>
+</html>

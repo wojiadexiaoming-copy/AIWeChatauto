@@ -1,0 +1,86 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extName__",
+  "version": "1.0.5",
+  "description": "__MSG_extDescription__",
+  "default_locale": "zh_CN",
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs",
+    "webNavigation",
+    "sidePanel"
+  ],
+  
+  "host_permissions": [
+    "<all_urls>",
+    "https://mp.weixin.qq.com/*",
+    "https://dashscope.aliyuncs.com/*",
+    "https://*.aliyuncs.com/*",
+    "https://env-00jxtxx9y58k.dev-hz.cloudbasefunction.cn/*",
+    "https://*.cloudbasefunction.cn/*",
+    "https://*.cloudstatic.cn/*",
+    "http://127.0.0.1:5000/*",
+    "http://localhost:5000/*"
+  ],
+  
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content/content-script.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ],
+  
+  "side_panel": {
+    "default_path": "sidepanel/sidepanel.html"
+  },
+  
+  "action": {
+    "default_title": "__MSG_extName__",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "config/*",
+        "icons/*",
+        "utils/*",
+        "templates/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none';"
+  },
+  
+  "author": "公众号智能美化助手开发团队",
+  "homepage_url": "https://github.com/wojiadexiaoming-copy/AIWeChatauto",
+  "short_name": "公众号智能美化助手"
+}
