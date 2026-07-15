@@ -95,16 +95,40 @@ class PromptManager:
 
     # 深度内容重构文章生成提示词
     @staticmethod
-    def recreate_article_prompt(reference_content, word_count=None, char_limit=20000, format_template=None, role_prompt=None):
+    def recreate_article_prompt(reference_content, word_count=None, char_limit=20000, format_template=None, role_prompt=None, recreate_strength=80):
         from datetime import datetime
         current_date = datetime.now().strftime("现在是%Y年%m月%d日")
         word_count_str = f"{word_count}字" if word_count else "1200-1800字"
         role_desc = role_prompt if role_prompt else PromptManager.ROLE_PROMPT
         
-        base_instruction = f"""请仔细阅读以下参考文章内容，然后对这些文章进行**深度内容重构**，创作一篇全新的、更具深度和可读性的微信公众号文章。
+        # 根据重构强度动态调整提示词
+        if recreate_strength <= 30:
+            strength_instruction = """
+**重构强度控制：低度重构 (保持原结构与教程脉络，强度控制在 0% - 30%)**
+- 必须严格保留原参考文章的逻辑结构、讲解步骤、技术细节和教程方法。
+- 绝不能将技术教程或步骤说明改写成新闻报导、故事、行业评论或概括叙述。
+- 仅对语言进行微调、修正表述和润色，并直接将其转换成美观的微信 HTML 排版。
+- 保持原文的深度，确保读者能够完全跟着重构后的文章逐步操作。
+"""
+        elif recreate_strength <= 70:
+            strength_instruction = """
+**重构强度控制：中度重构 (平衡保留与优化，强度控制在 31% - 70%)**
+- 在保留参考文章核心教程步骤和逻辑主线的前提下，进行适当的结构优化和段落重组。
+- 可以适度扩写或精简非核心内容，添加更适合微信公众号阅读的过渡语。
+- 语言需要重新组织，使其既保留参考文章的实用指南价值，又具有新媒体文章的易读和传播性。
+"""
+        else:
+            strength_instruction = """
+**重构强度控制：高度重构 (深度主题化改写，强度控制在 71% - 100%)**
+- 提取参考内容中的核心观点、结论、数据或关键技术细节，进行彻底的重组和完全的语言重构。
+- 可以打破原有的段落和顺序限制，引入全新的切入点、场景或深度行业分析。
+- 创作出一篇全新的、具备完全独立叙事逻辑和风格的公众号推文。
+"""
 
+        base_instruction = f"""请仔细阅读以下参考文章内容，然后对这些文章进行**内容重构**，创作一篇全新的、更具深度和可读性的微信公众号文章。
+{strength_instruction}
 **创作要求：**
-1. **内容重塑与重构：** 吸收参考文章中的核心观点、数据、案例或思路，进行归纳整合。重组文章结构，加入新的分析角度，使文章内容更丰富、逻辑更严密。
+1. **内容重塑与重构：** 根据上述设定的“重构强度”，合理重组文章结构，加入新的分析角度，使文章内容更丰富、逻辑更严密。
 2. **拒绝低级抄袭：** 必须使用你自己的语言和叙述方式进行重新创作，不能直接照抄原文的语句，避免被判定为抄袭或洗稿。
 3. **保持微信排版风格：** 严格遵循您将在下方接收到的HTML排版结构和样式风格进行输出（请直接输出完整的HTML代码，不包含其他说明文字）。
 4. **字数与格式要求：** 字数约{word_count_str}，且最终输出的HTML内容总字符数必须小于等于{char_limit}字符。所有样式必须内联声明。
@@ -112,5 +136,5 @@ class PromptManager:
         if format_template:
             return f"{current_date}\n{role_desc}\n{base_instruction}\n参考文章内容如下：\n{reference_content}\n\n排版格式模板如下：\n{format_template}"
         else:
-            return f"{current_date}\n{role_desc}\n{base_instruction}\n参考文章内容如下：\n{reference_content}\n\n微信公众号文章内容输出规范：\n- 必须使用标准的HTML标签和内联 style 属性。\n- 禁止JavaScript和外部CSS。\n- <h2>、<h3> 用于段落标题，<p> 用于正文段落，<ul>、<li> 用于要点列表，<blockquote> 用于引用或重要观点，<strong> 用于强调。\n\n请直接输出HTML格式的重构后的文章内容，不要包含其他说明文字或代码块之外的任何文本："
+            return f"{current_date}\n{role_desc}\n{base_instruction}\n参考文章内容如下：\n{reference_content}\n\n微信公众号文章内容输出规范：\n- 必须使用标准的HTML标签 and 内联 style 属性。\n- 禁止JavaScript和外部CSS。\n- <h2>、<h3> 用于段落标题，<p> 用于正文段落，<ul>、<li> 用于要点列表，<blockquote> 用于引用或重要观点，<strong> 用于强调。\n\n请直接输出HTML格式的重构后的文章内容，不要包含其他说明文字或代码块之外的任何文本："
  

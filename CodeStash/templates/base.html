@@ -237,6 +237,7 @@
           <span class="material-symbols-outlined text-white" style="font-size:16px;font-variation-settings:'FILL' 1;">smart_toy</span>
         </div>
         <span class="font-display text-title font-bold text-on-surface leading-none">AI 公众号</span>
+        <span id="progress-text" class="text-caption text-wechat-green ml-sm hidden animate-pulse">准备中…</span>
       </div>
 
       <!-- Tab 导航 -->
@@ -272,6 +273,11 @@
           <span class="hidden sm:inline">检查更新</span>
         </button>
       </div>
+    </div>
+    
+    <!-- 顶部通栏加载进度条 -->
+    <div id="generation-progress" class="absolute bottom-0 left-0 w-full h-1 bg-transparent overflow-hidden hidden">
+      <div id="progress-bar" class="h-full bg-wechat-green transition-all duration-500" style="width: 0%;"></div>
     </div>
   </header>
 

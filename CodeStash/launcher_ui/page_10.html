@@ -510,6 +510,30 @@
           </div>
         </section>
 
+        <!-- Card 12: 自定义中转网关 (Col span: 8) -->
+        <section class="lg:col-span-8 bg-app-card border border-app-border/40 rounded-lg p-5 flex flex-col gap-4 shadow-sm hover:border-gray-500/30 transition-colors">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0 text-orange-400">
+                <i class="fa-solid fa-server text-lg"></i>
+              </div>
+              <div class="flex-1">
+                <h2 class="text-sm font-semibold text-app-text">自定义/中转 API 网关</h2>
+                <p class="text-[11px] text-app-textMuted">对接 9router, CCSwitch, Codex++ 等中转 API 网关</p>
+              </div>
+            </div>
+            <button id="add-gateway-btn" type="button"
+              class="flex items-center gap-1.5 px-3 py-1 rounded bg-[#3b82f6]/10 text-[#3b82f6] text-xs font-semibold hover:bg-[#3b82f6]/20 transition-all cursor-pointer">
+              <i class="fa-solid fa-plus text-[10px]"></i>添加网关
+            </button>
+          </div>
+          
+          <!-- 网关列表容器 -->
+          <div id="gateways-container" class="space-y-4">
+            <!-- 动态生成网关列表 -->
+          </div>
+        </section>
+
       </div>
     </div>
   </div>
@@ -681,6 +705,124 @@
       }
   }
 
+  // ── 自定义网关管理 UI 渲染与数据收集 ──
+  function renderCustomProviders(providers) {
+      const container = document.getElementById('gateways-container');
+      if (!container) return;
+      container.innerHTML = '';
+      
+      const list = providers || [];
+      list.forEach(p => {
+          container.appendChild(createGatewayEl(p));
+      });
+  }
+
+  function createGatewayEl(p) {
+      const div = document.createElement('div');
+      div.className = 'p-4 bg-[#1e1e24]/60 rounded-lg border border-app-border/40 space-y-3 relative group';
+      div.setAttribute('data-provider-id', p.id);
+      
+      div.innerHTML = `
+        <!-- 删除按钮 -->
+        <button class="absolute top-3 right-3 text-app-textMuted hover:text-rose-500 transition-colors remove-gateway-btn" type="button" title="删除该网关">
+          <i class="fa-solid fa-trash-can text-base"></i>
+        </button>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="space-y-1">
+            <label class="block text-xs font-medium text-app-textMuted">网关名称</label>
+            <input type="text" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-2.5 py-1.5 text-xs text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors gateway-name" value="${p.name || ''}" placeholder="如: 9router" />
+          </div>
+          <div class="space-y-1">
+            <label class="block text-xs font-medium text-app-textMuted">接口 Base URL</label>
+            <input type="text" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-2.5 py-1.5 text-xs text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors gateway-base" value="${p.api_base || ''}" placeholder="如: https://api.9router.com/v1" />
+          </div>
+          <div class="space-y-1">
+            <label class="block text-xs font-medium text-app-textMuted">API Key</label>
+            <input type="password" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-2.5 py-1.5 text-xs text-gray-300 w-full focus:outline-none focus:border-app-primary transition-colors gateway-key" value="${p.api_key || ''}" placeholder="sk-..." />
+          </div>
+        </div>
+        
+        <!-- 模型列表 -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-app-textMuted">模型配置明细</span>
+            <div class="flex items-center gap-3">
+              <button class="flex items-center gap-1 text-[11px] text-app-primary hover:underline add-model-btn" type="button">
+                <i class="fa-solid fa-plus text-[10px]"></i>添加模型
+              </button>
+              <button class="flex items-center gap-1 text-[11px] text-emerald-400 hover:underline fetch-models-btn" type="button">
+                <i class="fa-solid fa-arrows-rotate text-[10px]"></i>自动获取模型
+              </button>
+            </div>
+          </div>
+          <div class="gateway-models-container space-y-2">
+          </div>
+        </div>
+      `;
+      
+      const modelsContainer = div.querySelector('.gateway-models-container');
+      if (p.models && p.models.length > 0) {
+          p.models.forEach(m => {
+              modelsContainer.appendChild(createModelRowEl(m));
+          });
+      } else {
+          modelsContainer.appendChild(createModelRowEl({ id: '', name: '', type: 'text' }));
+      }
+      
+      return div;
+  }
+
+  function createModelRowEl(m) {
+      const div = document.createElement('div');
+      div.className = 'flex items-center gap-2 model-row';
+      div.innerHTML = `
+        <input type="text" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-2 py-1 text-xs text-gray-300 flex-1 focus:outline-none focus:border-app-primary transition-colors model-id" value="${m.id || ''}" placeholder="模型 ID (如 gpt-4o)" />
+        <input type="text" class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-2 py-1 text-xs text-gray-300 flex-1 focus:outline-none focus:border-app-primary transition-colors model-name" value="${m.name || ''}" placeholder="显示名称 (如 GPT-4o)" />
+        <select class="bg-[#1e1e24] border border-gray-700/50 rounded-md px-2 py-1 text-xs text-gray-300 w-28 focus:outline-none focus:border-app-primary transition-colors model-type">
+          <option value="text" ${m.type === 'text' ? 'selected' : ''}>文本模型</option>
+          <option value="image" ${m.type === 'image' ? 'selected' : ''}>生图模型</option>
+        </select>
+        <button class="text-app-textMuted hover:text-rose-500 transition-colors remove-model-btn p-1" type="button" title="删除">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      `;
+      return div;
+  }
+
+  function collectCustomProviders() {
+      const list = [];
+      const cards = document.querySelectorAll('#gateways-container > div');
+      cards.forEach(card => {
+          const id = card.getAttribute('data-provider-id');
+          const name = card.querySelector('.gateway-name').value.trim();
+          const api_base = card.querySelector('.gateway-base').value.trim();
+          const api_key = card.querySelector('.gateway-key').value.trim();
+          
+          if (!name || !api_base || !api_key) return;
+          
+          const models = [];
+          const rows = card.querySelectorAll('.model-row');
+          rows.forEach(row => {
+              const mId = row.querySelector('.model-id').value.trim();
+              const mName = row.querySelector('.model-name').value.trim();
+              const mType = row.querySelector('.model-type').value;
+              if (mId) {
+                  models.push({ id: mId, name: mName || mId, type: mType });
+              }
+          });
+          
+          list.push({
+              id: id || 'provider_' + Math.random().toString(36).substr(2, 9),
+              name,
+              api_base,
+              api_key,
+              models
+          });
+      });
+      return list;
+  }
+
   // ── 初始化 ──
   window.initPage10 = function() {
       const generalTab = document.getElementById('tab-general');
@@ -759,6 +901,8 @@
               document.getElementById('dashscope_model').value = config.dashscope_model || 'qwen-plus';
               document.getElementById('inodetree_model').value = config.inodetree_model || 'inodetree-pro';
 
+              renderCustomProviders(config.custom_providers);
+
               // 更新初始状态 Badge
               const updateStatus = (id, val) => {
                   if (val) setStatus(id, true, '已配置');
@@ -798,7 +942,8 @@
                   pexels_api_key: document.getElementById('pexels_api_key').value,
                   deepseek_model: document.getElementById('deepseek_model').value,
                   dashscope_model: document.getElementById('dashscope_model').value,
-                  inodetree_model: document.getElementById('inodetree_model').value
+                  inodetree_model: document.getElementById('inodetree_model').value,
+                  custom_providers: collectCustomProviders()
               };
               
               if (window.pywebview && window.pywebview.api) {
@@ -821,6 +966,86 @@
                           showToast('设置保存失败，请检查配置参数。', 'error');
                       }
                   });
+              }
+          });
+      }
+      
+      // 自定义网关事件监听
+      const addGatewayBtn = document.getElementById('add-gateway-btn');
+      if (addGatewayBtn) {
+          addGatewayBtn.addEventListener('click', () => {
+              const container = document.getElementById('gateways-container');
+              if (container) {
+                  const newP = {
+                      id: 'provider_' + Math.random().toString(36).substr(2, 9),
+                      name: '',
+                      api_base: '',
+                      api_key: '',
+                      models: []
+                  };
+                  container.appendChild(createGatewayEl(newP));
+              }
+          });
+      }
+
+      const gatewaysContainer = document.getElementById('gateways-container');
+      if (gatewaysContainer) {
+          gatewaysContainer.addEventListener('click', (e) => {
+              const target = e.target.closest('button');
+              if (!target) return;
+              
+              if (target.classList.contains('remove-gateway-btn')) {
+                  const card = target.closest('[data-provider-id]');
+                  if (card) card.remove();
+              }
+              
+              if (target.classList.contains('add-model-btn')) {
+                  const card = target.closest('[data-provider-id]');
+                  const modelsContainer = card?.querySelector('.gateway-models-container');
+                  if (modelsContainer) {
+                      modelsContainer.appendChild(createModelRowEl({ id: '', name: '', type: 'text' }));
+                  }
+              }
+              
+              if (target.classList.contains('remove-model-btn')) {
+                  const row = target.closest('.model-row');
+                  if (row) row.remove();
+              }
+              
+              if (target.classList.contains('fetch-models-btn')) {
+                  const card = target.closest('[data-provider-id]');
+                  const api_base = card?.querySelector('.gateway-base')?.value.trim();
+                  const api_key = card?.querySelector('.gateway-key')?.value.trim();
+                  
+                  if (!api_base || !api_key) {
+                      showToast('请先填写接口 Base URL 和 API Key！', 'error');
+                      return;
+                  }
+                  
+                  btnLoading(target, '获取中…');
+                  if (window.pywebview && window.pywebview.api) {
+                      window.pywebview.api.fetch_custom_models(api_base, api_key).then(res => {
+                          btnRestore(target);
+                          if (res.success && res.models && res.models.length > 0) {
+                              const modelsContainer = card.querySelector('.gateway-models-container');
+                              if (modelsContainer) {
+                                  modelsContainer.innerHTML = '';
+                                  res.models.forEach(m => {
+                                      modelsContainer.appendChild(createModelRowEl(m));
+                                  });
+                                  showToast(`成功获取并导入了 ${res.models.length} 个模型！`, 'success');
+                              }
+                          } else {
+                              showToast('获取模型失败：' + (res.message || '网关无响应'), 'error');
+                          }
+                      }).catch(err => {
+                          btnRestore(target);
+                          showToast('自动获取模型失败：' + err.message, 'error');
+                      });
+                  } else {
+                      btnRestore(target);
+                      showToast('环境未就绪（pywebview 缺失）', 'error');
+                  }
               }
           });
       }

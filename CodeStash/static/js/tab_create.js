@@ -21,6 +21,7 @@ const CreateTab = (() => {
   }
   function showProgress(show) {
     get('generation-progress')?.classList.toggle('hidden', !show);
+    get('progress-text')?.classList.toggle('hidden', !show);
   }
 
   // ── 标题模式切换 ──────────────────────────────────────────
@@ -154,25 +155,67 @@ const CreateTab = (() => {
     }
   }
 
-  // ── 加载人设列表 ──────────────────────────────────────────
-  async function loadPersonas() {
+  // ── 加载人设列表与自定义模型 ──────────────────────────────
+  async function loadConfigData() {
     try {
       const res = await fetch('/api/config');
       const data = await res.json();
-      if (data.success && data.data && data.data.skills) {
-        const select = document.getElementById('persona-select');
-        if (select) {
-          select.innerHTML = '<option value="">默认人设 (公众号爆款创作者)</option>';
-          data.data.skills.forEach(skill => {
-            const opt = document.createElement('option');
-            opt.value = skill.id;
-            opt.textContent = `${skill.name} (${skill.description})`;
-            select.appendChild(opt);
+      if (data.success && data.data) {
+        const c = data.data;
+        
+        // 1. 加载人设
+        if (c.skills) {
+          const select = document.getElementById('persona-select');
+          if (select) {
+            select.innerHTML = '<option value="">默认人设 (公众号爆款创作者)</option>';
+            c.skills.forEach(skill => {
+              const opt = document.createElement('option');
+              opt.value = skill.id;
+              opt.textContent = `${skill.name} (${skill.description})`;
+              select.appendChild(opt);
+            });
+          }
+        }
+        
+        // 2. 动态加载自定义网关模型
+        if (c.custom_providers && c.custom_providers.length > 0) {
+          const aiSelect = document.getElementById('ai-model-select');
+          const imgSelect = document.getElementById('image-model-select');
+          
+          c.custom_providers.forEach(p => {
+            if (!p.models || p.models.length === 0) return;
+            
+            // 为每个网关创建 optgroup
+            const textGroup = document.createElement('optgroup');
+            textGroup.label = `${p.name} (自定义)`;
+            
+            const imageGroup = document.createElement('optgroup');
+            imageGroup.label = `${p.name} (自定义)`;
+            
+            let hasText = false;
+            let hasImage = false;
+            
+            p.models.forEach(m => {
+              const opt = document.createElement('option');
+              opt.value = `custom:${p.id}:${m.id}`;
+              opt.textContent = m.name || m.id;
+              
+              if (m.type === 'image') {
+                imageGroup.appendChild(opt);
+                hasImage = true;
+              } else {
+                textGroup.appendChild(opt);
+                hasText = true;
+              }
+            });
+            
+            if (hasText && aiSelect) aiSelect.appendChild(textGroup);
+            if (hasImage && imgSelect) imgSelect.appendChild(imageGroup);
           });
         }
       }
     } catch (e) {
-      console.warn('loadPersonas:', e);
+      console.warn('loadConfigData:', e);
     }
   }
 
@@ -183,6 +226,8 @@ const CreateTab = (() => {
 
     let title = '';
     let recreate_urls = [];
+    let recreate_strength = 80;
+    let recreate_image_source = 'new';
 
     if (isRecreate) {
       const urlText = val('recreate-urls');
@@ -190,6 +235,8 @@ const CreateTab = (() => {
       recreate_urls = urlText.split('\n').map(u => u.trim()).filter(Boolean);
       if (recreate_urls.length === 0) { Utils.showToast('请输入参考文章链接', 'warning'); return; }
       title = val('recreate-title'); // 可选，如果为空后端将自动生成
+      recreate_strength = parseInt(val('recreate-strength')) || 80;
+      recreate_image_source = val('recreate-image-source') || 'new';
     } else if (isHot) {
       title = '';
     } else {
@@ -226,6 +273,8 @@ const CreateTab = (() => {
     const body = {
       title,
       recreate_urls,
+      recreate_strength,
+      recreate_image_source,
       persona_id:          val('persona-select') || '',
       word_count:          parseInt(val('article-word-count'))  || 8000,
       image_count:         parseInt(val('article-image-count')) || 3,
@@ -677,14 +726,26 @@ const CreateTab = (() => {
     document.body.removeChild(ta);
   }
 
+  // ── 重构强度滑块联动 ──────────────────────────────────────
+  function initRecreateStrength() {
+    const slider = get('recreate-strength');
+    const valSpan = get('recreate-strength-val');
+    if (slider && valSpan) {
+      slider.addEventListener('input', () => {
+        valSpan.textContent = slider.value + '%';
+      });
+    }
+  }
+
   // ── 初始化 ───────────────────────────────────────────────
   function init() {
     initTitleModeToggle();
     initVideoToggle();
     initImageModelToggle();
     initDashscopeDropdown();
+    initRecreateStrength();
     loadStyleTemplates();
-    loadPersonas();
+    loadConfigData();
     loadHistory();
 
     get('generate-article') ?.addEventListener('click', generateArticle);

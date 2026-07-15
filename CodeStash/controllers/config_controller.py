@@ -28,6 +28,47 @@ class ConfigController:
         self.dashscope_service = DashScopeService()
         logger.info("配置控制器初始化完成")
     
+    def fetch_custom_models(self) -> Dict[str, Any]:
+        """获取自定义/中转网关的模型列表"""
+        try:
+            data = request.json or {}
+            api_base = data.get('api_base', '').strip().rstrip('/')
+            api_key = data.get('api_key', '').strip()
+            
+            if not api_base or not api_key:
+                return {'success': False, 'message': '请先输入 Base URL 和 API Key'}
+                
+            url = f"{api_base}/models"
+            resp = requests.get(url, headers={"Authorization": f"Bearer {api_key}"}, timeout=15)
+            if not resp.ok:
+                return {'success': False, 'message': f'中转接口响应失败，状态码: {resp.status_code}'}
+                
+            result = resp.json()
+            models_data = result.get('data', [])
+            
+            parsed_models = []
+            for m in models_data:
+                m_id = m.get('id')
+                if not m_id:
+                    continue
+                m_id_lower = m_id.lower()
+                m_type = 'text'
+                if any(kw in m_id_lower for kw in ['dall-e', 'flux', 'sd', 'stable-diffusion', 'mj', 'midjourney', 'paint', 'image', 'generation', 'cogview']):
+                    m_type = 'image'
+                
+                parsed_models.append({
+                    'id': m_id,
+                    'name': m_id,
+                    'type': m_type
+                })
+                
+            parsed_models.sort(key=lambda x: x['id'])
+            return {'success': True, 'models': parsed_models}
+            
+        except Exception as e:
+            logger.error(f"获取自定义模型列表异常: {e}")
+            return {'success': False, 'message': f'连接网关失败: {str(e)}'}
+
     def handle_config_request(self) -> Dict[str, Any]:
         """
         处理配置请求

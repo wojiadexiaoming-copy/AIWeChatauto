@@ -309,6 +309,27 @@
       </div>
     </section>
 
+    <!-- ── 自定义网关 ── -->
+    <section class="md:col-span-8 glass-panel rounded-lg p-lg flex flex-col gap-md">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-sm">
+          <div class="w-9 h-9 rounded-lg bg-orange-100 flex items-center justify-center">
+            <span class="material-symbols-outlined text-orange-500">dns</span>
+          </div>
+          <h2 class="text-headline-sm font-bold">自定义/中转 API 网关</h2>
+        </div>
+        <button id="add-gateway-btn" type="button"
+          class="flex items-center gap-xs px-md py-xs rounded bg-wechat-green/10 text-wechat-green text-label font-semibold hover:bg-wechat-green/20 transition-all">
+          <span class="material-symbols-outlined" style="font-size:16px;">add</span>添加网关
+        </button>
+      </div>
+      
+      <!-- 网关列表容器 -->
+      <div id="gateways-container" class="space-y-md">
+        <!-- 动态生成网关列表 -->
+      </div>
+    </section>
+
   </div><!-- /grid -->
 
   <!-- ── 底部浮动保存按钮 ── -->

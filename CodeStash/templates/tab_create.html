@@ -101,6 +101,26 @@
           <input type="text" id="recreate-title"
             class="form-field w-full h-11 px-md rounded text-body placeholder:text-outline-variant"
             placeholder="不输入则由 AI 根据内容自动拟定标题…">
+
+          <div class="flex flex-col md:flex-row gap-md mt-sm">
+            <div class="flex-1">
+              <div class="flex justify-between text-label text-on-surface-variant mb-xs">
+                <span>重构强度</span>
+                <span id="recreate-strength-val" class="font-semibold text-wechat-green">80%</span>
+              </div>
+              <div class="flex items-center h-11">
+                <input type="range" id="recreate-strength" min="0" max="100" value="80"
+                  class="w-full accent-wechat-green h-2 bg-surface-container rounded-lg appearance-none cursor-pointer">
+              </div>
+            </div>
+            <div class="flex-1">
+              <div class="text-label text-on-surface-variant mb-xs">参考图片处理</div>
+              <select id="recreate-image-source" class="form-field w-full h-11 px-md rounded text-body">
+                <option value="new">生成新图 (基于生图模型/Pexels)</option>
+                <option value="original">使用原参考的图 (下载网页图片)</option>
+              </select>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -277,17 +297,6 @@
                flex items-center justify-center gap-sm shadow-md shadow-wechat-green/20">
         <span class="material-symbols-outlined">auto_awesome</span>立即生成文章
       </button>
-
-      <!-- 生成进度 -->
-      <div id="generation-progress" class="hidden glass-panel rounded-lg p-md">
-        <div class="flex items-center justify-between mb-xs">
-          <span class="text-label text-on-surface-variant">生成进度</span>
-          <span id="progress-text" class="text-caption text-on-surface-variant">准备中…</span>
-        </div>
-        <div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
-          <div id="progress-bar" class="h-full bg-wechat-green rounded-full transition-all duration-500" style="width:0%"></div>
-        </div>
-      </div>
 
     </div>
 

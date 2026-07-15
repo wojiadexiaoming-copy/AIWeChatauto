@@ -43,6 +43,7 @@ class ConfigService:
             "author": "AI笔记",
             "content_source_url": "",
             "firecrawl_api_key": "",  # 新增Firecrawl密钥
+            "custom_providers": [],   # 自定义中转网关配置列表
             "skills": [],  # 动态加载，默认为空
             "updated_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }

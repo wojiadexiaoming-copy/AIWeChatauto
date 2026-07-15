@@ -69,17 +69,28 @@ class ArticleController:
                 return None
                 
             paragraphs = []
+            images = []
+            
+            # 1. 提取所有可见文本段落，避免因仅提取 p 标签而丢失 section, div, li, td 等包裹的正文和步骤说明
+            raw_text = content_el.get_text('\n')
+            for line in raw_text.split('\n'):
+                line = line.strip()
+                if line and line not in paragraphs:
+                    paragraphs.append(line)
+                    
+            # 2. 提取所有图片链接
             for child in content_el.descendants:
-                if child.name is None:
-                    continue
-                if child.name == 'p':
-                    text = child.get_text().strip()
-                    if text and text not in paragraphs:
-                        paragraphs.append(text)
+                if child.name == 'img':
+                    img_url = child.get('data-src') or child.get('src')
+                    if img_url:
+                        img_url = img_url.strip()
+                        if img_url and img_url.startswith('http') and img_url not in images:
+                            images.append(img_url)
                         
             return {
                 'title': title,
-                'content': "\n".join(paragraphs)
+                'content': "\n".join(paragraphs),
+                'images': images
             }
         except Exception as e:
             logger.error(f"抓取微信文章异常: {url}, 错误: {str(e)}")
@@ -158,6 +169,24 @@ class ArticleController:
                     _raw_model = inodetree_config.get('model', 'inodetree-pro')
                     model_name = {'inodetree-2.0-flash': 'inodetree-pro'}.get(_raw_model, _raw_model) or 'inodetree-pro'
                     title = self.inodetree_service.generate_content(prompt, model_name)
+                elif ai_model.startswith('custom:'):
+                    parts = ai_model.split(':')
+                    if len(parts) < 3:
+                        return {'success': False, 'message': f'自定义模型格式错误: {ai_model}'}
+                    provider_id = parts[1]
+                    model_name = parts[2]
+                    config = self.config_service.load_config()
+                    providers = config.get('custom_providers', [])
+                    provider = next((p for p in providers if p.get('id') == provider_id), None)
+                    if not provider:
+                        return {'success': False, 'message': f'找不到对应的自定义网关配置: {provider_id}'}
+                    api_base = provider.get('api_base')
+                    api_key = provider.get('api_key')
+                    if not api_base or not api_key:
+                        return {'success': False, 'message': f'自定义网关 {provider_id} 的 Base URL 或 API Key 未配置'}
+                    from services.custom_gateway_service import CustomGatewayService
+                    gateway_service = CustomGatewayService(api_base, api_key)
+                    title, _ = gateway_service.generate_content_with_usage(prompt, model_name, max_tokens=100)
                 else:
                     return {'success': False, 'message': f'不支持的AI model: {ai_model}'}
                 logger.info(f"大模型返回标题：{title}")
@@ -241,7 +270,23 @@ class ArticleController:
                 model_name = {
                     'inodetree-2.0-flash': 'inodetree-pro',
                 }.get(_raw_model, _raw_model) or 'inodetree-pro'
-
+            elif ai_model.startswith('custom:'):
+                parts = ai_model.split(':')
+                if len(parts) < 3:
+                    return {'success': False, 'message': f'自定义模型格式错误: {ai_model}'}
+                provider_id = parts[1]
+                model_name = parts[2]
+                config = self.config_service.load_config()
+                providers = config.get('custom_providers', [])
+                provider = next((p for p in providers if p.get('id') == provider_id), None)
+                if not provider:
+                    return {'success': False, 'message': f'找不到对应的自定义网关配置: {provider_id}'}
+                api_base = provider.get('api_base')
+                api_key = provider.get('api_key')
+                if not api_base or not api_key:
+                    return {'success': False, 'message': f'自定义网关 {provider_id} 的 Base URL 或 API Key 未配置'}
+                from services.custom_gateway_service import CustomGatewayService
+                self.custom_gateway_service = CustomGatewayService(api_base, api_key)
             else:
                 return {
                     'success': False,
@@ -253,7 +298,15 @@ class ArticleController:
             image_count = data.get('image_count')
             format_template = data.get('format_template', '')
             recreate_urls = data.get('recreate_urls', [])
+            recreate_strength = int(data.get('recreate_strength', 80))
+            recreate_image_source = data.get('recreate_image_source', 'new')
             combined_content = ""
+            recreate_images = []
+
+            # 动态计算字数和 token 限制，保证长文章不被截断 (1个汉字+排版符号约需 1.5 - 2.5 个 token)
+            word_count_int = int(word_count) if word_count else 1500
+            char_limit = max(20000, word_count_int * 8)
+            target_max_tokens = max(4096, min(16384, int(word_count_int * 2.5)))
 
             if recreate_urls:
                 logger.info(f"开启深度内容重构模式，接收到参考链接: {recreate_urls}")
@@ -265,6 +318,8 @@ class ArticleController:
                     scraped = self._scrape_wechat_article(url)
                     if scraped:
                         combined_materials.append(f"【参考文章标题】：{scraped['title']}\n【参考文章正文】：\n{scraped['content']}")
+                        if scraped.get('images'):
+                            recreate_images.extend(scraped['images'])
                 
                 if not combined_materials:
                     logger.error("所有参考文章链接抓取均失败")
@@ -273,7 +328,7 @@ class ArticleController:
                         'message': '无法从您提供的链接中提取到有效文章，请检查链接是否正确且为微信公众号文章。'
                     }
                 combined_content = "\n\n=========================================\n\n".join(combined_materials)
-                logger.info(f"成功抓取参考材料共 {len(combined_materials)} 篇，合并内容长度: {len(combined_content)}")
+                logger.info(f"成功抓取参考材料共 {len(combined_materials)} 篇，合并内容长度: {len(combined_content)}，提取到参考图片 {len(recreate_images)} 张")
 
             # token 累计器
             tokens_used = 0
@@ -282,7 +337,7 @@ class ArticleController:
             logger.info(f"第一步：开始生成文章内容，使用模型: {model_name}")
 
             from services.prompt_manager import PromptManager
-            char_limit = 20000
+            # char_limit 已经在上方根据 word_count 动态计算
             
             persona_id = data.get('persona_id')
             role_prompt = None
@@ -323,6 +378,8 @@ class ArticleController:
                     title_gen, t_used = self.dashscope_service.generate_with_usage(title_prompt, model_name, max_tokens=100)
                 elif ai_model == 'inodetree':
                     title_gen, t_used = self.inodetree_service.generate_with_usage(title_prompt, model_name)
+                elif ai_model.startswith('custom:'):
+                    title_gen, t_used = self.custom_gateway_service.generate_content_with_usage(title_prompt, model_name, max_tokens=100)
                 else:
                     title_gen = None
                 
@@ -336,18 +393,20 @@ class ArticleController:
 
             # 构建文章写作 prompt
             if recreate_urls:
-                article_prompt = PromptManager.recreate_article_prompt(combined_content, word_count, char_limit, format_template=format_template, role_prompt=role_prompt)
+                article_prompt = PromptManager.recreate_article_prompt(combined_content, word_count, char_limit, format_template=format_template, role_prompt=role_prompt, recreate_strength=recreate_strength)
             else:
                 article_prompt = PromptManager.article_prompt(title, word_count, char_limit, format_template=format_template, role_prompt=role_prompt)
 
             if ai_model == 'gemini':
                 content, t = self.gemini_service.generate_with_usage(article_prompt, model_name)
             elif ai_model == 'deepseek':
-                content, t = self.deepseek_service.generate_with_usage(article_prompt, model_name)
+                content, t = self.deepseek_service.generate_with_usage(article_prompt, model_name, max_tokens=target_max_tokens)
             elif ai_model == 'dashscope':
-                content, t = self.dashscope_service.generate_with_usage(article_prompt, model_name, max_tokens=4000)
+                content, t = self.dashscope_service.generate_with_usage(article_prompt, model_name, max_tokens=target_max_tokens)
             elif ai_model == 'inodetree':
-                content, t = self.inodetree_service.generate_with_usage(article_prompt, model_name)
+                content, t = self.inodetree_service.generate_with_usage(article_prompt, model_name, max_tokens=target_max_tokens)
+            elif ai_model.startswith('custom:'):
+                content, t = self.custom_gateway_service.generate_content_with_usage(article_prompt, model_name, max_tokens=target_max_tokens)
             else:
                 return {'success': False, 'message': f'不支持的AI模型: {ai_model}'}
             tokens_used += t or 0
@@ -372,6 +431,8 @@ class ArticleController:
                 digest_raw, t = self.dashscope_service.generate_with_usage(digest_prompt, model_name, max_tokens=200)
             elif ai_model == 'inodetree':
                 digest_raw, t = self.inodetree_service.generate_with_usage(digest_prompt, model_name, max_tokens=256)
+            elif ai_model.startswith('custom:'):
+                digest_raw, t = self.custom_gateway_service.generate_content_with_usage(digest_prompt, model_name, max_tokens=256)
             else:
                 digest_raw, t = None, 0
             tokens_used += t or 0
@@ -402,7 +463,8 @@ class ArticleController:
             dashscope_params = data.get('dashscope_params', {})
             content_with_images = self._process_images_in_content(
                 content, title, digest, image_count, image_model_code, ai_model, custom_image_prompt,
-                dashscope_params=dashscope_params, dashscope_image_model_code=dashscope_image_model_code
+                dashscope_params=dashscope_params, dashscope_image_model_code=dashscope_image_model_code,
+                recreate_image_source=recreate_image_source, recreate_images=recreate_images
             )
             
             # 第四点六步：生成视频并插入（可选）
@@ -1075,7 +1137,7 @@ class ArticleController:
                 'message': f'获取预览失败: {str(e)}'
             }
     
-    def _process_images_in_content(self, content: str, title: str, description: str, image_count: int, image_model: str = "gemini", ai_model: str = "gemini", custom_image_prompt: str = "", dashscope_params: dict = None, dashscope_image_model_code: str = "") -> str:
+    def _process_images_in_content(self, content: str, title: str, description: str, image_count: int, image_model: str = "gemini", ai_model: str = "gemini", custom_image_prompt: str = "", dashscope_params: dict = None, dashscope_image_model_code: str = "", recreate_image_source: str = "new", recreate_images: list = None) -> str:
         """
         在文章内容中处理配图：生成图片并插入到合适位置，仅插入本地图片路径，不上传到公众号平台。
         :param content: 原始文章内容
@@ -1085,6 +1147,8 @@ class ArticleController:
         :param image_model: 生图模型
         :param ai_model: AI模型（用于Pexels搜索提示词生成）
         :param custom_image_prompt: 自定义图片提示词
+        :param recreate_image_source: 重构图片来源方式 (original/new)
+        :param recreate_images: 从参考文章中抓取的原图URL列表
         :return: 插入配图后的内容
         """
         try:
@@ -1104,26 +1168,36 @@ class ArticleController:
                 dashscope_params = {}
             for i, position in enumerate(insert_positions):
                 try:
-                    logger.info(f"生成第{i+1}张配图，使用模型: {image_model}")
-                    user_custom_prompt = custom_image_prompt
-                    # dashscope模型ID优先用dashscope_params['model_name']，否则用dashscope_image_model_code
-                    if image_model == 'dashscope':
-                        if not dashscope_params.get('model_name') and dashscope_image_model_code:
-                            dashscope_params['model_name'] = dashscope_image_model_code
-                        if not dashscope_params.get('model_name'):
-                            logger.error("阿里云百炼模型ID未传递")
-                            return content
-                    image_path = self.image_service.generate_article_image(
-                        title=title,
-                        description=description,
-                        image_model=image_model,
-                        article_content=content,
-                        ai_model=ai_model,
-                        image_index=i+1,
-                        total_images=image_count,
-                        dashscope_params=dashscope_params,
-                        user_custom_prompt=user_custom_prompt
-                    )
+                    image_path = None
+                    if recreate_image_source == 'original' and recreate_images:
+                        img_idx = i % len(recreate_images)
+                        orig_url = recreate_images[img_idx]
+                        logger.info(f"深度重构选择使用原参考图 (索引 {img_idx}): {orig_url}")
+                        image_path = self.image_service.download_image_to_cache(orig_url, title)
+                        if not image_path:
+                            logger.warning(f"下载原参考图失败，尝试使用模型 {image_model} 进行 AI 降级生图")
+                    
+                    if not image_path:
+                        logger.info(f"生成第{i+1}张配图，使用模型: {image_model}")
+                        user_custom_prompt = custom_image_prompt
+                        # dashscope模型ID优先用dashscope_params['model_name']，否则用dashscope_image_model_code
+                        if image_model == 'dashscope':
+                            if not dashscope_params.get('model_name') and dashscope_image_model_code:
+                                dashscope_params['model_name'] = dashscope_image_model_code
+                            if not dashscope_params.get('model_name'):
+                                logger.error("阿里云百炼模型ID未传递")
+                                return content
+                        image_path = self.image_service.generate_article_image(
+                            title=title,
+                            description=description,
+                            image_model=image_model,
+                            article_content=content,
+                            ai_model=ai_model,
+                            image_index=i+1,
+                            total_images=image_count,
+                            dashscope_params=dashscope_params,
+                            user_custom_prompt=user_custom_prompt
+                        )
                     if image_path:
                         image_html = f'<img src="{image_path}" alt="文章配图" style="max-width: 100%; height: auto;">'
                         logger.info(f"第{i+1}张配图处理完成，使用本地路径: {image_path}")

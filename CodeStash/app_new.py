@@ -59,9 +59,14 @@ def index():
 
 @app.route('/api/config', methods=['GET', 'POST'])
 def handle_config():
-    """处理配置信息"""
-    logger.info(f"处理配置请求: {request.method}")
+    """获取或保存系统配置"""
     result = config_controller.handle_config_request()
+    return jsonify(result)
+
+@app.route('/api/fetch-custom-models', methods=['POST'])
+def fetch_custom_models():
+    """获取自定义/中转网关的模型列表"""
+    result = config_controller.fetch_custom_models()
     return jsonify(result)
 
 @app.route('/api/test-wechat', methods=['POST'])

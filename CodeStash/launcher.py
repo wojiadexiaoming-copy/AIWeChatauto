@@ -328,6 +328,39 @@ class LauncherApi:
             print(f"保存配置异常: {e}")
             return False
 
+    def fetch_custom_models(self, api_base, api_key):
+        """调用接口获取中转网关的模型列表"""
+        api_base = api_base.strip().rstrip('/')
+        api_key = api_key.strip()
+        if not api_base or not api_key:
+            return {'success': False, 'message': '请先填入接口 Base URL 和 API Key'}
+        try:
+            import requests
+            url = f"{api_base}/models"
+            resp = requests.get(url, headers={"Authorization": f"Bearer {api_key}"}, timeout=15)
+            if not resp.ok:
+                return {'success': False, 'message': f'接口请求失败，状态码: {resp.status_code}'}
+            result = resp.json()
+            models_data = result.get('data', [])
+            parsed_models = []
+            for m in models_data:
+                m_id = m.get('id')
+                if not m_id:
+                    continue
+                m_id_lower = m_id.lower()
+                m_type = 'text'
+                if any(kw in m_id_lower for kw in ['dall-e', 'flux', 'sd', 'stable-diffusion', 'mj', 'midjourney', 'paint', 'image', 'generation', 'cogview']):
+                    m_type = 'image'
+                parsed_models.append({
+                    'id': m_id,
+                    'name': m_id,
+                    'type': m_type
+                })
+            parsed_models.sort(key=lambda x: x['id'])
+            return {'success': True, 'models': parsed_models}
+        except Exception as e:
+            return {'success': False, 'message': f'连接网关失败: {str(e)}'}
+
     # ── 环境检测与依赖安装 ──────────────────────────────────────────────
     def check_environment(self):
         """检查运行环境和 requirements.txt 中的依赖项"""

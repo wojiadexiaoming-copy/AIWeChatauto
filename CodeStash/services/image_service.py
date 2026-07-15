@@ -56,6 +56,22 @@ class ImageService:
         :return: 图片文件路径
         """
         try:
+            # 防御性转换，以防 title/description/article_content 传入 dict 等非字符串类型
+            if isinstance(title, dict):
+                title = title.get('content') or str(title)
+            elif not isinstance(title, str):
+                title = str(title)
+                
+            if isinstance(description, dict):
+                description = description.get('content') or str(description)
+            elif not isinstance(description, str):
+                description = str(description)
+                
+            if isinstance(article_content, dict):
+                article_content = article_content.get('content') or str(article_content)
+            elif not isinstance(article_content, str):
+                article_content = str(article_content)
+
             logger.info(f"开始生成文章配图，标题: {title}, 生图模型: {image_model}, AI模型: {ai_model}, 图片索引: {image_index}/{total_images}")
             # 推荐逻辑：阿里云百炼/Coze如无正向提示词和自定义提示词，则用PromptManager.image_prompt生成完整提示词
             if image_model in ["dashscope", "coze"]:
@@ -83,6 +99,32 @@ class ImageService:
             elif image_model == "inodetree":
                 # InodeTree Image 直接生图
                 return self._generate_with_inodetree_image(final_prompt)
+            elif image_model.startswith("custom:"):
+                parts = image_model.split(':')
+                if len(parts) < 3:
+                    logger.error(f"自定义生图模型格式错误: {image_model}")
+                    return None
+                provider_id = parts[1]
+                model_name = parts[2]
+                
+                from services.config_service import ConfigService
+                config_service = ConfigService()
+                config = config_service.load_config()
+                providers = config.get('custom_providers', [])
+                provider = next((p for p in providers if p.get('id') == provider_id), None)
+                if not provider:
+                    logger.error(f"找不到对应的自定义网关配置: {provider_id}")
+                    return None
+                
+                api_base = provider.get('api_base')
+                api_key = provider.get('api_key')
+                if not api_base or not api_key:
+                    logger.error(f"自定义网关 {provider_id} 的 Base URL 或 API Key 未配置")
+                    return None
+                
+                from services.custom_gateway_service import CustomGatewayService
+                gateway_service = CustomGatewayService(api_base, api_key)
+                return gateway_service.generate_image(final_prompt, model_name, save_dir=self.cache_folder)
             else:
                 logger.error(f"不支持的生图模型: {image_model}")
                 return None
@@ -721,7 +763,37 @@ class ImageService:
         except Exception as e:
             logger.error(f"下载Pexels图片时发生错误: {str(e)}")
             return None
-    
+            
+    def download_image_to_cache(self, image_url: str, title: str) -> Optional[str]:
+        """
+        下载任意图片到缓存目录
+        :param image_url: 图片URL
+        :param title: 文章标题（用于生成文件名）
+        :return: 本地图片路径
+        """
+        try:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).rstrip()[:20]
+            filename = f"scraped_img_{safe_title}_{timestamp}.png"
+            image_path = os.path.join(self.cache_folder, filename)
+            
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            }
+            logger.info(f"正在从网页下载原图: {image_url}")
+            response = requests.get(image_url, headers=headers, timeout=20)
+            if response.status_code == 200:
+                with open(image_path, 'wb') as f:
+                    f.write(response.content)
+                logger.info(f"成功下载原参考图: {image_path}")
+                return image_path
+            else:
+                logger.error(f"下载原参考图失败，状态码: {response.status_code}")
+                return None
+        except Exception as e:
+            logger.error(f"下载原参考图时发生异常: {e}")
+            return None
+
     def validate_image_file(self, image_path: str) -> bool:
         """
         验证图片文件

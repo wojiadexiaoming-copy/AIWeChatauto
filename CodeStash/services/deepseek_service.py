@@ -42,7 +42,7 @@ class DeepSeekService:
         text, _ = self.generate_with_usage(prompt, model)
         return text
 
-    def generate_with_usage(self, prompt: str, model: str = None) -> tuple:
+    def generate_with_usage(self, prompt: str, model: str = None, max_tokens: int = 4000) -> tuple:
         """
         生成内容并返回 token 用量
         :return: (text, tokens_used)
@@ -52,12 +52,12 @@ class DeepSeekService:
 
         try:
             headers = self._get_headers()
-            logger.info(f"开始生成内容，使用模型: {model}")
+            logger.info(f"开始生成内容，使用模型: {model}，设置 max_tokens: {max_tokens}")
 
             payload = {
                 "model": model,
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 4000,
+                "max_tokens": max_tokens,
                 "temperature": 0.7
             }
 
