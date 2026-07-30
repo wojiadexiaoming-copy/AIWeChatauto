@@ -42,11 +42,37 @@ def build():
                 shutil.copy2(src_path, dest_path)
                 print("\n【打包成功】您现在可以直接在当前目录下双击运行 InodeTree.exe 启动系统！")
             else:
-                print("警告: 未在 dist 目录下找到生成的 EXE 文件。")
+                print("警告: 未在 dist 目录下找到生成的 InodeTree.exe 文件。")
         else:
-            print(f"\n编译失败，退出代码: {result.returncode}")
+            print(f"\n编译 InodeTree.exe 失败，退出代码: {result.returncode}")
     except Exception as e:
         print(f"\n编译打包时发生异常: {e}")
+
+    # 打包 CLI 命令行工具 (不含 --windowed，保留标准控制台输出)
+    print("\n=== 开始编译 CLI 工具 (inodetree-cli.exe) ===")
+    cmd_cli = [
+        "pyinstaller",
+        "--clean",
+        "--noconfirm",
+        "--onefile",
+        "--name=inodetree-cli",
+        "--icon=static/logo-red.ico",
+        "--add-data=templates;templates",
+        "--add-data=static;static",
+        "--add-data=skills;skills",
+        "cli.py"
+    ]
+    print(f"执行打包命令: {' '.join(cmd_cli)}")
+    try:
+        res_cli = subprocess.run(cmd_cli)
+        if res_cli.returncode == 0:
+            src_cli = os.path.join("dist", "inodetree-cli.exe")
+            dest_cli = "inodetree-cli.exe"
+            if os.path.exists(src_cli):
+                shutil.copy2(src_cli, dest_cli)
+                print("【CLI 打包成功】可在终端中直接运行 inodetree-cli.exe ！")
+    except Exception as e:
+        print(f"编译 inodetree-cli.exe 异常: {e}")
 
 if __name__ == "__main__":
     build()
